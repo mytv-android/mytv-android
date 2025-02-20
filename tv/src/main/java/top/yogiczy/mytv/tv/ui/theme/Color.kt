@@ -1,0 +1,68 @@
+package top.yogiczy.mytv.tv.ui.theme
+
+import androidx.tv.material3.darkColorScheme
+import androidx.tv.material3.lightColorScheme
+import top.yogiczy.mytv.core.designsystem.theme.darkColors
+import top.yogiczy.mytv.core.designsystem.theme.lightColors
+
+val colorSchemeForDarkMode = darkColorScheme(
+    primary = darkColors.primary,
+    onPrimary = darkColors.onPrimary,
+    primaryContainer = darkColors.primaryContainer,
+    onPrimaryContainer = darkColors.onPrimaryContainer,
+    secondary = darkColors.secondary,
+    onSecondary = darkColors.onSecondary,
+    secondaryContainer = darkColors.secondaryContainer,
+    onSecondaryContainer = darkColors.onSecondaryContainer,
+    tertiary = darkColors.tertiary,
+    onTertiary = darkColors.onTertiary,
+    tertiaryContainer = darkColors.tertiaryContainer,
+    onTertiaryContainer = darkColors.onTertiaryContainer,
+    error = darkColors.error,
+    onError = darkColors.onError,
+    background = darkColors.background,
+    onBackground = darkColors.onBackground,
+    surface = darkColors.surface,
+    onSurface = darkColors.onSurface,
+    surfaceVariant = darkColors.surfaceVariant,
+    onSurfaceVariant = darkColors.onSurfaceVariant,
+    border = darkColors.outline,
+    borderVariant = darkColors.outlineVariant,
+    scrim = darkColors.scrim,
+    inverseSurface = darkColors.inverseSurface,
+    inverseOnSurface = darkColors.inverseOnSurface,
+    inversePrimary = darkColors.inversePrimary,
+    errorContainer = darkColors.errorContainer,
+    onErrorContainer = darkColors.onErrorContainer,
+)
+
+val colorSchemeForLightMode = lightColorScheme(
+    primary = lightColors.primary,
+    onPrimary = lightColors.onPrimary,
+    primaryContainer = lightColors.primaryContainer,
+    onPrimaryContainer = lightColors.onPrimaryContainer,
+    secondary = lightColors.secondary,
+    onSecondary = lightColors.onSecondary,
+    secondaryContainer = lightColors.secondaryContainer,
+    onSecondaryContainer = lightColors.onSecondaryContainer,
+    tertiary = lightColors.tertiary,
+    onTertiary = lightColors.onTertiary,
+    tertiaryContainer = lightColors.tertiaryContainer,
+    onTertiaryContainer = lightColors.onTertiaryContainer,
+    error = lightColors.error,
+    onError = lightColors.onError,
+    background = lightColors.background,
+    onBackground = lightColors.onBackground,
+    surface = lightColors.surface,
+    onSurface = lightColors.onSurface,
+    surfaceVariant = lightColors.surfaceVariant,
+    onSurfaceVariant = lightColors.onSurfaceVariant,
+    border = lightColors.outline,
+    borderVariant = lightColors.outlineVariant,
+    scrim = lightColors.scrim,
+    inverseSurface = lightColors.inverseSurface,
+    inverseOnSurface = lightColors.inverseOnSurface,
+    inversePrimary = lightColors.inversePrimary,
+    errorContainer = lightColors.errorContainer,
+    onErrorContainer = lightColors.onErrorContainer,
+)

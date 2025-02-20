@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>天光云影</title>
+    <link href="./web_push_css.css" rel="stylesheet" />
+    <script src="./web_push_js.js"></script>
+
+    <style>
+        .van-theme-dark body {
+            color: #f5f5f5;
+            background-color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="min-h-100vh pt-46px pb-66px" id="app">
+        <van-config-provider :theme="isDark ? 'dark' : undefined">
+            <template v-if="info">
+                <div class="p-20px pt-0">
+                    <div class="ml-16px text-32px">{{ info.appTitle }}</div>
+                    <div class="ml-16px text-gray text-14px">{{ info.appRepo }}</div>
+                </div>
+
+                <template v-if="tabActive === 'config'">
+                    <van-cell-group inset>
+                        <van-cell title="点击进入高级模式" is-link url="/advance"></van-cell>
+                    </van-cell-group>
+
+                    <van-cell-group inset title="直播源">
+                        <van-cell title="自定义直播源">
+                            <template #label>
+                                <van-space class="w-full" direction="vertical" size="small">
+                                    <span>支持m3u、txt格式</span>
+
+                                    <van-field class="!pl-0" input-align="right" label="类型">
+                                        <template #input>
+                                            <van-radio-group direction="horizontal" v-model="iptvSource.type">
+                                                <van-radio name="url">远程</van-radio>
+                                                <van-radio name="file">文件</van-radio>
+                                                <van-radio name="content">静态</van-radio>
+                                            </van-radio-group>
+                                        </template>
+                                    </van-field>
+
+                                    <van-field class="!pl-0" input-align="right" label="名称" placeholder="直播源名称"
+                                        v-model="iptvSource.name"></van-field>
+
+                                    <van-field class="!pl-0" input-align="right" label="链接" placeholder="直播源链接"
+                                        v-if="iptvSource.type === 'url'" v-model="iptvSource.url"></van-field>
+
+                                    <van-field class="!pl-0" input-align="right" label="文件路径" placeholder="直播源文件路径"
+                                        v-else-if="iptvSource.type === 'file'"
+                                        v-model="iptvSource.filePath"></van-field>
+
+                                    <template v-else-if="iptvSource.type === 'content'">
+                                        <van-field :input-align="iptvSource.content ? 'left' : 'right'" class="!pl-0"
+                                            label="内容" placeholder="直播源内容" rows="5" type="textarea"
+                                            v-model="iptvSource.content"></van-field>
+
+                                        <van-field class="!pl-0" input-align="right" label="上传">
+                                            <template #input>
+                                                <van-uploader :after-read="uploadIptvSourceContentAfterRead"
+                                                    accept=".txt,.m3u" />
+                                            </template>
+                                        </van-field>
+                                    </template>
+
+                                    <div class="flex justify-end">
+                                        <van-button @click="pushIptvSource" size="small" type="primary">
+                                            推送直播源
+                                        </van-button>
+                                    </div>
+                                </van-space>
+                            </template>
+                        </van-cell>
+
+                        <van-cell title="频道图标提供">
+                            <template #label>
+                                <van-space class="w-full" direction="vertical" size="small">
+                                    <span>格式：{name} - 保持不变，{name|lowercase} - 小写，{name|uppercase} - 大写</span>
+
+                                    <van-field class="!p-0" placeholder="https://live.fanmingming.com/tv/{name}.png"
+                                        v-model="configs.iptvChannelLogoProvider"></van-field>
+
+                                    <div class="flex justify-end">
+                                        <van-button @click="pushConfigs" size="small" type="primary">
+                                            推送
+                                        </van-button>
+                                    </div>
+                                </van-space>
+                            </template>
+                        </van-cell>
+
+                        <van-cell title="频道别名">
+                            <template #label>
+                                <van-space class="w-full" direction="vertical" size="small">
+                                    <van-field :placeholder="channelAliasExample" class="!p-0" rows="5" type="textarea"
+                                        v-model="channelAlias"></van-field>
+
+                                    <div class="flex justify-end">
+                                        <van-button @click="updateChannelAlias" size="small" type="primary">
+                                            推送
+                                        </van-button>
+                                    </div>
+                                </van-space></template>
+                        </van-cell>
+                    </van-cell-group>
+
+                    <van-cell-group inset title="节目单">
+                        <van-cell title="自定义节目单">
+                            <template #label>
+                                <van-space class="w-full" direction="vertical" size="small">
+                                    <span>支持xml、xml.gz格式</span>
+
+                                    <van-field class="!pl-0" input-align="right" label="名称" placeholder="节目单名称"
+                                        v-model="epgSource.name"></van-field>
+
+                                    <van-field class="!pl-0" input-align="right" label="链接" placeholder="节目单链接"
+                                        v-model="epgSource.url"></van-field>
+
+                                    <div class="flex justify-end">
+                                        <van-button @click="pushEpgSource" size="small" type="primary">
+                                            推送节目单
+                                        </van-button>
+                                    </div>
+                                </van-space>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+
+                    <van-cell-group inset title="播放器">
+                        <van-cell title="自定义ua">
+                            <template #label>
+                                <van-space class="w-full" direction="vertical" size="small">
+                                    <van-field class="!p-0" placeholder="播放器自定义ua"
+                                        v-model="configs.videoPlayerUserAgent"></van-field>
+
+                                    <div class="flex justify-end">
+                                        <van-button @click="pushConfigs" size="small" type="primary">
+                                            推送
+                                        </van-button>
+                                    </div>
+                                </van-space>
+                            </template>
+                        </van-cell>
+
+                        <van-cell title="自定义headers">
+                            <template #label>
+                                <van-space class="w-full" direction="vertical" size="small">
+                                    <van-field :placeholder="videoPlayerHeadersExample" autosize class="!p-0" rows="3"
+                                        type="textarea" v-model="configs.videoPlayerHeaders"></van-field>
+
+                                    <div class="flex justify-end">
+                                        <van-button @click="pushConfigs" size="small" type="primary">
+                                            推送
+                                        </van-button>
+                                    </div>
+                                </van-space>
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+
+                    <van-cell-group inset title="云同步">
+                        <van-cell title="服务商">
+                            <template #label>
+                                <van-radio-group direction="horizontal" v-model="configs.cloudSyncProvider">
+                                    <van-radio name="GITHUB_GIST">GitHub Gist</van-radio>
+                                    <van-radio name="GITEE_GIST">Gitee 代码片段</van-radio>
+                                    <van-radio name="NETWORK_URL">网络链接</van-radio>
+                                    <van-radio name="LOCAL_FILE">本地文件</van-radio>
+                                    <van-radio name="WEBDAV">WebDAV</van-radio>
+                                </van-radio-group>
+                            </template>
+                        </van-cell>
+
+                        <template v-if="configs.cloudSyncProvider === 'GITHUB_GIST'">
+                            <van-cell title="Github Gist Id">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncGithubGistId"></van-field>
+                                </template>
+                            </van-cell>
+
+                            <van-cell title="Github Gist Token">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncGithubGistToken"></van-field>
+                                </template>
+                            </van-cell>
+                        </template>
+
+                        <template v-if="configs.cloudSyncProvider === 'GITEE_GIST'">
+                            <van-cell title="Gitee 代码片段 Id">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncGiteeGistId"></van-field>
+                                </template>
+                            </van-cell>
+
+                            <van-cell title="Gitee 代码片段 Token">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncGiteeGistToken"></van-field>
+                                </template>
+                            </van-cell>
+                        </template>
+
+                        <template v-if="configs.cloudSyncProvider === 'NETWORK_URL'">
+                            <van-cell title="网络链接">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncNetworkUrl"></van-field>
+                                </template>
+                            </van-cell>
+                        </template>
+
+                        <template v-if="configs.cloudSyncProvider === 'LOCAL_FILE'">
+                            <van-cell title="本地文件路径">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncLocalFilePath"></van-field>
+                                </template>
+                            </van-cell>
+                        </template>
+
+                        <template v-if="configs.cloudSyncProvider === 'WEBDAV'">
+                            <van-cell title="WebDAV 地址">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncWebDavUrl"></van-field>
+                                </template>
+                            </van-cell>
+
+                            <van-cell title="WebDAV 用户名">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncWebDavUsername"></van-field>
+                                </template>
+                            </van-cell>
+
+                            <van-cell title="WebDAV 密码">
+                                <template #label>
+                                    <van-field class="!p-0" v-model="configs.cloudSyncWebDavPassword"></van-field>
+                                </template>
+                            </van-cell>
+                        </template>
+
+                        <van-cell>
+                            <div class="flex justify-end">
+                                <van-button @click="pushConfigs" size="small" type="primary">
+                                    推送
+                                </van-button>
+                            </div>
+                        </van-cell>
+                    </van-cell-group>
+
+                    <van-cell-group inset title="调试">
+                        <van-cell title="上传apk">
+                            <template #extra>
+                                <van-uploader :after-read="uploadApkAfterRead" accept=".apk" />
+                            </template>
+                        </van-cell>
+                    </van-cell-group>
+
+                    <van-cell-group inset title="肥羊">
+                        <van-cell title="上传AllInOne">
+                            <template #extra>
+                                <van-uploader :after-read="uploadAllInOneAfterRead" accept="*.*" />
+                            </template>
+                        </van-cell>
+
+                        <van-cell title="AllInOne文件地址">
+                            <template #label>
+                                <van-field class="!p-0" v-model="configs.feiyangAllInOneFilePath"></van-field>
+                            </template>
+                        </van-cell>
+
+                        <van-cell>
+                            <div class="flex justify-end">
+                                <van-button @click="pushConfigs" size="small" type="primary">
+                                    推送
+                                </van-button>
+                            </div>
+                        </van-cell>
+                    </van-cell-group>
+                </template>
+
+                <template v-else-if="tabActive === 'log'">
+                    <van-list>
+                        <van-cell :key="item.time" :label="item.cause" v-for="item in info.logHistory">
+                            <template #title>
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex gap-1 items-center">
+                                        <van-tag plain>{{ item.tag }}</van-tag>
+                                        <van-tag plain>{{ item.level }}</van-tag>
+                                    </div>
+                                    <span>{{ item.message }}</span>
+                                </div>
+                            </template>
+
+                            <template #extra>
+                                <span text="gray">{{ dayjs(item.time).format('HH:mm:ss') }}</span>
+                            </template>
+                        </van-cell>
+                    </van-list>
+                </template>
+
+                <van-tabbar v-model="tabActive">
+                    <van-tabbar-item icon="tv-o" name="config">配置</van-tabbar-item>
+                    <van-tabbar-item icon="list-switch" name="log">日志</van-tabbar-item>
+                </van-tabbar>
+            </template>
+
+            <van-empty image="network" v-else />
+        </van-config-provider>
+    </div>
+
+    <script>
+        const { createApp, ref, onMounted, watch, nextTick } = Vue
+
+        // const baseUrl = "http://127.0.0.1:10481"
+        const baseUrl = ""
+
+        async function requestApi(url, config) {
+            const resp = await fetch(`${baseUrl}${url}`, config)
+            if (resp.status !== 200) {
+                throw new Error(`请求失败：${resp.status}`)
+            }
+
+            return resp
+        }
+
+        dayjs.locale('zh-cn')
+        dayjs.extend(dayjs_plugin_relativeTime)
+
+        createApp({
+            setup() {
+                const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+
+                const tabActive = ref('config')
+
+                const info = ref()
+                async function refreshInfo() {
+                    try {
+                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                        info.value = await (await requestApi('/api/info')).json()
+                        info.value.logHistory = info.value.logHistory.reverse()
+                        vant.closeToast()
+                    } catch (e) {
+                        vant.showFailToast('无法获取信息')
+                        console.error(e)
+                    }
+                }
+
+                const configs = ref({})
+                async function refreshConfigs() {
+                    try {
+                        configs.value = await (await requestApi('/api/configs')).json()
+                    } catch (e) {
+                        vant.showFailToast('无法获取配置')
+                        console.error(e)
+                    }
+                }
+                async function pushConfigs() {
+                    try {
+                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                        await requestApi('/api/configs', {
+                            method: "POST",
+                            body: JSON.stringify(configs.value),
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                        await refreshConfigs()
+                        vant.showSuccessToast("推送配置成功")
+                    } catch (e) {
+                        vant.showFailToast('推送配置失败')
+                        console.error(e)
+                    }
+                }
+
+                const iptvSource = ref({
+                    name: `添加于${dayjs().format('YYYY-MM-DD HH:mm:ss')}`,
+                    type: 'url',
+                    url: '',
+                    filePath: '',
+                    content: '',
+                })
+                async function pushIptvSource() {
+                    if (!iptvSource.value.name) {
+                        vant.showFailToast('请填写直播源名称')
+                        return
+                    }
+
+                    if (!iptvSource.value.type === 'url' && !iptvSource.value.url) {
+                        vant.showFailToast('请填写直播源链接')
+                        return
+                    }
+
+                    if (iptvSource.value.type === 'file' && !iptvSource.value.filePath) {
+                        vant.showFailToast('请填写直播源文件路径')
+                        return
+                    }
+
+                    if (iptvSource.value.type === 'content' && !iptvSource.value.content) {
+                        vant.showFailToast('请填写直播源内容')
+                        return
+                    }
+
+                    try {
+                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                        await requestApi('/api/iptv-source/push', {
+                            method: "POST",
+                            body: JSON.stringify({ ...iptvSource.value }),
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                        vant.showSuccessToast("推送直播源成功")
+                    } catch (e) {
+                        vant.showFailToast('推送直播源失败')
+                        console.error(e)
+                    }
+                }
+                async function uploadIptvSourceContentAfterRead(file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const content = e.target.result;
+                        iptvSource.value.content = content;
+                    };
+                    reader.readAsText(file.file);
+                }
+
+                const epgSource = ref({ name: `添加于${dayjs().format('YYYY-MM-DD HH:mm:ss')}`, url: '' })
+                async function pushEpgSource() {
+                    if (!epgSource.value.name) {
+                        vant.showFailToast('请填写节目单名称')
+                        return
+                    }
+
+                    if (!epgSource.value.url) {
+                        vant.showFailToast('请填写节目单链接')
+                        return
+                    }
+
+                    try {
+                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                        await requestApi('/api/epg-source/push', {
+                            method: "POST",
+                            body: JSON.stringify({ ...epgSource.value }),
+                            headers: { 'Content-Type': 'application/json' }
+                        })
+                        vant.showSuccessToast("推送节目单成功")
+                    } catch (e) {
+                        vant.showFailToast('推送节目单失败')
+                        console.error(e)
+                    }
+                }
+
+                const channelAliasExample = `{
+    "__suffix": [
+        "高码",
+        "HD"
+    ],
+    "频道1": [
+        "别名1",
+        "别名2"
+    ]
+}`
+                const channelAlias = ref('')
+                async function refreshChannelAlias() {
+                    channelAlias.value = await (await requestApi('/api/channel-alias')).text()
+                }
+                async function updateChannelAlias() {
+                    try {
+                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                        await requestApi('/api/channel-alias', {
+                            method: "POST",
+                            body: channelAlias.value,
+                        })
+                        vant.showSuccessToast("更新频道别名成功")
+                        await refreshChannelAlias()
+                    } catch (e) {
+                        vant.showFailToast('更新频道别名失败')
+                        console.error(e)
+                    }
+                }
+
+                async function uploadApkAfterRead(file) {
+                    try {
+                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                        const formData = new FormData()
+                        formData.append('filename', file.file)
+                        await requestApi('/api/upload/apk', { method: "POST", body: formData })
+                        vant.closeToast()
+                    } catch (e) {
+                        vant.showFailToast('上传apk失败')
+                        console.error(e)
+                    }
+                }
+
+                async function uploadAllInOneAfterRead(file) {
+                    try {
+                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                        const formData = new FormData()
+                        formData.append('filename', file.file)
+                        await requestApi('/api/upload/allinone', { method: "POST", body: formData })
+                        vant.closeToast()
+                    } catch (e) {
+                        vant.showFailToast('上传AllInOne失败')
+                        console.error(e)
+                    }
+                }
+
+                const videoPlayerHeadersExample = "Header-Name-1: Header-Value-1\nHeader-Name-2: Header-Value-2"
+
+                onMounted(async () => {
+                    await refreshInfo()
+                    await refreshChannelAlias()
+                    await refreshConfigs()
+                })
+
+                return {
+                    dayjs,
+                    isDark,
+                    tabActive,
+                    info,
+                    configs,
+                    pushConfigs,
+                    iptvSource,
+                    pushIptvSource,
+                    uploadIptvSourceContentAfterRead,
+                    epgSource,
+                    pushEpgSource,
+                    channelAliasExample,
+                    channelAlias,
+                    updateChannelAlias,
+                    uploadApkAfterRead,
+                    uploadAllInOneAfterRead,
+                    videoPlayerHeadersExample,
+                }
+            }
+        })
+            .use(vant)
+            .mount('#app')
+    </script>
+</body>
+
+</html>

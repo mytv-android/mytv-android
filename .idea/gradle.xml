@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="testRunner" value="CHOOSE_PER_TEST" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/../media/libraries/cast" />
+            <option value="$PROJECT_DIR$/../media/libraries/common" />
+            <option value="$PROJECT_DIR$/../media/libraries/common_ktx" />
+            <option value="$PROJECT_DIR$/../media/libraries/container" />
+            <option value="$PROJECT_DIR$/../media/libraries/database" />
+            <option value="$PROJECT_DIR$/../media/libraries/datasource" />
+            <option value="$PROJECT_DIR$/../media/libraries/datasource_cronet" />
+            <option value="$PROJECT_DIR$/../media/libraries/datasource_httpengine" />
+            <option value="$PROJECT_DIR$/../media/libraries/datasource_okhttp" />
+            <option value="$PROJECT_DIR$/../media/libraries/datasource_rtmp" />
+            <option value="$PROJECT_DIR$/../media/libraries/decoder" />
+            <option value="$PROJECT_DIR$/../media/libraries/decoder_av1" />
+            <option value="$PROJECT_DIR$/../media/libraries/decoder_ffmpeg" />
+            <option value="$PROJECT_DIR$/../media/libraries/decoder_flac" />
+            <option value="$PROJECT_DIR$/../media/libraries/decoder_iamf" />
+            <option value="$PROJECT_DIR$/../media/libraries/decoder_opus" />
+            <option value="$PROJECT_DIR$/../media/libraries/decoder_vp9" />
+            <option value="$PROJECT_DIR$/../media/libraries/effect" />
+            <option value="$PROJECT_DIR$/../media/libraries/exoplayer" />
+            <option value="$PROJECT_DIR$/../media/libraries/exoplayer_dash" />
+            <option value="$PROJECT_DIR$/../media/libraries/exoplayer_hls" />
+            <option value="$PROJECT_DIR$/../media/libraries/exoplayer_ima" />
+            <option value="$PROJECT_DIR$/../media/libraries/exoplayer_rtsp" />
+            <option value="$PROJECT_DIR$/../media/libraries/exoplayer_smoothstreaming" />
+            <option value="$PROJECT_DIR$/../media/libraries/exoplayer_workmanager" />
+            <option value="$PROJECT_DIR$/../media/libraries/extractor" />
+            <option value="$PROJECT_DIR$/../media/libraries/muxer" />
+            <option value="$PROJECT_DIR$/../media/libraries/session" />
+            <option value="$PROJECT_DIR$/../media/libraries/test_data" />
+            <option value="$PROJECT_DIR$/../media/libraries/test_utils" />
+            <option value="$PROJECT_DIR$/../media/libraries/test_utils_robolectric" />
+            <option value="$PROJECT_DIR$/../media/libraries/transformer" />
+            <option value="$PROJECT_DIR$/../media/libraries/ui" />
+            <option value="$PROJECT_DIR$/../media/libraries/ui_leanback" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/allinone" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/data" />
+            <option value="$PROJECT_DIR$/core/designsystem" />
+            <option value="$PROJECT_DIR$/core/util" />
+            <option value="$PROJECT_DIR$/ijkplayer-java" />
+            <option value="$PROJECT_DIR$/media3" />
+            <option value="$PROJECT_DIR$/mobile" />
+            <option value="$PROJECT_DIR$/tv" />
+          </set>
+        </option>
+        <option name="resolveExternalAnnotations" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

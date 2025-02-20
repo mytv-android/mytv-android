@@ -1,0 +1,226 @@
+[
+  {
+    "name": "基础色彩",
+    "description": "感受色彩活力，定制你的主题",
+    "list": [
+      {
+        "name": "地海蔚蓝",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHFJREFUGFdjTOyZ/YeRiZHp////DExMjJ+4uXjuM8Z1TP/DzMzMyMjI+JeVhfUXn4DgH8bgip5/bGys/xhZmH/zCwgyComLsjI6xpaDBP+wc3N+l1NVZZWQEeNgtArI/8HMyvSRT1z4g7K+Dr+4uIggAGfFG/oO8CLdAAAAAElFTkSuQmCC"
+      },
+      {
+        "name": "樱语红粉",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAGpJREFUGFcFwTEOgkAQBdD/Z0ElFBtsPBsVpQlRKxNDqCjwmlwBbDTszKzv8X0flEIBgCz42EEXzrdBWQiBbB5s36uknK5PZxAHkbxWpphKjt3DM6FyxDefvfRoJ77a/ocCGytb5RIia2/+sgsp14r3kVUAAAAASUVORK5CYII="
+      },
+      {
+        "name": "触手生春",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAG5JREFUGFcFwU0KwjAQBtD58tNpggj1cG5KodALuFToxp3gXQXRksZJMr6H27gqMQmdSkLQntA6XMe1VTY/PdZkowRY7XCZ7k0sSo01+cPeO1c95vnR1BgpXjbP32A5M87LcydDb1B+IX4GZ/PwB/kgKrY5uSfhAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/free/1.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "夏绿成荫",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAG9JREFUGFcFwUEKwjAQBdD56Z8kEwslAVduPIngxgN0IS4EPUkRet+CC4lYib6HwzT+BsZ1z20duhQF8Dg+xpYQPjstNbM3Fedxms7NyG9xfS26ieqouMzXBnGrCV/GYL5jwG2+v5vgSWBJ1Eww/wH4kRc6oWCEfQAAAABJRU5ErkJggg==",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/free/2.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "龙行绚烂",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAGNJREFUGFcVyjEOwjAQBMA7X4xDmf8hRIuUp1BRpgofRKJARrZ3F6Udjet1FRS9IlcyzzKdXPuFwNQaSx2MM9KB241iGn2U2pNmhmfX804BXTZ9W+CYxfVYfyZ96HgjbIFx+QNfIj6u80QRgwAAAABJRU5ErkJggg==",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/free/3.png",
+        "textureAlpha": 0.8
+      }
+    ]
+  },
+  {
+    "name": "故宫美学",
+    "description": "处处座之旁，率陈如意常",
+    "list": [
+      {
+        "name": "缥碧沧浪",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAGpJREFUGFcFwTEOwjAMBdC4Ebn/yMResbB26YKEysCCygx3aGLHP3bCe7T9PqtTsKJ1KsIBDUT37/vlZnqIWBZO3T3Rsj8f2oEj58CoE414onlbrmiIpXIS0dZHH3RZb2e1GtBsSOZoDvoDoM1Mn68goOcAAAAASUVORK5CYII=",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/gugong/1.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "生如夏花",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHFJREFUGFcVwbENgzAQAMB/wLbAGTRDZAdaGk+QVFDQIYokXVZBImAB738bcYfv/jNwiDxNa7bMHiQI4vAaf0R8LLPnzZNmFo2t677HSrT9d2DILgrdwz1plzwJ6FLZUFQqYX2vmxgilMYmW93ywhg8AYCsOqhY8M+wAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/gugong/2.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "象物新生",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAGVJREFUGFcFwTEOwkAMBEBvIu7ptLQpqJCoUKr0QJUgIV4T6WJ7fWdm8N3uT4EEeQzqKgwCn/X2672bcw9zlhat4P26rnR39UNa1AHACctyeVA5WuwlwylAYp7Pk1kKUFO1jtkUf3vRROIeIABbAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/gugong/3.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "流光溢彩",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAGhJREFUGFcFwTEOgkAQBdD/d2TvzAHgBiYW2hg6bWm1o6Mk4SASYGZ2x/e4Pt8fgm77kfTY4ebk8hjmEvW0Tb3qmaMgc77eJ3dV/W1gRSKbht+uf6mZhJZ8AU2YgmPb3gJA8gghRZz8A0KFOLLJY1xjAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/gugong/4.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "尘心不皂",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAG1JREFUGFcFwUEOgjAQBdD+ae39l97BO7hEosjCVTckEHaQSGLaAO3M1PfQto+7d46JDIHICDPQdc83Ec6qwszsVcWj71+NczaX8zAx/Ui1XhDC5yaiNsbNL8ta8r5XDEO4lpzNd1vrPI02pYg/B69CSQBRDrYAAAAASUVORK5CYII=",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/gugong/5.png",
+        "textureAlpha": 0.8
+      }
+    ]
+  },
+  {
+    "name": "敦煌美学",
+    "description": "沉睡千年，一醒惊天下",
+    "list": [
+      {
+        "name": "红消绿冷",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wGsjme+/fv+/Pz/+wL/AQAA/wECAQGxl3TN/gD9+f3//Pz7+f4G/v39BgG3pYPGBwgE+vwA/wDy7vYC+fP1BQHJxqOrA/4AA/j9AAbv6Oz79PHv/wHY3LqY+vv4APXw9//t5+oD9fD5AUOwQv+IQ43oAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/dunhuang/1.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "碧落空歌",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHJJREFUGFcFwaEOwkAMANB2Y/fZKASSBDPcNCQoNChw/AFgSYAsl5H2Wq7X4z1czPtjyWosqfEiAFgQV8vNtbqrCBsrBcsecFgPl25Wf8UFnuPUfJN0eN5vdw7WJtPweMcciSreTodec4IXU71/pjYy4R/C80kf0/xHnAAAAABJRU5ErkJggg==",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/dunhuang/2.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "白贲无咎",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wG4fVa+/vz+/P70+AL/+QUA/wIDAQG8hmDNAf//+f71APz69voG/fz+BgHBkGzGBAYI+v79/gD28PgC/PP3BQHPqoirAAACA/z9/gb07vX79fL0/wHYupmY/fv8APf5/v/y7PUD9/z3AV+AQ4Y1PUFTAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/dunhuang/3.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "绿碧乌龙",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wGRlH2+BAQF/AwLDAIGCAkA//8AAQGXlYDNBAQF+QUHCfwDBAIG/gIBBgGemYXGBwIF+gIDAAD1/f0C/gMBBQG2oZGr/f/9A/j5+wbn9/H79v39/wHEqZqY+Pj7AO338v/g8esD8vv2AfAtMhP+RryCAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/dunhuang/4.png",
+        "textureAlpha": 0.8
+      },
+      {
+        "name": "空即是色",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wF2hKK++fn8/O/09AIA+fMA/v76AQGBjaLN/f38+fTy7/z18PAG+/r7BgGUl6HGBwL8+vr17ADl4+sC7/b7BQG6saCrAvz4A/fw7Abf3OX77O/y/wHXw6GY9vf5AO7m5v/f1uAD8O7xAeQlSOM8OQOmAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/static_theme/dunhuang/5.png",
+        "textureAlpha": 0.8
+      }
+    ]
+  },
+  {
+    "name": "水墨国风",
+    "description": "秋水共长天一色",
+    "list": [
+      {
+        "name": "典雅金",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAG9JREFUGFcFwTsOgkAQAFCGz7ILFHIlW64AldoZYwINBfHEEo3Awux8fA9e/U2JjrD93p5ws6JqYBquQoR4LB/PuDsWMjA+WkFEkrD6WMGyagbPSyPCHJIoXo0tHaQmh3t33iOFb5Llc1Gc6tRV9R++sTq63NrehgAAAABJRU5ErkJggg==",
+        "texture": "https://qqpatch.gtimg.cn/images/appearance/textures/texture-2.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "丁香紫",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAGlJREFUGFcFwVEKgzAMANCmrV2dMPCA/shABPFDmIiHHgxWW5I08T04t1ORiP7pyoQUjZoAx3ZIrRWvVDIhtyoS4LPugohMyBmMjaq1gXlcRJgJrEshhtY794D3MBVQ/dnGf1/PrnfR9zcMWTkvzsKrxwAAAABJRU5ErkJggg==",
+        "texture": "https://qqpatch.gtimg.cn/images/appearance/textures/texture-2.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "芸豆青",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAGlJREFUGFcFwcsOwVAQANAZvc9upD9nRyISG4lUEH8toeXqPJ2D18fFhZjf89SYW3GAhLf7aCJK83dqxFQNNOF5PBnxIqxLc1sVB494OO5MVRiw+5Sca+hCxu1+83OAVwzx2ffroaYy/AHfizfgE+8RkQAAAABJRU5ErkJggg==",
+        "texture": "https://qqpatch.gtimg.cn/images/appearance/textures/texture-2.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "辰砂色",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAG9JREFUGFcVyLEKwjAQBuD80TSJKNJXc3Do0NVBBZ0cnAR9XaEGSZO73Inf+OF1PWujSiV9css1qJEOz8tJ5L8pZa4UpXGHx/EgrRC3MmdYG0TF4T4OosxkFvg6v452CY/bfjfD6ATn36vtpjch9j9OQTkX0de7xQAAAABJRU5ErkJggg==",
+        "texture": "https://qqpatch.gtimg.cn/images/appearance/textures/texture-2.svg",
+        "textureAlpha": 0.2
+      }
+    ]
+  },
+  {
+    "name": "神秘美学",
+    "description": "每天一点甜，生活好运连连",
+    "list": [
+      {
+        "name": "心想事橙",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wGScBzA/v73/vr9+QD19gEB8voECQGQbyrK+/0A/PH1+wbw9vcW9/z8DwGNbkS89/kNAOnw+hnv9eYf+//wCQGEaYWZ8ff+D+bs5Cru9Nwi+PzqCgGAZbGD8vXuCuXv0inn79Qv+P3vFHi9Qmo/Gx+4AAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1004.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "不再焦绿",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wFZgELA/P78/vX9/AD99foB+vf8CQFkeknK+vz5/Pb0+wbw+PYW+/r/DwFxdlG8AfcCAO7s9hnm9/Af9wL5CQGPYnCZ9/b3D+Dw6Srf+PEi8v/yCgGlWn+D7fb1Ctjy5inZ9eMv8P71FAiRQ1x3AmLaAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1004.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "蓝以为情",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wFubbLAA/4D/v78/wD29e4B+/jvCQFtcKfK+/37/Pj28Ab58vIW/Pj5DwFkc5S8+PzsAPPu6Rn78PsfAfoECQFSe2KZ9/XxD/bm8Cr87gAi//cDCgFEgDyD+fQACvzk+yn75Pwv//kBFJNHP2h2wlMMAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1004.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "紫属于你",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wGTXpfABv/+/gD4+wD1/PMB8/rxCQGHYpXK/P/6/Pn18Qb39u8W/fv4DwFuaJC88AD1AO/v6BkH8PAfCvz8CQEyeIWZ9/XwD/7p5SoP7e4iDPb6CgEKgnuDA/DzChDm5ykR5egvBvj5FDh/PGeD4/fQAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1004.svg",
+        "textureAlpha": 0.2
+      }
+    ]
+  },
+  {
+    "name": "缤纷时刻",
+    "description": "小小画板上映射生活的美好",
+    "list": [
+      {
+        "name": "香芋啵啵",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wGseN3h/wID/f3//fsEAvH3CP/L5AGydtPs/QIF/wAB9/sEAN34CwC58gHAc7/m+gIGBAEB7/4FAsj4CQS39AHVbZ/V+wIBBv8D5gH+A8H7BAbL+AHfaYzKAQL9+fsF3/r4CMAH/QLgBqIxNoKnv4s7AAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1001.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "海盐粉荔",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wFNkeDh+wIA/QAA/fsJ/Pr3I/jn5AFYj+Ds+QEA/wL/+vsY+u/4LfTg8gFwiN3m9AMABAv89v4i+eP4LPbf9AGWgNrV+QH/Bgr88AEf+Nv7G/vi+AGoetfKAwL++Qj86foZ+NYHDv7rBvFlPsa8dks/AAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1001.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "橘子汽水",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wHVeTDhAQH8/fwA//v7AQ338gAr5AHVeD3sAAL3//sABvv3ARz47AI38gHWdlTmAAH1BPkADv7tBC346wMw9AHXcXjV/wECBvUEEAHoBCT76wYl+AHVbpTKAQL++fAFFPrjCCYH8QESBrVWMRE0lw/BAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1001.svg",
+        "textureAlpha": 0.2
+      },
+      {
+        "name": "绿豆冰沙",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wFen1Dh/QED/f79BPsK/QL3HvQD5AFnm0bs+gIG/wT/BfsR+QX4K/EG8gF7lzPm9wILBAr7BP4d9Qv4JvMM9AGekBLV+wAKBgj7DgEd8xv7GPUS+AGuigDKAwIJ+Qv3FvoS9SUHDPgUBlKMLrs18sMaAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1001.svg",
+        "textureAlpha": 0.2
+      }
+    ]
+  },
+  {
+    "name": "幻彩机核",
+    "description": "永不止境的黑夜和炽热不羁的心跳",
+    "list": [
+      {
+        "name": "霓虹灯光",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wHIU838Av4AAv8AAAD4Af7yzwXx3wHAVND8CP7+AfwC//3kAfn6tQbo/AGkWdf+DP/8/vb+/fvMBusBuwPlBQF3Y+L+Cf/7/PH/+PfJAd0F0wDnCAFiZ+b4AgL+8ej+7PDS/NkP5gDtEZmBPvNALLfAAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1002.svg",
+        "textureAlpha": 0.12
+      },
+      {
+        "name": "粉墨都市",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wHKaCj8AQH+Av8AAAD+/gjy7fUc3wHJaDH8AgL5Af7/Av32+hD65PAq/AHCZET+AgH4/vz/Avvs9h8B5PMmBQG3Xmf+AgL8/Pn8BPfn9B0F7fYSCAGzXHj4/wD+8fT8CPDp8hMP8/0KEYW5OZb8GZHkAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1002.svg",
+        "textureAlpha": 0.12
+      },
+      {
+        "name": "废土朋克",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAHRJREFUGFcBaQCW/wEBk4X8/wEDAgD/AAAF/fryG/Xd3wEHk3v8+wAKAQL//v0P+ev6J+vQ/AEaj1/+9wEN/gb9+fsb8d4BJu3YBQE3ijD++wAI/AX6+fcc7OQFFPHxCAFGhxn4/gAF8Qr29vAV6u4PDPb+EeEdNiNwPAzIAAAAAElFTkSuQmCC",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1002.svg",
+        "textureAlpha": 0.12
+      },
+      {
+        "name": "魔幻丛林",
+        "background": "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAAXNSR0IArs4c6QAAAG1JREFUGFcFwc0KQVEUBeC1NgszeWQTKbc8iWcwMVFGRiKZi/Jzck/3nLu37yOaXQXNEAFG91G+3IhmW0ER4b2Ve6e0r8Rq44ix03MZ5jOVDiKWa0eoWv9rR+moQXudEIt5huOt8nzpe5paecz+mjs1Abw4rl8AAAAASUVORK5CYII=",
+        "texture": "https://qqpatch.gtimg.cn/template_theme/texture/1002.svg",
+        "textureAlpha": 0.12
+      }
+    ]
+  }
+]
