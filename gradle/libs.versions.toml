@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.1"
+agp = "8.8.0"
 coil = "2.7.0"
 desugar_jdk_libs = "2.1.2"
 kotlin = "2.0.21"

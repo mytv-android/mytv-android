@@ -229,6 +229,8 @@ enum class SettingsSubCategories {
     VIDEO_PLAYER_LOAD_TIMEOUT,
     UPDATE_CHANNEL,
     CLOUD_SYNC_PROVIDER,
+    NETWORK_RETRY_COUNT,
+    NETWORK_RETRY_INTERVAL
 }
 
 @Preview(device = "id:Android TV (720p)")

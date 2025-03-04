@@ -3,6 +3,7 @@ package top.yogiczy.mytv.tv.ui.screensold.webview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.screensold.webview.components.WebViewPlaceholder
+import top.yogiczy.mytv.core.data.utils.Logger
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -35,6 +37,25 @@ fun WebViewScreen(
 ) {
     val url = urlProvider()
     var placeholderVisible by remember { mutableStateOf(true) }
+    var placeholderMessage by remember { mutableStateOf("加载中...") }
+    val logger = remember { Logger.create("WebViewScreen") }
+    
+    // 处理webview://前缀
+    val actualUrl = remember(url) {
+        val processedUrl = if (url.startsWith("webview://")) {
+            logger.i("检测到webview://前缀，正在处理WebView URL")
+            url.substring("webview://".length)
+        } else {
+            url
+        }
+        logger.i("WebView加载URL: $processedUrl")
+        processedUrl
+    }
+
+    val onUpdatePlaceholderVisible = { visible: Boolean, message: String ->
+        placeholderVisible = visible
+        placeholderMessage = message
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
@@ -45,8 +66,13 @@ fun WebViewScreen(
             factory = {
                 MyWebView(it).apply {
                     webViewClient = MyClient(
-                        onPageStarted = { placeholderVisible = true },
-                        onPageFinished = { placeholderVisible = false },
+                        onPageStarted = { 
+                            placeholderVisible = true
+                            logger.i("WebView开始加载页面")
+                        },
+                        onPageFinished = { 
+                            logger.i("WebView页面加载完成")
+                        },
                     )
 
                     setBackgroundColor(Color.Black.toArgb())
@@ -60,9 +86,8 @@ fun WebViewScreen(
                     settings.loadWithOverviewMode = true
                     settings.domStorageEnabled = true
                     settings.databaseEnabled = true
-                    settings.cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
-                    settings.loadsImagesAutomatically = true
-                    settings.blockNetworkImage = false
+                    settings.loadsImagesAutomatically = false
+                    settings.blockNetworkImage = true
                     settings.userAgentString =
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
                     settings.cacheMode = WebSettings.LOAD_DEFAULT
@@ -75,21 +100,24 @@ fun WebViewScreen(
 
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    isClickable = false
+                    /*isClickable = false
                     isFocusable = false
-                    isFocusableInTouchMode = false
+                    isFocusableInTouchMode = false*/
 
                     addJavascriptInterface(
                         MyWebViewInterface(
                             onVideoResolutionChanged = onVideoResolutionChanged,
+                            onUpdatePlaceholderVisible = onUpdatePlaceholderVisible,
                         ), "Android"
                     )
                 }
             },
-            update = { it.loadUrl(url) },
+            update = { it.loadUrl(actualUrl) },
         )
 
-        Visibility({ placeholderVisible }) { WebViewPlaceholder() }
+        Visibility({ placeholderVisible }) {
+            WebViewPlaceholder(message = placeholderMessage)
+        }
     }
 }
 
@@ -97,6 +125,8 @@ class MyClient(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
 ) : WebViewClient() {
+    private val logger = Logger.create("WebViewClient")
+    
     // override fun shouldInterceptRequest(
     //     view: WebView?,
     //     request: WebResourceRequest?
@@ -107,62 +137,27 @@ class MyClient(
     // }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+        logger.i("WebView页面开始加载: $url")
         onPageStarted()
         super.onPageStarted(view, url, favicon)
     }
 
-    override fun onPageFinished(view: WebView, url: String) {
-        view.evaluateJavascript(
-            """
-            ;(async () => {
-                function delay(ms) {
-                    return new Promise(resolve => setTimeout(resolve, ms));
-                }
-                
-                while(true) {
-                  const containerEl = document.querySelector('[id^=vodbox]') || document.querySelector('#player')
-                  if(!containerEl) {
-                      await delay(100)
-                      continue
-                  }
-                  
-                  document.body.style = 'width: 100vw; height: 100vh; margin: 0; min-width: 0; background: #000;'
-                  
-                  containerEl.style = 'width: 100%; height: 100%;'
-                  document.body.append(containerEl)
+    fun readAssetFile(context: Context, fileName: String): String {
+        val inputStream = context.assets.open(fileName)
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+        return String(buffer, Charsets.UTF_8)
+    }
 
-                  ;[...document.body.children].forEach((el) => {
-                    if(el.tagName.toLowerCase() == 'div' && !el.id.startsWith('vodbox') && !el.id.startsWith('player')) {
-                        el.remove()
-                    }
-                  })
-                  
-                  const mask = document.createElement('div')
-                  mask.addEventListener('click', () => {})
-                  mask.style = 'width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1000;'
-                  document.body.append(mask)
-                  
-                  const videoEl = document.querySelector('video')
-                  videoEl.volume = 1
-                  videoEl.autoplay = true
-                  
-                  break
-                }
-                
-               await delay(1000)
-               const videoEl = document.querySelector('video')
-               if(videoEl.paused) videoEl.play()
-               
-               while(true) {
-                 await delay(1000)
-                 if(videoEl.videoWidth * videoEl.videoHeight == 0) continue
-                 
-                 Android.changeVideoResolution(videoEl.videoWidth ,videoEl.videoHeight)
-                 break
-               }
-            })()
-        """.trimIndent()
+    override fun onPageFinished(view: WebView, url: String) {
+        logger.i("WebView页面加载完成: $url")
+        val scriptContent = readAssetFile(view.context, "webview_player_impl.js")
+        logger.i("注入脚本到WebView")
+        view.evaluateJavascript(scriptContent.trimIndent()
         ) {
+            logger.i("脚本注入完成")
             onPageFinished()
         }
     }
@@ -177,9 +172,16 @@ class MyWebView(context: Context) : WebView(context) {
 
 class MyWebViewInterface(
     private val onVideoResolutionChanged: (width: Int, height: Int) -> Unit = { _, _ -> },
+    private val onUpdatePlaceholderVisible: (visible: Boolean, message: String) -> Unit,
 ) {
     @JavascriptInterface
     fun changeVideoResolution(width: Int, height: Int) {
         onVideoResolutionChanged(width, height)
+        onUpdatePlaceholderVisible(false, "")
+    }
+
+    @JavascriptInterface
+    fun updatePlaceholderVisible(visible: Boolean, message: String) {
+        onUpdatePlaceholderVisible(visible, message)
     }
 }

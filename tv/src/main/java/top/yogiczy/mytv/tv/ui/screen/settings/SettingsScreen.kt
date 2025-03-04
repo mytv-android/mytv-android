@@ -1,5 +1,7 @@
 package top.yogiczy.mytv.tv.ui.screen.settings
 
+import top.yogiczy.mytv.core.data.utils.Constants
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsNetworkRetryIntervalScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -41,6 +43,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsEpgSourceScr
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvHybridModeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvSourceCacheTimeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvSourceScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsNetworkRetryCountScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiDensityScaleRatioScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiFontScaleRatioScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiScreenAutoCloseScreen
@@ -141,6 +144,19 @@ fun SettingsScreen(
                     )
                 }
 
+                composable(SettingsCategories.NETWORK.name) {
+                    SettingsNetworkScreen(
+                        settingsViewModel = settingsViewModel,
+                        toNetworkRetryCountScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.NETWORK_RETRY_COUNT.name)
+                        },
+                        toNetworkRetryIntervalScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.NETWORK_RETRY_INTERVAL.name)
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
                 composable(SettingsCategories.CONTROL.name) {
                     SettingsControlScreen(
                         onBackPressed = { navController.navigateUp() },
@@ -170,12 +186,6 @@ fun SettingsScreen(
                         toUpdateChannelScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.UPDATE_CHANNEL.name)
                         },
-                        onBackPressed = { navController.navigateUp() },
-                    )
-                }
-
-                composable(SettingsCategories.NETWORK.name) {
-                    SettingsNetworkScreen(
                         onBackPressed = { navController.navigateUp() },
                     )
                 }
@@ -342,6 +352,28 @@ fun SettingsScreen(
                     SettingsUiFontScaleRatioScreen(
                         scaleRatioProvider = { settingsViewModel.uiFontScaleRatio },
                         onScaleRatioChanged = { settingsViewModel.uiFontScaleRatio = it },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.NETWORK_RETRY_COUNT.name) {
+                    SettingsNetworkRetryCountScreen(
+                        countProvider = { settingsViewModel.networkRetryCount },
+                        onCountChanged = { count ->
+                            settingsViewModel.networkRetryCount = count
+                            navController.navigateUp()
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.NETWORK_RETRY_INTERVAL.name) {
+                    SettingsNetworkRetryIntervalScreen(
+                        intervalProvider = { settingsViewModel.networkRetryInterval },
+                        onIntervalChanged = { interval ->
+                            settingsViewModel.networkRetryInterval = interval
+                            navController.navigateUp()
+                        },
                         onBackPressed = { navController.navigateUp() },
                     )
                 }

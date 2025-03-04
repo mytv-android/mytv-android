@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 data class ChannelLine(
     val url: String = "",
     val httpUserAgent: String? = null,
+    val httpReferrer: String? = null,
     val hybridType: HybridType = HybridType.None,
     val name: String? = if (url.contains("$")) url.split("$").lastOrNull() else null,
     val manifestType: String? = null,

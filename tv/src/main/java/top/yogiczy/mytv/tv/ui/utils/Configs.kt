@@ -103,6 +103,12 @@ object Configs {
         /** 换台列表首尾循环 **/
         IPTV_CHANNEL_CHANGE_LIST_LOOP,
 
+        /** 换台跨分组切换 **/
+        IPTV_CHANNEL_CHANGE_CROSS_GROUP,
+
+        /** 左右键切换直播源线路 **/
+        IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT,
+
         /** ==================== 节目单 ==================== */
         /** 启用节目单 */
         EPG_ENABLE,
@@ -248,12 +254,12 @@ object Configs {
 
     /** 协议已同意 */
     var appAgreementAgreed: Boolean
-        get() = SP.getBoolean(KEY.APP_AGREEMENT_AGREED.name, false)
+        get() = SP.getBoolean(KEY.APP_AGREEMENT_AGREED.name, true)
         set(value) = SP.putBoolean(KEY.APP_AGREEMENT_AGREED.name, value)
 
     /** 起始界面 */
     var appStartupScreen: String
-        get() = SP.getString(KEY.APP_STARTUP_SCREEN.name, Screens.Dashboard.name)
+        get() = SP.getString(KEY.APP_STARTUP_SCREEN.name, Screens.Live.name)
         set(value) = SP.putString(KEY.APP_STARTUP_SCREEN.name, value)
 
     /** ==================== 调式 ==================== */
@@ -281,7 +287,9 @@ object Configs {
     /** 当前直播源 */
     var iptvSourceCurrent: IptvSource
         get() = Globals.json.decodeFromString(SP.getString(KEY.IPTV_SOURCE_CURRENT.name, "")
-            .ifBlank { Globals.json.encodeToString(Constants.IPTV_SOURCE_LIST.first()) })
+            .ifBlank {
+                Globals.json.encodeToString(Constants.IPTV_SOURCE_LIST.first())
+            })
         set(value) = SP.putString(KEY.IPTV_SOURCE_CURRENT.name, Globals.json.encodeToString(value))
 
     /** 直播源列表 */
@@ -304,13 +312,13 @@ object Configs {
     /** 混合模式 */
     var iptvHybridMode: IptvHybridMode
         get() = IptvHybridMode.fromValue(
-            SP.getInt(KEY.IPTV_HYBRID_MODE.name, IptvHybridMode.DISABLE.value)
+            SP.getInt(KEY.IPTV_HYBRID_MODE.name, IptvHybridMode.IPTV_FIRST.value)
         )
         set(value) = SP.putInt(KEY.IPTV_HYBRID_MODE.name, value.value)
 
     /** 相似频道合并 */
     var iptvSimilarChannelMerge: Boolean
-        get() = SP.getBoolean(KEY.IPTV_SIMILAR_CHANNEL_MERGE.name, false)
+        get() = SP.getBoolean(KEY.IPTV_SIMILAR_CHANNEL_MERGE.name, true)
         set(value) = SP.putBoolean(KEY.IPTV_SIMILAR_CHANNEL_MERGE.name, value)
 
     /** 频道图标提供 */
@@ -320,12 +328,12 @@ object Configs {
 
     /** 频道图标覆盖 */
     var iptvChannelLogoOverride: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_LOGO_OVERRIDE.name, false)
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_LOGO_OVERRIDE.name, true)
         set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_LOGO_OVERRIDE.name, value)
 
     /** 是否启用直播源频道收藏 */
     var iptvChannelFavoriteEnable: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_FAVORITE_ENABLE.name, true)
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_FAVORITE_ENABLE.name, false)
         set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_FAVORITE_ENABLE.name, value)
 
     /** 显示直播源频道收藏列表 */
@@ -382,8 +390,18 @@ object Configs {
 
     /** 换台列表首尾循环 **/
     var iptvChannelChangeListLoop: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_LIST_LOOP.name, false)
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_LIST_LOOP.name, true)
         set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_LIST_LOOP.name, value)
+
+    /** 换台跨分组切换 **/
+    var iptvChannelChangeCrossGroup: Boolean
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_CROSS_GROUP.name, false)
+        set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_CROSS_GROUP.name, value)
+
+    /** 左右键切换直播源线路 **/
+    var iptvChannelChangeLineWithLeftRight: Boolean
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT.name, false)
+        set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT.name, value)
 
     /** ==================== 节目单 ==================== */
     /** 启用节目单 */
@@ -394,7 +412,13 @@ object Configs {
     /** 当前节目单来源 */
     var epgSourceCurrent: EpgSource
         get() = Globals.json.decodeFromString(SP.getString(KEY.EPG_SOURCE_CURRENT.name, "")
-            .ifBlank { Globals.json.encodeToString(Constants.EPG_SOURCE_LIST.first()) })
+            .ifBlank {
+                if (Constants.EPG_SOURCE_LIST.isEmpty()) {
+                    Globals.json.encodeToString(EpgSource)
+                } else {
+                    Globals.json.encodeToString(Constants.EPG_SOURCE_LIST.first())
+                }
+            })
         set(value) = SP.putString(KEY.EPG_SOURCE_CURRENT.name, Globals.json.encodeToString(value))
 
     /** 节目单来源列表 */
@@ -445,12 +469,12 @@ object Configs {
 
     /** 显示频道预览 */
     var uiShowChannelPreview: Boolean
-        get() = SP.getBoolean(KEY.UI_SHOW_CHANNEL_PREVIEW.name, false)
+        get() = SP.getBoolean(KEY.UI_SHOW_CHANNEL_PREVIEW.name, true)
         set(value) = SP.putBoolean(KEY.UI_SHOW_CHANNEL_PREVIEW.name, value)
 
     /** 使用经典选台界面 */
     var uiUseClassicPanelScreen: Boolean
-        get() = SP.getBoolean(KEY.UI_USE_CLASSIC_PANEL_SCREEN.name, false)
+        get() = SP.getBoolean(KEY.UI_USE_CLASSIC_PANEL_SCREEN.name, true)
         set(value) = SP.putBoolean(KEY.UI_USE_CLASSIC_PANEL_SCREEN.name, value)
 
     /** 界面密度缩放比例 */
@@ -466,7 +490,7 @@ object Configs {
     /** 时间显示模式 */
     var uiTimeShowMode: UiTimeShowMode
         get() = UiTimeShowMode.fromValue(
-            SP.getInt(KEY.UI_TIME_SHOW_MODE.name, UiTimeShowMode.HIDDEN.value)
+            SP.getInt(KEY.UI_TIME_SHOW_MODE.name, UiTimeShowMode.EVERY_HOUR.value)
         )
         set(value) = SP.putInt(KEY.UI_TIME_SHOW_MODE.name, value.value)
 
@@ -477,8 +501,7 @@ object Configs {
 
     /** 自动关闭界面延时 */
     var uiScreenAutoCloseDelay: Long
-        get() =
-            SP.getLong(KEY.UI_SCREEN_AUTO_CLOSE_DELAY.name, Constants.UI_SCREEN_AUTO_CLOSE_DELAY)
+        get() = SP.getLong(KEY.UI_SCREEN_AUTO_CLOSE_DELAY.name, Constants.UI_SCREEN_AUTO_CLOSE_DELAY)
         set(value) = SP.putLong(KEY.UI_SCREEN_AUTO_CLOSE_DELAY.name, value)
 
     /** ==================== 更新 ==================== */
@@ -527,7 +550,7 @@ object Configs {
     /** 播放器 显示模式 */
     var videoPlayerDisplayMode: VideoPlayerDisplayMode
         get() = VideoPlayerDisplayMode.fromValue(
-            SP.getInt(KEY.VIDEO_PLAYER_DISPLAY_MODE.name, VideoPlayerDisplayMode.ORIGINAL.value)
+            SP.getInt(KEY.VIDEO_PLAYER_DISPLAY_MODE.name, VideoPlayerDisplayMode.SIXTEEN_NINE.value)
         )
         set(value) = SP.putInt(KEY.VIDEO_PLAYER_DISPLAY_MODE.name, value.value)
 
@@ -619,6 +642,15 @@ object Configs {
     var feiyangAllInOneFilePath: String
         get() = SP.getString(KEY.FEIYANG_ALLINONE_FILE_PATH.name, "")
         set(value) = SP.putString(KEY.FEIYANG_ALLINONE_FILE_PATH.name, value)
+
+    // 添加网络重试次数和间隔时间
+    var networkRetryCount: Long
+        get() = SP.getLong("network_retry_count", Constants.NETWORK_RETRY_COUNT)
+        set(value) = SP.putLong("network_retry_count", value)
+
+    var networkRetryInterval: Long
+        get() = SP.getLong("network_retry_interval", Constants.NETWORK_RETRY_INTERVAL)
+        set(value) = SP.putLong("network_retry_interval", value)
 
     enum class UiTimeShowMode(val value: Int, val label: String) {
         /** 隐藏 */
@@ -713,6 +745,7 @@ object Configs {
             iptvChannelChangeFlip = iptvChannelChangeFlip,
             iptvChannelNoSelectEnable = iptvChannelNoSelectEnable,
             iptvChannelChangeListLoop = iptvChannelChangeListLoop,
+            iptvChannelChangeCrossGroup = iptvChannelChangeCrossGroup,
             epgEnable = epgEnable,
             epgSourceCurrent = epgSourceCurrent,
             epgSourceList = epgSourceList,
@@ -753,6 +786,8 @@ object Configs {
             cloudSyncWebDavUsername = cloudSyncWebDavUsername,
             cloudSyncWebDavPassword = cloudSyncWebDavPassword,
             feiyangAllInOneFilePath = feiyangAllInOneFilePath,
+            networkRetryCount = networkRetryCount,
+            networkRetryInterval = networkRetryInterval,
         )
     }
 
@@ -783,6 +818,7 @@ object Configs {
         configs.iptvChannelChangeFlip?.let { iptvChannelChangeFlip = it }
         configs.iptvChannelNoSelectEnable?.let { iptvChannelNoSelectEnable = it }
         configs.iptvChannelChangeListLoop?.let { iptvChannelChangeListLoop = it }
+        configs.iptvChannelChangeCrossGroup?.let { iptvChannelChangeCrossGroup = it }
         configs.epgEnable?.let { epgEnable = it }
         configs.epgSourceCurrent?.let { epgSourceCurrent = it }
         configs.epgSourceList?.let { epgSourceList = it }
@@ -811,6 +847,7 @@ object Configs {
         configs.videoPlayerDisplayMode?.let { videoPlayerDisplayMode = it }
         configs.videoPlayerForceAudioSoftDecode?.let { videoPlayerForceAudioSoftDecode = it }
         configs.videoPlayerStopPreviousMediaItem?.let { videoPlayerStopPreviousMediaItem = it }
+        configs.videoPlayerSkipMultipleFramesOnSameVSync?.let { videoPlayerSkipMultipleFramesOnSameVSync = it }
         configs.themeAppCurrent?.let { themeAppCurrent = it }
         configs.cloudSyncAutoPull?.let { cloudSyncAutoPull = it }
         configs.cloudSyncProvider?.let { cloudSyncProvider = it }
@@ -824,6 +861,8 @@ object Configs {
         configs.cloudSyncWebDavUsername?.let { cloudSyncWebDavUsername = it }
         configs.cloudSyncWebDavPassword?.let { cloudSyncWebDavPassword = it }
         configs.feiyangAllInOneFilePath?.let { feiyangAllInOneFilePath = it }
+        configs.networkRetryCount?.let { networkRetryCount = it }
+        configs.networkRetryInterval?.let { networkRetryInterval = it }
     }
 
     @Serializable
@@ -854,6 +893,7 @@ object Configs {
         val iptvChannelChangeFlip: Boolean? = null,
         val iptvChannelNoSelectEnable: Boolean? = null,
         val iptvChannelChangeListLoop: Boolean? = null,
+        val iptvChannelChangeCrossGroup: Boolean? = null,
         val epgEnable: Boolean? = null,
         val epgSourceCurrent: EpgSource? = null,
         val epgSourceList: EpgSourceList? = null,
@@ -894,6 +934,8 @@ object Configs {
         val cloudSyncWebDavUsername: String? = null,
         val cloudSyncWebDavPassword: String? = null,
         val feiyangAllInOneFilePath: String? = null,
+        val networkRetryCount: Long? = null,
+        val networkRetryInterval: Long? = null,
     ) {
         fun desensitized() = copy(
             cloudSyncAutoPull = null,

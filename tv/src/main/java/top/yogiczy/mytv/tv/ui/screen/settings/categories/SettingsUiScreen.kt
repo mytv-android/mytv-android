@@ -165,6 +165,22 @@ fun SettingsUiScreen(
                 },
             )
         }
+
+        item {
+            val favoriteEnable = settingsViewModel.iptvChannelFavoriteEnable
+
+            SettingsListItem(
+                headlineContent = "启用收藏",
+                supportingContent = "是否显示直播源频道收藏列表",
+                trailingContent = {
+                    Switch(favoriteEnable, null)
+                },
+                onSelect = {
+                    settingsViewModel.iptvChannelFavoriteEnable = !favoriteEnable
+                },
+            )
+        }
+
     }
 }
 

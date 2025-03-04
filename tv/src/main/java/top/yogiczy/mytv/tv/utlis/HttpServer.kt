@@ -27,7 +27,6 @@ import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.data.utils.Loggable
 import top.yogiczy.mytv.core.data.utils.Logger
 import top.yogiczy.mytv.core.util.utils.ApkInstaller
-import top.yogiczy.mytv.tv.BuildConfig
 import top.yogiczy.mytv.tv.HttpServerService
 import top.yogiczy.mytv.tv.R
 import top.yogiczy.mytv.tv.sync.CloudSync
@@ -35,6 +34,7 @@ import top.yogiczy.mytv.tv.sync.CloudSyncData
 import top.yogiczy.mytv.tv.ui.material.Snackbar
 import top.yogiczy.mytv.tv.ui.material.SnackbarType
 import top.yogiczy.mytv.tv.ui.utils.Configs
+import tv.danmaku.ijk.media.player.BuildConfig
 import java.io.File
 import java.net.Inet4Address
 import java.net.NetworkInterface

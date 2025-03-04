@@ -16,6 +16,8 @@ import top.yogiczy.mytv.tv.ui.utils.Configs
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaMeta
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
+import top.yogiczy.mytv.core.data.utils.Logger
+import top.yogiczy.mytv.core.data.utils.Loggable
 
 
 class IjkVideoPlayer(
@@ -26,6 +28,7 @@ class IjkVideoPlayer(
     IMediaPlayer.OnVideoSizeChangedListener,
     IMediaPlayer.OnErrorListener {
 
+    private val logger = Logger.create("IjkVideoPlayer")
     private val player by lazy {
         IjkMediaPlayer().apply {
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_clear", 1)
@@ -59,11 +62,18 @@ class IjkVideoPlayer(
 
     override fun prepare(line: ChannelLine) {
         player.reset()
+        val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
+            "User-Agent" to (line.httpUserAgent ?: Configs.videoPlayerUserAgent),
+            "Referer" to (line.httpReferrer ?: ""),
+        ).filterValues { it.isNotEmpty() }
+        
+        // 使用应用内日志系统
+        logger.i("播放地址: ${line.playableUrl}")
+        logger.i("请求头: $headers")
+        
         player.setDataSource(
             line.playableUrl,
-            Configs.videoPlayerHeaders.toHeaders() + mapOf(
-                "User-Agent" to (line.httpUserAgent ?: Configs.videoPlayerUserAgent),
-            )
+            headers
         )
         setOption()
         player.prepareAsync()

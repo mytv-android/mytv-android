@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.util.utils.toHeaders
 import top.yogiczy.mytv.tv.ui.utils.Configs
+import top.yogiczy.mytv.core.data.utils.Logger
 
 @OptIn(UnstableApi::class)
 class Media3VideoPlayer(
@@ -51,6 +52,7 @@ class Media3VideoPlayer(
     private val coroutineScope: CoroutineScope,
 ) : VideoPlayer(coroutineScope) {
 
+    private val logger = Logger.create("Media3VideoPlayer")
     private var videoPlayer = getPlayer()
 
     private var softDecode: Boolean? = null
@@ -92,8 +94,9 @@ class Media3VideoPlayer(
                 .build()
         }
 
-        MediaCodecVideoRenderer.skipMultipleFramesOnSameVsync =
-            Configs.videoPlayerSkipMultipleFramesOnSameVSync
+        // MediaCodecVideoRenderer.skipMultipleFramesOnSameVsync =
+        //     Configs.videoPlayerSkipMultipleFramesOnSameVSync
+
         return ExoPlayer.Builder(context)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
@@ -121,11 +124,20 @@ class Media3VideoPlayer(
     }
 
     private fun getDataSourceFactory(): DefaultDataSource.Factory {
+        val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
+            "Referer" to (currentChannelLine.httpReferrer ?: "")
+        ).filterValues { it.isNotEmpty() }
+        
+        // 使用应用内日志系统
+        logger.i("播放地址: ${currentChannelLine.playableUrl}")
+        logger.i("请求头: $headers")
+        logger.i("User-Agent: ${currentChannelLine.httpUserAgent ?: Configs.videoPlayerUserAgent}")
+        
         return DefaultDataSource.Factory(
             context,
             DefaultHttpDataSource.Factory().apply {
                 setUserAgent(currentChannelLine.httpUserAgent ?: Configs.videoPlayerUserAgent)
-                setDefaultRequestProperties(Configs.videoPlayerHeaders.toHeaders())
+                setDefaultRequestProperties(headers)
                 setConnectTimeoutMs(Configs.videoPlayerLoadTimeout.toInt())
                 setReadTimeoutMs(Configs.videoPlayerLoadTimeout.toInt())
                 setKeepPostFor302Redirects(true)
@@ -409,7 +421,7 @@ class Media3VideoPlayer(
     private fun Format.toAudioMetadata(audio: Metadata.Audio? = null): Metadata.Audio {
         return (audio ?: Metadata.Audio()).copy(
             channels = channelCount,
-            channelsLabel = if (sampleMimeType == MimeTypes.AUDIO_AV3A) "菁彩声" else null,
+            channelsLabel = if (sampleMimeType == "audio/av3a") "菁彩声" else null,
             sampleRate = sampleRate,
             bitrate = bitrate,
             mimeType = sampleMimeType,

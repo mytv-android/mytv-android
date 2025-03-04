@@ -126,6 +126,12 @@ private class IptvRawRepository(private val source: IptvSource) : FileCacheRepos
 
     suspend fun getRaw(cacheTime: Long = 0): String {
         return getOrRefresh(if (source.isLocal) Long.MAX_VALUE else cacheTime) {
+            // source.url 如果空的直至报错
+            if (source.url.isBlank()) {
+                log.e("获取直播源（${source.name}）失败")
+                throw Exception("获取直播源失败，请检查网络连接")
+            }
+
             log.d("获取直播源: $source")
 
             try {

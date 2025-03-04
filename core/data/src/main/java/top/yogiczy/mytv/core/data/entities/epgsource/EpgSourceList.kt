@@ -15,12 +15,8 @@ data class EpgSourceList(
         val EXAMPLE = EpgSourceList(
             listOf(
                 EpgSource(
-                    name = "测试节目单1",
-                    url = "http://1.2.3.4/all.xml",
-                ),
-                EpgSource(
-                    name = "测试节目单2",
-                    url = "http://1.2.3.4/all.xml.gz",
+                    name = "",
+                    url = "",
                 )
             )
         )

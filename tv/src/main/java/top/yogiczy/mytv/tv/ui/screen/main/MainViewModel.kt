@@ -269,8 +269,9 @@ class MainViewModel : ViewModel() {
         val needRefreshNames = Configs.iptvChannelFavoriteList.map { it.iptvSourceName }.distinct()
             .filter { it != Configs.iptvSourceCurrent.name }
 
-        (Constants.IPTV_SOURCE_LIST + Configs.iptvSourceList)
+        (Configs.iptvSourceList)
             .filter { it.name in needRefreshNames }
+            .filter { it.url.isNotBlank() }
             .forEach { iptvSource ->
                 runCatching {
                     val channelGroupList =

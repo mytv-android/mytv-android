@@ -89,7 +89,7 @@ fun MainContent(
                     else mainContentState.changeCurrentChannelToNext()
                 },
                 onLeft = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx - 1,
@@ -97,7 +97,7 @@ fun MainContent(
                     }
                 },
                 onRight = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx + 1,
@@ -122,7 +122,7 @@ fun MainContent(
                     else mainContentState.changeCurrentChannelToNext()
                 },
                 onSwipeRight = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx - 1,
@@ -130,7 +130,7 @@ fun MainContent(
                     }
                 },
                 onSwipeLeft = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx + 1,

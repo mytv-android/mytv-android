@@ -119,7 +119,7 @@ private fun QuickOpScreenTop(
             LocalTextStyle provides MaterialTheme.typography.titleLarge
         ) {
             DashboardScreeIptvSource(
-                currentIptvSourceProvider = { iptvSourceCurrent },
+                //currentIptvSourceProvider = { iptvSourceCurrent },
                 toSettingsIptvSourceScreen = toSettingsIptvSourceScreen,
             )
         }

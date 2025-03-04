@@ -16,6 +16,7 @@ import top.yogiczy.mytv.core.data.entities.epgsource.EpgSource
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSourceList
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
+import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.tv.sync.CloudSyncProvider
 import top.yogiczy.mytv.tv.ui.screen.Screens
 import top.yogiczy.mytv.tv.ui.screen.components.AppThemeDef
@@ -254,6 +255,24 @@ class SettingsViewModel : ViewModel() {
         set(value) {
             _iptvChannelChangeListLoop = value
             Configs.iptvChannelChangeListLoop = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _iptvChannelChangeCrossGroup by mutableStateOf(false)
+    var iptvChannelChangeCrossGroup: Boolean
+        get() = _iptvChannelChangeCrossGroup
+        set(value) {
+            _iptvChannelChangeCrossGroup = value
+            Configs.iptvChannelChangeCrossGroup = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _iptvChannelChangeLineWithLeftRight by mutableStateOf(false)
+    var iptvChannelChangeLineWithLeftRight: Boolean
+        get() = _iptvChannelChangeLineWithLeftRight
+        set(value) {
+            _iptvChannelChangeLineWithLeftRight = value
+            Configs.iptvChannelChangeLineWithLeftRight = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -500,6 +519,24 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _networkRetryCount by mutableLongStateOf(Constants.NETWORK_RETRY_COUNT)
+    var networkRetryCount: Long
+        get() = _networkRetryCount
+        set(value) {
+            _networkRetryCount = value
+            Configs.networkRetryCount = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _networkRetryInterval by mutableLongStateOf(Constants.NETWORK_RETRY_INTERVAL)
+    var networkRetryInterval: Long
+        get() = _networkRetryInterval
+        set(value) {
+            _networkRetryInterval = value
+            Configs.networkRetryInterval = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _themeAppCurrent by mutableStateOf<AppThemeDef?>(null)
     var themeAppCurrent: AppThemeDef?
         get() = _themeAppCurrent
@@ -619,6 +656,11 @@ class SettingsViewModel : ViewModel() {
                 System.currentTimeMillis() < it.startAt + 60 * 1000
             }
         )
+
+        _iptvChannelChangeListLoop = Configs.iptvChannelChangeListLoop
+        _iptvChannelChangeCrossGroup = Configs.iptvChannelChangeCrossGroup
+        _iptvChannelChangeLineWithLeftRight = Configs.iptvChannelChangeLineWithLeftRight
+        _epgEnable = Configs.epgEnable
     }
 
     fun refresh() {
@@ -647,7 +689,6 @@ class SettingsViewModel : ViewModel() {
         _iptvChannelLinePlayableUrlList = Configs.iptvChannelLinePlayableUrlList
         _iptvChannelChangeFlip = Configs.iptvChannelChangeFlip
         _iptvChannelNoSelectEnable = Configs.iptvChannelNoSelectEnable
-        _iptvChannelChangeListLoop = Configs.iptvChannelChangeListLoop
         _epgEnable = Configs.epgEnable
         _epgSourceCurrent = Configs.epgSourceCurrent
         _epgSourceList = Configs.epgSourceList
@@ -675,6 +716,8 @@ class SettingsViewModel : ViewModel() {
         _videoPlayerForceAudioSoftDecode = Configs.videoPlayerForceAudioSoftDecode
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem
         _videoPlayerSkipMultipleFramesOnSameVSync = Configs.videoPlayerSkipMultipleFramesOnSameVSync
+        _networkRetryCount = Configs.networkRetryCount
+        _networkRetryInterval = Configs.networkRetryInterval
         _themeAppCurrent = Configs.themeAppCurrent
         _cloudSyncAutoPull = Configs.cloudSyncAutoPull
         _cloudSyncProvider = Configs.cloudSyncProvider

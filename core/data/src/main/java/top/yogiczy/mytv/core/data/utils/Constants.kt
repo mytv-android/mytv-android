@@ -12,12 +12,12 @@ object Constants {
     /**
      * 应用 标题
      */
-    const val APP_TITLE = "天光云影"
+    const val APP_TITLE = "电视直播"
 
     /**
      * 应用 代码仓库
      */
-    const val APP_REPO = "https://github.com/yaoxieyoulei/mytv-android"
+    const val APP_REPO = "https://github.com/0047ol/mytv-android"
 
     /**
      * 交流群 telegram
@@ -30,20 +30,16 @@ object Constants {
     val IPTV_SOURCE_LIST = IptvSourceList(
         listOf(
             IptvSource(
-                name = "默认直播源 fanmingming（IPV6）",
-                url = "https://live.fanmingming.com/tv/m3u/ipv6.m3u",
-            ),
-            IptvSource(
-                name = "默认直播源 YanG-1989（电视）",
-                url = "https://tv.iill.top/m3u/Gather",
-            ),
+                name = "默认直播源",
+                url = "https://gh-proxy.com/https://raw.githubusercontent.com/0047ol/China-TV-Live-M3U8/refs/heads/main/tv.m3u",
+            )
         )
     )
 
     /**
      * 直播源缓存时间（毫秒）
      */
-    const val IPTV_SOURCE_CACHE_TIME = 1000 * 60 * 60 * 24L // 24小时
+    const val IPTV_SOURCE_CACHE_TIME = 1000 * 60 * 60L // 24小时
 
     /**
      * 节目单来源
@@ -51,17 +47,9 @@ object Constants {
     val EPG_SOURCE_LIST = EpgSourceList(
         listOf(
             EpgSource(
-                name = "默认节目单 fanmingming",
-                url = "https://live.fanmingming.com/e.xml",
-            ),
-            EpgSource(
-                name = "默认节目单 老张的EPG",
-                url = "http://epg.51zmt.top:8000/e.xml.gz",
-            ),
-            EpgSource(
-                name = "默认节目单 回看七天",
+                name = "7天回看节目单",
                 url = "https://e.erw.cc/all.xml.gz",
-            ),
+            )
         )
     )
 
@@ -80,12 +68,12 @@ object Constants {
      * {name|uppercase} 转成大写
      *
      */
-    const val CHANNEL_LOGO_PROVIDER = "https://live.fanmingming.com/tv/{name|uppercase}.png"
+    const val CHANNEL_LOGO_PROVIDER = "https://gh-proxy.com/https://raw.githubusercontent.com/0047ol/China-TV-HD-Logo/refs/heads/main/icon/{name|lowercase}.png"
 
     /**
      * GitHub加速代理地址
      */
-    const val GITHUB_PROXY = "https://ghp.ci/"
+    const val GITHUB_PROXY = "https://gh-proxy.com/"
 
     /**
      * Git最新版本信息
@@ -99,12 +87,12 @@ object Constants {
     /**
      * 网络请求重试次数
      */
-    const val NETWORK_RETRY_COUNT = 10L
+    const val NETWORK_RETRY_COUNT = 20L
 
     /**
      * 网络请求重试间隔时间（毫秒）
      */
-    const val NETWORK_RETRY_INTERVAL = 3000L
+    const val NETWORK_RETRY_INTERVAL = 100L
 
     /**
      * 播放器 userAgent
@@ -114,7 +102,7 @@ object Constants {
     /**
      * 播放器加载超时
      */
-    const val VIDEO_PLAYER_LOAD_TIMEOUT = 1000L * 15 // 15秒
+    const val VIDEO_PLAYER_LOAD_TIMEOUT = 1000L * 10 // 15秒
 
     /**
      * 日志历史最大保留条数
@@ -129,7 +117,7 @@ object Constants {
     /**
      * 界面 超时未操作自动关闭界面
      */
-    const val UI_SCREEN_AUTO_CLOSE_DELAY = 1000L * 15 // 15秒
+    const val UI_SCREEN_AUTO_CLOSE_DELAY = 1000L * 10 // 15秒
 
     /**
      * 界面 时间显示前后范围

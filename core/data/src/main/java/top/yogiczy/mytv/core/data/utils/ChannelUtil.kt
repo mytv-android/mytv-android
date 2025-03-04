@@ -2,6 +2,7 @@ package top.yogiczy.mytv.core.data.utils
 
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLineList
+import java.net.URL
 
 
 object ChannelUtil {
@@ -17,6 +18,7 @@ object ChannelUtil {
             ),
             ChannelAlias.standardChannelName("cctv-3") to listOf(
                 "https://tv.cctv.com/live/cctv3/",
+                "https://yangshipin.cn/tv/home?pid=600001801"
             ),
             ChannelAlias.standardChannelName("cctv-4") to listOf(
                 "https://tv.cctv.com/live/cctv4/",
@@ -32,6 +34,7 @@ object ChannelUtil {
             ),
             ChannelAlias.standardChannelName("cctv6") to listOf(
                 "https://tv.cctv.com/live/cctv6/",
+                "https://yangshipin.cn/tv/home?pid=600108442"
             ),
             ChannelAlias.standardChannelName("cctv-7") to listOf(
                 "https://tv.cctv.com/live/cctv7/",
@@ -39,6 +42,7 @@ object ChannelUtil {
             ),
             ChannelAlias.standardChannelName("cctv-8") to listOf(
                 "https://tv.cctv.com/live/cctv8/",
+                "https://yangshipin.cn/tv/home?pid=600001803"
             ),
             ChannelAlias.standardChannelName("cctv-9") to listOf(
                 "https://tv.cctv.com/live/cctvjilu/",
@@ -74,69 +78,125 @@ object ChannelUtil {
             ),
             ChannelAlias.standardChannelName("cctv-17") to listOf(
                 "https://tv.cctv.com/live/cctv17/",
+                "https://yangshipin.cn/tv/home?pid=600001810"
             ),
             ChannelAlias.standardChannelName("北京卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002309",
+                "https://www.brtn.cn/btv/btvsy_index",
+                "https://yangshipin.cn/tv/home?pid=600002309"
             ),
             ChannelAlias.standardChannelName("江苏卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002521",
+                "https://live.jstv.com/",
+                "https://yangshipin.cn/tv/home?pid=600002521"
             ),
-            ChannelAlias.standardChannelName("上海卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002483",
+            ChannelAlias.standardChannelName("东方卫视") to listOf(
+                "https://live.kankanews.com/huikan/",
+                "https://yangshipin.cn/tv/home?pid=600002483"
             ),
             ChannelAlias.standardChannelName("浙江卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002520",
+                "https://www.cztv.com/liveTV",
+                "https://yangshipin.cn/tv/home?pid=600002520"
             ),
             ChannelAlias.standardChannelName("湖南卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002475",
+                "https://yangshipin.cn/tv/home?pid=600002475"
             ),
             ChannelAlias.standardChannelName("湖北卫视") to listOf(
+                "https://news.hbtv.com.cn/app/tv/431",
                 "https://yangshipin.cn/tv/home?pid=600002508",
             ),
             ChannelAlias.standardChannelName("广东卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002485",
+                "https://www.gdtv.cn/tvChannelDetail/43",
+                "https://yangshipin.cn/tv/home?pid=600002485"
             ),
             ChannelAlias.standardChannelName("广西卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002509",
+                "https://tv.gxtv.cn/channel/channelivePlay_e7a7ab7df9fe11e88bcfe41f13b60c62.html",
+                "https://yangshipin.cn/tv/home?pid=600002509"
             ),
             ChannelAlias.standardChannelName("黑龙江卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002498",
+                "https://www.hljtv.com/live/",
+                "https://yangshipin.cn/tv/home?pid=600002498"
             ),
             ChannelAlias.standardChannelName("海南卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002506",
+                "http://tc.hnntv.cn/zb/28666112.shtml",
+                "https://yangshipin.cn/tv/home?pid=600002506"
             ),
             ChannelAlias.standardChannelName("重庆卫视") to listOf(
                 "https://yangshipin.cn/tv/home?pid=600002531",
             ),
-            ChannelAlias.standardChannelName("深圳卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002481",
-            ),
             ChannelAlias.standardChannelName("四川卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002516",
+                "https://yangshipin.cn/tv/home?pid=600002516"
             ),
             ChannelAlias.standardChannelName("河南卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002525",
+                "https://static.hntv.tv/kds/#/",
+                "https://yangshipin.cn/tv/home?pid=600002525"
             ),
-            ChannelAlias.standardChannelName("福建卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002484",
+            ChannelAlias.standardChannelName("东南卫视") to listOf(
+                "http://www.setv.fjtv.net/live/",
+                "https://yangshipin.cn/tv/home?pid=600002484"
             ),
             ChannelAlias.standardChannelName("贵州卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002490",
+                "https://www.gzstv.com/tv/ch01",
+                "https://yangshipin.cn/tv/home?pid=600002490"
             ),
             ChannelAlias.standardChannelName("江西卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002503",
+                "https://www.jxntv.cn/live/#/jxtv1",
+                "https://yangshipin.cn/tv/home?pid=600002503"
             ),
             ChannelAlias.standardChannelName("辽宁卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002505",
+                "https://yangshipin.cn/tv/home?pid=600002505"
             ),
             ChannelAlias.standardChannelName("安徽卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002532",
+                "https://www.ahtv.cn/folder9000/folder20193?channelIndex=0",
+                "https://yangshipin.cn/tv/home?pid=600002532"
             ),
             ChannelAlias.standardChannelName("河北卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002493",
+                "https://www.hebtv.com/19/19js/st/xdszb/index.shtml?index=0",
+                "https://yangshipin.cn/tv/home?pid=600002493"
             ),
             ChannelAlias.standardChannelName("山东卫视") to listOf(
-                "https://yangshipin.cn/tv/home?pid=600002513",
+                "https://v.iqilu.com/live/sdtv/index.html",
+                "https://yangshipin.cn/tv/home?pid=600002513"
+            ),
+            ChannelAlias.standardChannelName("天津卫视") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600152137"
+            ),
+            ChannelAlias.standardChannelName("吉林卫视") to listOf(
+                "https://www.jlntv.cn/tv?id=104",
+                "https://yangshipin.cn/tv/home?pid=600190405"
+            ),
+            ChannelAlias.standardChannelName("陕西卫视") to listOf(
+                "http://www.sxtvs.com/sxtvs_sxws/index.html",
+                "https://yangshipin.cn/tv/home?pid=600190400"
+            ),
+            ChannelAlias.standardChannelName("甘肃卫视") to listOf(
+                "https://www.gstv.com.cn/zxc.jhtml",
+                "https://yangshipin.cn/tv/home?pid=600190408"
+            ),
+            ChannelAlias.standardChannelName("宁夏卫视") to listOf(
+                "https://www.nxtv.com.cn/tv/ws/",
+                "https://yangshipin.cn/tv/home?pid=600190737"
+            ),
+            ChannelAlias.standardChannelName("内蒙古卫视") to listOf(
+                "https://www.nmtv.cn/liveTv",
+                "https://yangshipin.cn/tv/home?pid=600190401"
+            ),
+            ChannelAlias.standardChannelName("云南卫视") to listOf(
+                "https://www.yntv.cn/live.html",
+                "https://yangshipin.cn/tv/home?pid=600190402"
+            ),
+            ChannelAlias.standardChannelName("山西卫视") to listOf(
+                "https://www.sxrtv.com/tv/",
+                "https://yangshipin.cn/tv/home?pid=600190407"
+            ),
+            ChannelAlias.standardChannelName("青海卫视") to listOf(
+                "https://www.qhbtv.com/new_index/live/folder2646/",
+                "https://yangshipin.cn/tv/home?pid=600190406"
+            ),
+            ChannelAlias.standardChannelName("西藏卫视") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600190403"
+            ),
+            ChannelAlias.standardChannelName("新疆卫视") to listOf(
+                "https://www.xjtvs.com.cn/column/tv/434",
+                "https://yangshipin.cn/tv/home?pid=600152138"
             ),
         )
     }
@@ -148,9 +208,54 @@ object ChannelUtil {
     }
 
     fun getHybridWebViewUrlProvider(url: String): String {
-        return if (url.contains("https://tv.cctv.com")) "央视网"
-        else if (url.contains("https://yangshipin.cn")) "央视频"
-        else "未知"
+        val specificUrls = arrayOf(
+            "brtn.cn",
+            "jstv.com",
+            "kankanews.com",
+            "cztv.com",
+            "hbtv.com.cn",
+            "gdtv.cn",
+            "gxtv.cn",
+            "hljtv.com",
+            "hnntv.cn",
+            "hntv.tv",
+            "fjtv.net",
+            "gzstv.com",
+            "jxntv.cn",
+            "ahtv.cn",
+            "hebtv.com",
+            "iqilu.com",
+            "jlntv.cn",
+            "sxtvs.com",
+            "gstv.com.cn",
+            "nxtv.com.cn",
+            "nmtv.cn",
+            "yntv.cn",
+            "sxrtv.com",
+            "qhbtv.com",
+            "vtibet.cn",
+            "xjtvs.com.cn"
+        )
+        
+        try {
+            // 处理webview://前缀
+            val processedUrl = if (url.startsWith("webview://")) {
+                url.substring("webview://".length)
+            } else {
+                url
+            }
+            
+            val host = URL(processedUrl).host
+            return when {
+                host.contains("cctv.com") -> "官网"
+                host.contains("yangshipin.cn") -> "央视频"
+                specificUrls.any { host.contains(it) } -> "官网"
+                else -> "其它"
+            }
+        } catch (e: Exception) {
+            Logger.create("ChannelUtil").e("解析URL失败: $url, ${e.message}")
+            return "未知"
+        }
     }
 
     fun urlSupportPlayback(url: String): Boolean {
