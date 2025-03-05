@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
+import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.screensold.webview.components.WebViewPlaceholder
 import top.yogiczy.mytv.core.data.utils.Logger
@@ -39,7 +40,7 @@ fun WebViewScreen(
     var placeholderVisible by remember { mutableStateOf(true) }
     var placeholderMessage by remember { mutableStateOf("加载中...") }
     val logger = remember { Logger.create("WebViewScreen") }
-    
+
     // 处理webview://前缀
     val actualUrl = remember(url) {
         val processedUrl = if (url.startsWith("webview://")) {

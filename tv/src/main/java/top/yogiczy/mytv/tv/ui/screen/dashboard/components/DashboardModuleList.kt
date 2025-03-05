@@ -83,25 +83,25 @@ fun DashboardModuleList(
                 imageVector = Icons.Outlined.ViewCozy,
                 title = "多屏同播",
                 onSelected = toMultiViewScreen,
-                tag = "BETA",
+                //tag = "BETA",
             )
         }
 
-        item {
+        /*item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.InsertChart,
                 title = "观看统计",
                 tag = "UNDO",
             )
-        }
+        }*/
 
-        item {
+        /*item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.CloudUpload,
                 title = "推送",
                 onSelected = toPushScreen,
             )
-        }
+        }*/
 
         item {
             DashboardModuleItem(
@@ -111,7 +111,7 @@ fun DashboardModuleList(
             )
         }
 
-        item {
+        /*item {
             DashboardModuleItem(
                 modifier = Modifier
                     .focusRequester(runtime.lastItemFocusRequester)
@@ -120,7 +120,7 @@ fun DashboardModuleList(
                 title = "关于",
                 onSelected = toAboutScreen,
             )
-        }
+        }*/
     }
 }
 

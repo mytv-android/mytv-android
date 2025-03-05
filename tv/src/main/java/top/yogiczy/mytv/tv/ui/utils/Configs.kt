@@ -333,7 +333,7 @@ object Configs {
 
     /** 是否启用直播源频道收藏 */
     var iptvChannelFavoriteEnable: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_FAVORITE_ENABLE.name, false)
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_FAVORITE_ENABLE.name, true)
         set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_FAVORITE_ENABLE.name, value)
 
     /** 显示直播源频道收藏列表 */
@@ -395,12 +395,12 @@ object Configs {
 
     /** 换台跨分组切换 **/
     var iptvChannelChangeCrossGroup: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_CROSS_GROUP.name, false)
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_CROSS_GROUP.name, true)
         set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_CROSS_GROUP.name, value)
 
     /** 左右键切换直播源线路 **/
     var iptvChannelChangeLineWithLeftRight: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT.name, false)
+        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT.name, true)
         set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT.name, value)
 
     /** ==================== 节目单 ==================== */

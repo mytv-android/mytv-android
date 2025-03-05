@@ -47,7 +47,7 @@ object Constants {
     val EPG_SOURCE_LIST = EpgSourceList(
         listOf(
             EpgSource(
-                name = "7天回看节目单",
+                name = "默认节目单",
                 url = "https://e.erw.cc/all.xml.gz",
             )
         )
