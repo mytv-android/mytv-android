@@ -1,0 +1,33 @@
+name: Kotlin CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Build with Gradle
+      run: ./gradlew build
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: mytv-android-tv-3.3.7-all-sdk21-original.apk
+        path: tv/original/release/mytv-android-tv-3.3.7-all-sdk21-original.apk
+    
