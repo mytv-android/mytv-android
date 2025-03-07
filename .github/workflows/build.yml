@@ -21,12 +21,12 @@ jobs:
       with:
         java-version: '21'
         distribution: 'temurin'
+        cache: gradle
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew :app:assembleRelease
     
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
