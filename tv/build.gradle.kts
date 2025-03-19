@@ -129,7 +129,7 @@ dependencies {
     }
 
     implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.0.0")
-    implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.0.0")
+    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.0.0")
 
     // 二维码
     implementation(libs.qrose)
@@ -146,6 +146,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:util"))
     implementation(project(":allinone"))
+    implementation(project(":gsyvideoplayer-ex_so"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
