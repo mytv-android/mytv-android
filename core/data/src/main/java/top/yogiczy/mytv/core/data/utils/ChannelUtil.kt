@@ -80,6 +80,66 @@ object ChannelUtil {
                 "https://tv.cctv.com/live/cctv17/",
                 "https://yangshipin.cn/tv/home?pid=600001810"
             ),
+            ChannelAlias.standardChannelName("cctv-4k") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600002264"
+            ),
+            ChannelAlias.standardChannelName("cgtn") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600014550"
+            ),
+            ChannelAlias.standardChannelName("cgtn法语") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600084704"
+            ),
+            ChannelAlias.standardChannelName("cgtn俄语") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600084758"
+            ),
+            ChannelAlias.standardChannelName("cgtn阿语") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600084782"
+            ),
+            ChannelAlias.standardChannelName("cgtn西语") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600084744"
+            ),
+            ChannelAlias.standardChannelName("cgtn纪录") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600084781"
+            ),
+            ChannelAlias.standardChannelName("风云剧场") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099658"
+            ),
+            ChannelAlias.standardChannelName("第一剧场") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099655"
+            ),
+            ChannelAlias.standardChannelName("怀旧剧场") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099620"
+            ),
+            ChannelAlias.standardChannelName("世界地理") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099637"
+            ),
+            ChannelAlias.standardChannelName("风云音乐") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099660"
+            ),
+            ChannelAlias.standardChannelName("兵器科技") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099649"
+            ),
+            ChannelAlias.standardChannelName("风云足球") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099636"
+            ),
+            ChannelAlias.standardChannelName("高尔夫网球") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099659"
+            ),
+            ChannelAlias.standardChannelName("女性时尚") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099650"
+            ),
+            ChannelAlias.standardChannelName("央视文化精品") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099653"
+            ),
+            ChannelAlias.standardChannelName("央视台球") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099652"
+            ),
+            ChannelAlias.standardChannelName("电视指南") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099656"
+            ),
+            ChannelAlias.standardChannelName("卫生健康") to listOf(
+                "https://yangshipin.cn/tv/home?pid=600099651"
+            ),
             ChannelAlias.standardChannelName("北京卫视") to listOf(
                 "https://www.brtn.cn/btv/btvsy_index",
                 "https://yangshipin.cn/tv/home?pid=600002309"
@@ -259,7 +319,7 @@ object ChannelUtil {
     }
 
     fun urlSupportPlayback(url: String): Boolean {
-        return listOf("tvod").any { url.contains(it, ignoreCase = true) }
+        return listOf("pltv", "tvod").any { url.contains(it, ignoreCase = true) }
     }
 
     fun urlToCanPlayback(url: String): String {

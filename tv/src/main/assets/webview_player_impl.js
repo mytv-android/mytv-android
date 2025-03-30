@@ -59,7 +59,11 @@ function __initializetMain() {
     video = video ? video : getVideoParentShadowRoots();
     if (Date.now() - ___startTime > 15000) {
         clearInterval(my_pollingIntervalId);
-        video.paused();
+        try {
+            video.pause();
+        } catch (error) {
+            console.error('Error pausing video:', error);
+        }
         Android.updatePlaceholderVisible(true,'加载失败');
         return;
     }

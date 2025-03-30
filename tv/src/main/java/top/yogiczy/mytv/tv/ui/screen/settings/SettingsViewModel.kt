@@ -149,7 +149,15 @@ class SettingsViewModel : ViewModel() {
             Configs.iptvHybridMode = value
             afterSetWhenCloudSyncAutoPull()
         }
-
+    
+    private var _iptvHybridYangshipinCookie by mutableStateOf("")
+    var iptvHybridYangshipinCookie: String
+        get() = _iptvHybridYangshipinCookie
+        set(value) {
+            _iptvHybridYangshipinCookie = value
+            Configs.iptvHybridYangshipinCookie = value
+            afterSetWhenCloudSyncAutoPull()
+        }
     private var _iptvSimilarChannelMerge by mutableStateOf(false)
     var iptvSimilarChannelMerge: Boolean
         get() = _iptvSimilarChannelMerge
@@ -177,6 +185,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _iptvPLTVToTVOD by mutableStateOf(true)
+    var iptvPLTVToTVOD: Boolean
+        get() = _iptvPLTVToTVOD
+        set(value) {
+            _iptvPLTVToTVOD = value
+            Configs.iptvPLTVToTVOD = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+    
     private var _iptvChannelFavoriteEnable by mutableStateOf(false)
     var iptvChannelFavoriteEnable: Boolean
         get() = _iptvChannelFavoriteEnable
@@ -687,9 +704,11 @@ class SettingsViewModel : ViewModel() {
         _iptvSourceList = Configs.iptvSourceList
         _iptvChannelGroupHiddenList = Configs.iptvChannelGroupHiddenList
         _iptvHybridMode = Configs.iptvHybridMode
+        _iptvHybridYangshipinCookie = Configs.iptvHybridYangshipinCookie
         _iptvSimilarChannelMerge = Configs.iptvSimilarChannelMerge
         _iptvChannelLogoProvider = Configs.iptvChannelLogoProvider
         _iptvChannelLogoOverride = Configs.iptvChannelLogoOverride
+        _iptvPLTVToTVOD = Configs.iptvPLTVToTVOD
         _iptvChannelFavoriteEnable = Configs.iptvChannelFavoriteEnable
         _iptvChannelFavoriteListVisible = Configs.iptvChannelFavoriteListVisible
         _iptvChannelFavoriteList = Configs.iptvChannelFavoriteList

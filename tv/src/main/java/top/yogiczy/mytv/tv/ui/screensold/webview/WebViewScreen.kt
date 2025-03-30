@@ -10,6 +10,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.webkit.CookieManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -28,17 +29,18 @@ import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.screensold.webview.components.WebViewPlaceholder
 import top.yogiczy.mytv.core.data.utils.Logger
+import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun WebViewScreen(
     modifier: Modifier = Modifier,
-    urlProvider: () -> Pair<String, String> = { Pair("", "") },
+    urlProvider: () -> String = { "https://tv.cctv.com/live/index.shtml" },
     onVideoResolutionChanged: (width: Int, height: Int) -> Unit = { _, _ -> },
 ) {
-    val (url, httpUserAgent) = urlProvider()
+    val url = urlProvider()
     var placeholderVisible by remember { mutableStateOf(true) }
-    var placeholderMessage by remember { mutableStateOf("加载中...") }
+    var placeholderMessage by remember { mutableStateOf("正在加载...") }
     val logger = remember { Logger.create("WebViewScreen") }
 
     // 处理webview://前缀
@@ -52,30 +54,44 @@ fun WebViewScreen(
         logger.i("WebView加载URL: $processedUrl")
         processedUrl
     }
-
+    
     val onUpdatePlaceholderVisible = { visible: Boolean, message: String ->
         placeholderVisible = visible
         placeholderMessage = message
     }
-
+    var cookies:List<String> = emptyList()
+    if (actualUrl.contains("yangshipin.cn")){
+        cookies = settingsVM.iptvHybridYangshipinCookie.split(";")
+    }
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxHeight()
-                .background(Color.Black),
+                .background(Color.Black.copy(alpha = 0.5f)),
             factory = {
                 MyWebView(it).apply {
                     webViewClient = MyClient(
                         onPageStarted = { 
                             placeholderVisible = true
+                            placeholderMessage = "正在加载网页，请稍候..."
                             logger.i("WebView开始加载页面")
+                            // placeholderVisible = false
                         },
                         onPageFinished = { 
+                            placeholderMessage = "网页页面加载完成，正在初始化..."
                             logger.i("WebView页面加载完成")
+                            // placeholderVisible = false
                         },
                     )
-
+                    val cookieManager = CookieManager.getInstance()
+                    cookieManager.setAcceptCookie(true)
+                    cookieManager.setAcceptThirdPartyCookies(this, true)
+                    cookies.forEach { cookie ->
+                        cookieManager.setCookie(".yangshipin.cn", cookie.trim())
+                    }
+                    cookieManager.flush()
+                    
                     setBackgroundColor(Color.Black.toArgb())
                     layoutParams = ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -86,10 +102,10 @@ fun WebViewScreen(
                     settings.useWideViewPort = true
                     settings.loadWithOverviewMode = true
                     settings.domStorageEnabled = true
-                    settings.databaseEnabled = true
                     settings.loadsImagesAutomatically = false
                     settings.blockNetworkImage = true
-                    settings.userAgentString = httpUserAgent
+                    settings.userAgentString =
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
                     settings.cacheMode = WebSettings.LOAD_DEFAULT
                     settings.javaScriptCanOpenWindowsAutomatically = true
                     settings.setSupportZoom(false)
@@ -97,7 +113,7 @@ fun WebViewScreen(
                     settings.builtInZoomControls = false
                     settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                     settings.mediaPlaybackRequiresUserGesture = false
-
+                    settings.domStorageEnabled = true
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
                     /*isClickable = false
@@ -152,14 +168,14 @@ class MyClient(
     }
 
     override fun onPageFinished(view: WebView, url: String) {
-        logger.i("WebView页面加载完成: $url")
+        onPageFinished()
         val scriptContent = readAssetFile(view.context, "webview_player_impl.js")
         logger.i("注入脚本到WebView")
         view.evaluateJavascript(scriptContent.trimIndent()
         ) {
             logger.i("脚本注入完成")
-            onPageFinished()
         }
+        logger.i("WebView页面注入完成: $url")
     }
 }
 
@@ -177,7 +193,7 @@ class MyWebViewInterface(
     @JavascriptInterface
     fun changeVideoResolution(width: Int, height: Int) {
         onVideoResolutionChanged(width, height)
-        onUpdatePlaceholderVisible(false, "加载中...")
+        onUpdatePlaceholderVisible(false, "")
     }
 
     @JavascriptInterface
