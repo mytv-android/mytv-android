@@ -181,14 +181,14 @@ fun SettingsScreen(
                     )
                 }
 
-                /*composable(SettingsCategories.UPDATE.name) {
+                composable(SettingsCategories.UPDATE.name) {
                     SettingsUpdateScreen(
                         toUpdateChannelScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.UPDATE_CHANNEL.name)
                         },
                         onBackPressed = { navController.navigateUp() },
                     )
-                }*/
+                }
 
                 composable(SettingsCategories.THEME.name) {
                     SettingsThemeScreen(

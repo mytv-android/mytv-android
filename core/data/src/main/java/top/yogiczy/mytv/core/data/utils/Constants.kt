@@ -17,7 +17,7 @@ object Constants {
     /**
      * 应用 代码仓库
      */
-    const val APP_REPO = "https://github.com/0047ol/mytv-android"
+    const val APP_REPO = "hhttps://github.com/mytv-android/mytv-android"
 
     /**
      * 交流群 telegram
@@ -25,7 +25,7 @@ object Constants {
     const val GROUP_TELEGRAM = "https://t.me/mytv_android"
 
     /**
-     * 直播源
+     * 播放源
      */
     val IPTV_SOURCE_LIST = IptvSourceList(
         listOf(
@@ -37,7 +37,7 @@ object Constants {
     )
 
     /**
-     * 直播源缓存时间（毫秒）
+     * 播放源缓存时间（毫秒）
      */
     const val IPTV_SOURCE_CACHE_TIME = 1000 * 60 * 60L // 24小时
 
@@ -59,6 +59,10 @@ object Constants {
     const val EPG_REFRESH_TIME_THRESHOLD = 2 // 不到2点不刷新
 
     /**
+     * 混合模式央视频Cookie
+     */
+    const val HYBRID_YANGSHIPIN_COOKIE = ""
+    /**
      * 频道图标提供
      *
      * {name} 频道名称
@@ -79,9 +83,9 @@ object Constants {
      * Git最新版本信息
      */
     val GIT_RELEASE_LATEST_URL = mapOf(
-        "stable" to "${GITHUB_PROXY}https://raw.githubusercontent.com/yaoxieyoulei/mytv-android-update/main/tv-stable.json",
-        "beta" to "${GITHUB_PROXY}https://raw.githubusercontent.com/yaoxieyoulei/mytv-android-update/main/tv-beta.json",
-        "dev" to "${GITHUB_PROXY}https://raw.githubusercontent.com/yaoxieyoulei/mytv-android-update/main/tv-dev.json",
+        "stable" to "https://api.github.com/repos/mytv-android/mytv-android/releases/latest",
+        // "beta" to "https://api.github.com/repos/mytv-android/mytv-android/releases/latest",
+        "dev" to "https://api.github.com/repos/mytv-android/mytv-android/releases",
     )
 
     /**

@@ -41,6 +41,7 @@ import top.yogiczy.mytv.tv.ui.theme.SAFE_AREA_VERTICAL_PADDING
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
 import top.yogiczy.mytv.tv.ui.utils.rememberReadExternalStoragePermission
 import java.io.File
+import top.yogiczy.mytv.core.data.utils.Globals
 
 @Composable
 fun App(
@@ -84,7 +85,10 @@ fun App(
         val (hasPermission, requestPermission) = rememberReadExternalStoragePermission()
         LaunchedEffect(Unit) { if (!hasPermission) requestPermission() }
     }
-
+    val latestFile = File(Globals.cacheDir, "latest.apk")
+    if (latestFile.exists()) {
+        latestFile.delete()
+    }
     LaunchedEffect(settingsViewModel.iptvSourceCurrent) {
         if (settingsViewModel.feiyangAllInOneFilePath.isNotBlank()) {
             AllInOne.start(

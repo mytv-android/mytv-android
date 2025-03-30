@@ -32,7 +32,7 @@ fun SettingsUpdateScreen(
                 headlineContent = "更新通道",
                 trailingContent = when (channel) {
                     "stable" -> "稳定版"
-                    "beta" -> "测试版"
+                    // "beta" -> "测试版"
                     "dev" -> "开发版"
                     else -> channel
                 },

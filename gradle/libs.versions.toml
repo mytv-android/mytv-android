@@ -23,6 +23,7 @@ rhino = "1.7.15"
 tinypinyin = "2.0.3.RELEASE"
 tvMaterial = "1.0.0-rc01"
 navigationCompose = "2.8.3"
+android_material = "1.12.0"
 sentry = "4.11.0"
 minSdk = "21"
 targetSdk = "35"
@@ -35,6 +36,7 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 coil-svg = { module = "io.coil-kt:coil-svg", version.ref = "coil" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+android-material = {module = "com.google.android.material:material", version.ref = "android_material"}
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }

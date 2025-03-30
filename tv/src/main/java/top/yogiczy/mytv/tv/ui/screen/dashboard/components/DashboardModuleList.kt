@@ -95,13 +95,13 @@ fun DashboardModuleList(
             )
         }*/
 
-        /*item {
+        item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.CloudUpload,
                 title = "推送",
                 onSelected = toPushScreen,
             )
-        }*/
+        }
 
         item {
             DashboardModuleItem(
@@ -111,7 +111,7 @@ fun DashboardModuleList(
             )
         }
 
-        /*item {
+        item {
             DashboardModuleItem(
                 modifier = Modifier
                     .focusRequester(runtime.lastItemFocusRequester)
@@ -120,7 +120,7 @@ fun DashboardModuleList(
                 title = "关于",
                 onSelected = toAboutScreen,
             )
-        }*/
+        }
     }
 }
 
