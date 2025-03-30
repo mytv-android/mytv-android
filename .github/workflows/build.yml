@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
-      - main
+      - dev
 
 jobs:
   build:
@@ -25,12 +26,44 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    
+    - name: Add signing properties
+      run: |
+          echo ${{ secrets.SIGNING_PROPERTIES }} > encoded_signing_properties
+          base64 -d -i encoded_signing_properties > signing.properties
+
+    - name: Add jks file
+      run: |
+          echo ${{ secrets.SIGN_KEY }} > ./encoded_key
+          base64 -d -i encoded_key > keystore.jks
+      
     - name: Build with Gradle
       run: ./gradlew :tv:assembleRelease
     
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: mytv-android-tv-3.3.7-all-sdk21-original.apk
-        path: tv/original/release/mytv-android-tv-3.3.7-all-sdk21-original.apk
+        name: mytv-android.apk
+        path: tv/build/outputs/apk/release/*.apk
+
+    - name: Read alpha apk output metadata
+      id: apk-meta-alpha
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: tv/build/outputs/apk/original/release/output-metadata.json
     
+    - name: Parse apk infos
+      id: versionCode
+      run: |
+        echo "info_version_code=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
+        echo "info_version_name=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+
+    - name: Publish Pre-Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+            tv/build/outputs/apk/release/*.apk
+        tag_name: V${{ env.info_version_name }}
+        name: V${{ env.info_version_name }}, Version${{ env.info_version_code }}
+        prerelease: true
