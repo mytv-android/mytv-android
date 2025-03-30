@@ -107,7 +107,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
-
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.material.icons.extended)
@@ -127,7 +126,8 @@ dependencies {
         implementation(libs.androidx.media3.exoplayer.dash)
         implementation(libs.androidx.media3.ui)
     }
-
+    implementation(libs.androidx.media3.datasource.rtmp)
+    implementation(libs.androidx.media3.exoplayer.smoothstreaming)
     implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.0.0")
     // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.0.0")
 

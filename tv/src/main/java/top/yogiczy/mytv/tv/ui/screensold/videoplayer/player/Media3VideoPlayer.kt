@@ -21,6 +21,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.rtmp.RtmpDataSource
 import androidx.media3.exoplayer.DecoderReuseEvaluation
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
@@ -31,6 +32,7 @@ import androidx.media3.exoplayer.drm.FrameworkMediaDrm
 import androidx.media3.exoplayer.drm.LocalMediaDrmCallback
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.rtsp.RtspMediaSource
+import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -152,12 +154,16 @@ class Media3VideoPlayer(
 
         var contentTypeForce = contentType
 
-        if (uri.toString().startsWith("rtp://")) {
+        if (uri.toString().startsWith("rtp://")  || uri.toString().startsWith("rtsp://")) {
             contentTypeForce = C.CONTENT_TYPE_RTSP
         }
 
         if (currentChannelLine.manifestType == "mpd") {
             contentTypeForce = C.CONTENT_TYPE_DASH
+        }
+
+        if (uri.toString().startsWith("rtmp://")){
+            contentTypeForce = C.CONTENT_TYPE_OTHER
         }
 
         val dataSourceFactory = getDataSourceFactory()
@@ -212,8 +218,16 @@ class Media3VideoPlayer(
                 RtspMediaSource.Factory().createMediaSource(mediaItem)
             }
 
+            C.CONTENT_TYPE_SS -> {
+                SsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+            }
+
             C.CONTENT_TYPE_OTHER -> {
-                ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                if (uri.toString().startsWith("rtmp://")) {
+                    ProgressiveMediaSource.Factory(RtmpDataSource.Factory()).createMediaSource(mediaItem)
+                }else{
+                    ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                }
             }
 
             else -> {
@@ -262,6 +276,8 @@ class Media3VideoPlayer(
                             prepare(C.CONTENT_TYPE_DASH)
                         } else if (contentTypeAttempts[C.CONTENT_TYPE_RTSP] != true) {
                             prepare(C.CONTENT_TYPE_RTSP)
+                        } else if(contentTypeAttempts[C.CONTENT_TYPE_SS] != true){
+                            prepare(C.CONTENT_TYPE_SS)
                         } else if (contentTypeAttempts[C.CONTENT_TYPE_OTHER] != true) {
                             prepare(C.CONTENT_TYPE_OTHER)
                         } else {
