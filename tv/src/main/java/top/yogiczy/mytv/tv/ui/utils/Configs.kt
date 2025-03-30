@@ -194,6 +194,9 @@ object Configs {
         /** 播放器 跳过同一VSync渲染多帧 */
         VIDEO_PLAYER_SKIP_MULTIPLE_FRAMES_ON_SAME_VSYNC,
 
+        /** 播放器 启用音量均衡 */
+        VIDEO_PLAYER_VOLUME_NORMALIZATION,
+
         /** ==================== 主题 ==================== */
         /** 当前应用主题 */
         THEME_APP_CURRENT,
@@ -568,6 +571,11 @@ object Configs {
     var videoPlayerSkipMultipleFramesOnSameVSync: Boolean
         get() = SP.getBoolean(KEY.VIDEO_PLAYER_SKIP_MULTIPLE_FRAMES_ON_SAME_VSYNC.name, true)
         set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_SKIP_MULTIPLE_FRAMES_ON_SAME_VSYNC.name, value)
+
+    /** 播放器 音量平衡 **/
+    var videoPlayerVolumeNormalization: Boolean
+        get() = SP.getBoolean(KEY.VIDEO_PLAYER_VOLUME_NORMALIZATION.name, false)
+        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_VOLUME_NORMALIZATION.name, value)
 
     /** ==================== 主题 ==================== */
     /** 当前应用主题 */

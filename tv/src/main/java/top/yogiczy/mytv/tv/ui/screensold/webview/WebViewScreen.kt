@@ -33,10 +33,10 @@ import top.yogiczy.mytv.core.data.utils.Logger
 @Composable
 fun WebViewScreen(
     modifier: Modifier = Modifier,
-    urlProvider: () -> String = { "https://tv.cctv.com/live/index.shtml" },
+    urlProvider: () -> Pair<String, String> = { Pair("", "") },
     onVideoResolutionChanged: (width: Int, height: Int) -> Unit = { _, _ -> },
 ) {
-    val url = urlProvider()
+    val (url, httpUserAgent) = urlProvider()
     var placeholderVisible by remember { mutableStateOf(true) }
     var placeholderMessage by remember { mutableStateOf("加载中...") }
     val logger = remember { Logger.create("WebViewScreen") }
@@ -89,8 +89,7 @@ fun WebViewScreen(
                     settings.databaseEnabled = true
                     settings.loadsImagesAutomatically = false
                     settings.blockNetworkImage = true
-                    settings.userAgentString =
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                    settings.userAgentString = httpUserAgent
                     settings.cacheMode = WebSettings.LOAD_DEFAULT
                     settings.javaScriptCanOpenWindowsAutomatically = true
                     settings.setSupportZoom(false)
@@ -178,7 +177,7 @@ class MyWebViewInterface(
     @JavascriptInterface
     fun changeVideoResolution(width: Int, height: Int) {
         onVideoResolutionChanged(width, height)
-        onUpdatePlaceholderVisible(false, "")
+        onUpdatePlaceholderVisible(false, "加载中...")
     }
 
     @JavascriptInterface
