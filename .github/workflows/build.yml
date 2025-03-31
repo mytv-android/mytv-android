@@ -38,6 +38,9 @@ jobs:
           base64 -d -i encoded_key > keystore.jks
       
     - name: Build with Gradle
+      env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Upload Artifact
