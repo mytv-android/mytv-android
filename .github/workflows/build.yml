@@ -57,9 +57,19 @@ jobs:
       run: |
         echo "info_version_code=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
         echo "info_version_name=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+        
+    - name: Publish Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+            tv/build/outputs/apk/release/*.apk
+        tag_name: V${{ env.info_version_name }}
+        name: V${{ env.info_version_name }}, Version${{ env.info_version_code }}
+        make_latest: true
 
     - name: Publish Pre-Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
       uses: softprops/action-gh-release@v2
       with:
         files: |
