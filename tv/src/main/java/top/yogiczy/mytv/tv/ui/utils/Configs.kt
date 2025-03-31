@@ -590,8 +590,8 @@ object Configs {
 
     /** 播放器音量均衡 */
     var videoPlayerVolumeNormalization: Boolean
-        get() = SP.getBoolean(KEY.VIDEO_PLAYER_VOLUME_NORMALIZATION, false)
-        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_VOLUME_NORMALIZATION, value)
+        get() = SP.getBoolean(KEY.VIDEO_PLAYER_VOLUME_NORMALIZATION.name, false)
+        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_VOLUME_NORMALIZATION.name, value)
 
     /** ==================== 主题 ==================== */
     /** 当前应用主题 */
