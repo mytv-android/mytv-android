@@ -154,19 +154,22 @@ class Media3VideoPlayer(
 
         var contentTypeForce = contentType
 
-        if (uri.toString().startsWith("rtp://")  || uri.toString().startsWith("rtsp://")) {
-            contentTypeForce = C.CONTENT_TYPE_RTSP
-        }
+        if (contentTypeForce == null){
+            if (uri.toString().startsWith("rtp://") || uri.toString().startsWith("rtsp://")) {
+                contentTypeForce = C.CONTENT_TYPE_RTSP
+            }
 
-        if (currentChannelLine.manifestType == "mpd") {
-            contentTypeForce = C.CONTENT_TYPE_DASH
-        }
+            if (currentChannelLine.manifestType == "mpd") {
+                contentTypeForce = C.CONTENT_TYPE_DASH
+            }
 
-        if (uri.toString().startsWith("rtmp://")){
-            contentTypeForce = C.CONTENT_TYPE_OTHER
+            if (uri.toString().startsWith("rtmp://")){
+                contentTypeForce = C.CONTENT_TYPE_OTHER
+            }
         }
 
         val dataSourceFactory = getDataSourceFactory()
+
         return when (contentTypeForce ?: Util.inferContentType(uri)) {
             C.CONTENT_TYPE_HLS -> {
                 HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
@@ -218,18 +221,18 @@ class Media3VideoPlayer(
                 RtspMediaSource.Factory().createMediaSource(mediaItem)
             }
 
-            C.CONTENT_TYPE_SS -> {
-                SsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
-            }
-
             C.CONTENT_TYPE_OTHER -> {
                 if (uri.toString().startsWith("rtmp://")) {
                     ProgressiveMediaSource.Factory(RtmpDataSource.Factory()).createMediaSource(mediaItem)
-                }else{
+                }
+                else{
                     ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
                 }
             }
 
+            C.CONTENT_TYPE_SS -> {
+                SsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+            }
             else -> {
                 triggerError(PlaybackException.UNSUPPORTED_TYPE)
                 null
@@ -276,11 +279,11 @@ class Media3VideoPlayer(
                             prepare(C.CONTENT_TYPE_DASH)
                         } else if (contentTypeAttempts[C.CONTENT_TYPE_RTSP] != true) {
                             prepare(C.CONTENT_TYPE_RTSP)
-                        } else if(contentTypeAttempts[C.CONTENT_TYPE_SS] != true){
-                            prepare(C.CONTENT_TYPE_SS)
                         } else if (contentTypeAttempts[C.CONTENT_TYPE_OTHER] != true) {
                             prepare(C.CONTENT_TYPE_OTHER)
-                        } else {
+                        } else if(contentTypeAttempts[C.CONTENT_TYPE_SS] != true){
+                            prepare(C.CONTENT_TYPE_SS)
+                        }else {
                             triggerError(PlaybackException.UNSUPPORTED_TYPE)
                         }
                     }
@@ -386,7 +389,7 @@ class Media3VideoPlayer(
                     List(group.mediaTrackGroup.length) { trackIndex ->
                         group.mediaTrackGroup
                             .getFormat(trackIndex)
-                            .takeIf { it.roleFlags == C.ROLE_FLAG_SUBTITLE }
+                            // .takeIf { it.roleFlags == C.ROLE_FLAG_SUBTITLE }
                             ?.toSubtitleMetadata()
                             ?.copy(isSelected = group.isTrackSelected(trackIndex))
                     }
@@ -590,21 +593,24 @@ class Media3VideoPlayer(
             .setOverrideForType(TrackSelectionOverride(group, trackIndex))
             .build()
     }
-
+    //或字幕语言属性${track?.language.toString()}
     override fun selectSubtitleTrack(track: Metadata.Subtitle?) {
-        if (track?.language == null) {
+        if (track == null) {  
+            logger.i("字幕${track.toString()}为空，不予加载")
             videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
                 .buildUpon()
                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                 .build()
-
             return
         }
 
+        if (track.language == null) {
+            track.language = "默认"
+        }
         videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
             .buildUpon()
             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-            .setPreferredTextLanguages(track.language)
+            .setPreferredTextLanguages(track.language?: "默认")
             .build()
     }
 

@@ -270,7 +270,7 @@ abstract class VideoPlayer(
             val isSelected: Boolean? = null,
             val bitrate: Int? = null,
             val mimeType: String? = null,
-            val language: String? = null,
+            var language: String? = null,
         ) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Subtitle) return false

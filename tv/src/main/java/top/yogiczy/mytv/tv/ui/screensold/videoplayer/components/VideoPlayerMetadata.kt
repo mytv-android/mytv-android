@@ -63,6 +63,17 @@ fun VideoPlayerMetadata(
                     }
                 }
             }
+            metadata.subtitleTracks?.let { nnSubtitleTracks ->
+                Column {
+                    Text("字幕轨道", style = MaterialTheme.typography.titleMedium)
+                    Column(modifier = Modifier.padding(start = 10.dp)) {
+                        Text("字幕数: ${nnSubtitleTracks.size}")
+                        nnSubtitleTracks.forEach { nnSubtitle ->
+                            nnSubtitle.language?.let { language -> Text("语言: $language") }
+                        }
+                    }
+                }
+            }
         }
     }
 }
