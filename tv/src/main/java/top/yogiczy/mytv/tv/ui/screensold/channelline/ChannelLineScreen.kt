@@ -30,7 +30,7 @@ fun ChannelLineScreen(
         modifier = modifier.backHandler { onClose() },
         onDismissRequest = onClose,
         position = DrawerPosition.End,
-        header = { Text("多线路") },
+        header = { Text("源线路") },
     ) {
         ChannelLineItemList(
             modifier = Modifier.width(268.dp),

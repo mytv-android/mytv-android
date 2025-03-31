@@ -40,7 +40,7 @@ fun SettingsIptvSourceCacheTimeScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 直播源 / 缓存时间") },
+        header = { Text("设置 / 播放源 / 缓存时间") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {

@@ -59,7 +59,7 @@ object Constants {
     const val EPG_REFRESH_TIME_THRESHOLD = 2 // 不到2点不刷新
 
     /**
-     * 混合模式央视频Cookie
+     * 网页源央视频Cookie
      */
     const val HYBRID_YANGSHIPIN_COOKIE = ""
     /**

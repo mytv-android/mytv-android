@@ -84,7 +84,7 @@ class MainViewModel : ViewModel() {
     }
 
     private suspend fun refreshChannel() {
-        _uiState.value = MainUiState.Loading("加载直播源")
+        _uiState.value = MainUiState.Loading("加载播放源")
 
         flow {
             emit(
@@ -97,7 +97,7 @@ class MainViewModel : ViewModel() {
                 if (e !is HttpException) return@retryWhen false
 
                 _uiState.value =
-                    MainUiState.Loading("加载直播源(${attempt + 1}/${Constants.NETWORK_RETRY_COUNT})...")
+                    MainUiState.Loading("加载播放源(${attempt + 1}/${Constants.NETWORK_RETRY_COUNT})...")
                 delay(Constants.NETWORK_RETRY_INTERVAL)
                 true
             }
@@ -159,7 +159,7 @@ class MainViewModel : ViewModel() {
     private suspend fun hybridChannel(channelGroupList: ChannelGroupList) =
         withContext(Dispatchers.Default) {
             if (Configs.iptvHybridMode != Configs.IptvHybridMode.DISABLE) {
-                _uiState.value = MainUiState.Loading("混合直播源")
+                _uiState.value = MainUiState.Loading("网页源")
             }
 
             return@withContext when (Configs.iptvHybridMode) {

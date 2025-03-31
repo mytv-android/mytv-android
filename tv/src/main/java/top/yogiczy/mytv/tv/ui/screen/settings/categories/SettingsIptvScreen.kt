@@ -162,7 +162,7 @@ fun SettingsIptvScreen(
             val hybridMode = settingsViewModel.iptvHybridMode
 
             SettingsListItem(
-                headlineContent = "混合模式",
+                headlineContent = "网页源",
                 trailingContent = { Text(hybridMode.label) },
                 onSelect = toIptvHybridModeScreen,
                 link = true,
@@ -171,7 +171,7 @@ fun SettingsIptvScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "混合源央视频Cookie",
+                headlineContent = "网页源央视频Cookie",
                 supportingContent = "登录到央视频以收看付费频道",
                 trailingContent = settingsViewModel.iptvHybridYangshipinCookie.take(50)+"...",
                 remoteConfig = true,

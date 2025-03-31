@@ -64,10 +64,10 @@ object Configs {
         /** 播放源分组隐藏列表 */
         IPTV_CHANNEL_GROUP_HIDDEN_LIST,
 
-        /** 混合模式 */
+        /** 网页源 */
         IPTV_HYBRID_MODE,
 
-        /** 混合源央视频Cookie */
+        /** 网页源央视频Cookie */
         IPTV_HYBRID_YANGSHIPIN_COOKIE,
 
         /** 相似频道合并 */
@@ -315,14 +315,14 @@ object Configs {
         get() = SP.getStringSet(KEY.IPTV_CHANNEL_GROUP_HIDDEN_LIST.name, emptySet())
         set(value) = SP.putStringSet(KEY.IPTV_CHANNEL_GROUP_HIDDEN_LIST.name, value)
 
-    /** 混合模式 */
+    /** 网页源 */
     var iptvHybridMode: IptvHybridMode
         get() = IptvHybridMode.fromValue(
             SP.getInt(KEY.IPTV_HYBRID_MODE.name, IptvHybridMode.IPTV_FIRST.value)
         )
         set(value) = SP.putInt(KEY.IPTV_HYBRID_MODE.name, value.value)
     
-    /** 混合模式央视频Cookie */
+    /** 网页源央视频Cookie */
     var iptvHybridYangshipinCookie: String
         get() = SP.getString(KEY.IPTV_HYBRID_YANGSHIPIN_COOKIE.name, Constants.HYBRID_YANGSHIPIN_COOKIE)
         set(value) = SP.putString(KEY.IPTV_HYBRID_YANGSHIPIN_COOKIE.name, value)
@@ -695,8 +695,8 @@ object Configs {
         /** 直播源优先 */
         IPTV_FIRST(1, "直播源优先"),
 
-        /** 混合优先 */
-        HYBRID_FIRST(2, "混合优先");
+        /** 网页源优先 */
+        HYBRID_FIRST(2, "网页源优先");
 
         companion object {
             fun fromValue(value: Int): IptvHybridMode {

@@ -62,7 +62,7 @@ fun ChannelLineItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 if (line.hybridType == ChannelLine.HybridType.WebView) {
-                    Tag("混合")
+                    Tag("网页")
                     Tag(ChannelUtil.getHybridWebViewUrlProvider(line.url))
                 } else {
                     Tag(if (line.url.isIPv6()) "IPv6" else "IPv4")

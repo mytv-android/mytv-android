@@ -89,8 +89,8 @@ fun SettingsControlScreen(
             val changeLineWithLeftRight = settingsViewModel.iptvChannelChangeLineWithLeftRight
 
             SettingsListItem(
-                headlineContent = "左右键切换直播源线路",
-                supportingContent = "启用后，左右键可切换当前频道的不同线路；关闭则禁用此功能",
+                headlineContent = "左右键切换播放源",
+                supportingContent = "启用后，左右键可切换当前频道的不同播放源；关闭则禁用此功能",
                 trailingContent = {
                     Switch(changeLineWithLeftRight, null)
                 },
