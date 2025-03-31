@@ -40,7 +40,7 @@
 }]]></component>
   <component name="RunManager">
     <configuration name="tv" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
-      <module name="天光云影.tv" />
+      <module name="电视直播.tv" />
       <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
