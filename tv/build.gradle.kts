@@ -18,16 +18,16 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "top.yogiczy.slcs.tv"
+        applicationId = "com.github.mytv-android.mytv"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "3.3.7"
+        versionCode = 1
+        versionName = "1.0.0"
         vectorDrawables {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "SENTRY_DSN", "\"${getProperty("sentry.dsn") ?: ""}\"")
+        buildConfigField("String", "SENTRY_DSN", "\"${getProperty("sentry.dsn") ?: System.getenv("SENTRY_DSN")}\"")
     }
 
     buildTypes {
@@ -107,6 +107,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.android.material)
     implementation(libs.kotlinx.serialization)
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.material.icons.extended)
@@ -128,6 +129,7 @@ dependencies {
     }
     implementation(libs.androidx.media3.datasource.rtmp)
     implementation(libs.androidx.media3.exoplayer.smoothstreaming)
+
     implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.0.0")
     // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.0.0")
 
@@ -157,8 +159,8 @@ dependencies {
 }
 
 sentry {
-    org.set("yogiczy")
-    projectName.set("mytv-android")
+    org.set("ldm")
+    projectName.set("mytv")
     authToken.set(getProperty("sentry.auth_token") ?: System.getenv("SENTRY_AUTH_TOKEN"))
     ignoredBuildTypes.set(setOf("debug"))
     autoUploadProguardMapping = false
