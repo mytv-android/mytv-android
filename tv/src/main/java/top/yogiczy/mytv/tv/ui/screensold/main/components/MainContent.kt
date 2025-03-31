@@ -22,6 +22,8 @@ import top.yogiczy.mytv.tv.ui.material.Snackbar
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.material.popupable
 import top.yogiczy.mytv.tv.ui.screen.settings.SettingsSubCategories
+import top.yogiczy.mytv.tv.ui.screen.main.MainViewModel
+import top.yogiczy.mytv.tv.ui.screen.main.mainVM
 import top.yogiczy.mytv.tv.ui.screen.settings.SettingsViewModel
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.screensold.audiotracks.AudioTracksScreen
@@ -37,6 +39,7 @@ import top.yogiczy.mytv.tv.ui.screensold.epg.EpgScreen
 import top.yogiczy.mytv.tv.ui.screensold.epgreverse.EpgReverseScreen
 import top.yogiczy.mytv.tv.ui.screensold.quickop.QuickOpScreen
 import top.yogiczy.mytv.tv.ui.screensold.subtitletracks.SubtitleTracksScreen
+import top.yogiczy.mytv.tv.ui.screensold.iptvsource.IptvSourceScreen
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.VideoPlayerScreen
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.rememberVideoPlayerState
@@ -57,6 +60,8 @@ fun MainContent(
     settingsViewModel: SettingsViewModel = settingsVM,
     onChannelFavoriteToggle: (Channel) -> Unit = {},
     toSettingsScreen: (SettingsSubCategories?) -> Unit = {},
+    toDashboardScreen: () -> Unit = {},
+    onReload: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -142,6 +147,7 @@ fun MainContent(
         VideoPlayerScreen(
             state = videoPlayerState,
             showMetadataProvider = { settingsViewModel.debugShowVideoPlayerMetadata },
+            forceTextureView = false,
         )
 
         Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
@@ -183,6 +189,7 @@ fun MainContent(
     Visibility({
         !mainContentState.isTempChannelScreenVisible
                 && !mainContentState.isChannelScreenVisible
+                && !mainContentState.isIptvSourceScreenVisible
                 && !mainContentState.isQuickOpScreenVisible
                 && !mainContentState.isEpgScreenVisible
                 && !mainContentState.isChannelLineScreenVisible
@@ -196,6 +203,7 @@ fun MainContent(
     Visibility({
         mainContentState.isTempChannelScreenVisible
                 && !mainContentState.isChannelScreenVisible
+                && !mainContentState.isIptvSourceScreenVisible
                 && !mainContentState.isQuickOpScreenVisible
                 && !mainContentState.isEpgScreenVisible
                 && !mainContentState.isChannelLineScreenVisible
@@ -244,6 +252,24 @@ fun MainContent(
                 )
             },
             onClose = { mainContentState.isEpgScreenVisible = false },
+        )
+    }
+
+    PopupContent(
+        visibleProvider = { mainContentState.isIptvSourceScreenVisible },
+        onDismissRequest = { mainContentState.isIptvSourceScreenVisible = false },
+    ) {
+        IptvSourceScreen(
+            currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
+            iptvSourceListProvider = { settingsViewModel.iptvSourceList },
+            onIptvSourceChanged = {
+                mainContentState.isIptvSourceScreenVisible = false
+                settingsViewModel.iptvSourceCurrent = it
+                settingsViewModel.iptvChannelGroupHiddenList = emptySet()
+                settingsViewModel.iptvChannelLastPlay = Channel.EMPTY
+                onReload()
+            },
+            onClose = { mainContentState.isIptvSourceScreenVisible = false },
         )
     }
 
@@ -372,6 +398,10 @@ fun MainContent(
             epgListProvider = epgListProvider,
             currentPlaybackEpgProgrammeProvider = { mainContentState.currentPlaybackEpgProgramme },
             videoPlayerMetadataProvider = { videoPlayerState.metadata },
+            onShowIptvSource ={
+                mainContentState.isQuickOpScreenVisible = false
+                mainContentState.isIptvSourceScreenVisible = true
+            },
             onShowEpg = {
                 mainContentState.isQuickOpScreenVisible = false
                 mainContentState.isEpgScreenVisible = true
@@ -403,6 +433,10 @@ fun MainContent(
             toSettingsScreen = {
                 mainContentState.isQuickOpScreenVisible = false
                 toSettingsScreen(it)
+            },
+            toDashboardScreen = {
+                mainContentState.isQuickOpScreenVisible = false
+                toDashboardScreen()
             },
             onClearCache = {
                 settingsViewModel.iptvChannelLinePlayableHostList = emptySet()

@@ -51,6 +51,7 @@ fun QuickOpScreen(
     isInTimeShiftProvider: () -> Boolean = { false },
     currentPlaybackEpgProgrammeProvider: () -> EpgProgramme? = { null },
     videoPlayerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
     onShowVideoPlayerController: () -> Unit = {},
@@ -60,6 +61,7 @@ fun QuickOpScreen(
     onShowSubtitleTracks: () -> Unit = {},
     onClearCache: () -> Unit = {},
     toSettingsScreen: (SettingsSubCategories?) -> Unit = {},
+    toDashboardScreen: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
     val screenAutoCloseState = rememberScreenAutoCloseState(onTimeout = onClose)
@@ -85,6 +87,7 @@ fun QuickOpScreen(
             isInTimeShiftProvider = isInTimeShiftProvider,
             currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
             videoPlayerMetadataProvider = videoPlayerMetadataProvider,
+            onShowIptvSource = onShowIptvSource,
             onShowEpg = onShowEpg,
             onShowChannelLine = onShowChannelLine,
             onShowVideoPlayerController = onShowVideoPlayerController,
@@ -93,6 +96,7 @@ fun QuickOpScreen(
             onShowAudioTracks = onShowAudioTracks,
             onShowSubtitleTracks = onShowSubtitleTracks,
             onShowMoreSettings = { toSettingsScreen(null) },
+            onShowDashboardScreen = toDashboardScreen,
             onClearCache = onClearCache,
             onUserAction = { screenAutoCloseState.active() },
         )
@@ -150,6 +154,7 @@ private fun QuickOpScreenBottom(
     isInTimeShiftProvider: () -> Boolean = { false },
     currentPlaybackEpgProgrammeProvider: () -> EpgProgramme? = { null },
     videoPlayerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
     onShowVideoPlayerController: () -> Unit = {},
@@ -158,6 +163,7 @@ private fun QuickOpScreenBottom(
     onShowAudioTracks: () -> Unit = {},
     onShowSubtitleTracks: () -> Unit = {},
     onShowMoreSettings: () -> Unit = {},
+    onShowDashboardScreen: () -> Unit = {},
     onClearCache: () -> Unit = {},
     onUserAction: () -> Unit = {},
 ) {
@@ -184,6 +190,8 @@ private fun QuickOpScreenBottom(
 
             QuickOpBtnList(
                 playerMetadataProvider = videoPlayerMetadataProvider,
+                currentChannelLineIdxProvider = currentChannelLineIdxProvider,
+                onShowIptvSource = onShowIptvSource,
                 onShowEpg = onShowEpg,
                 onShowChannelLine = onShowChannelLine,
                 onShowVideoPlayerController = onShowVideoPlayerController,
@@ -191,6 +199,7 @@ private fun QuickOpScreenBottom(
                 onShowMoreSettings = onShowMoreSettings,
                 onShowVideoTracks = onShowVideoTracks,
                 onShowAudioTracks = onShowAudioTracks,
+                onShowDashboardScreen = onShowDashboardScreen,
                 onShowSubtitleTracks = onShowSubtitleTracks,
                 onClearCache = onClearCache,
                 onUserAction = onUserAction,
