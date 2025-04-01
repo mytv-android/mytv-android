@@ -38,7 +38,7 @@ jobs:
           base64 -d -i encoded_key > keystore.jks
       
     - name: Build with Gradle (Release)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main'
       env:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -51,24 +51,46 @@ jobs:
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       run: ./gradlew :tv:assembleDebug
 
-    - name: Upload Artifact
+    - name: Upload Artifact (Release)
+      if: github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@v4
       with:
         name: mytv-android.apk
         path: tv/build/outputs/apk/release/*.apk
 
-    - name: Read alpha apk output metadata
-      id: apk-meta-alpha
+    - name: Read apk output metadata (Release)
+      if: github.ref == 'refs/heads/main'
+      id: apk-meta-release
       uses: juliangruber/read-file-action@v1
       with:
         path: tv/build/outputs/apk/original/release/output-metadata.json
+
+    - name: Upload Artifact (Dev)
+      if: github.ref == 'refs/heads/dev'
+      uses: actions/upload-artifact@v4
+      with:
+        name: mytv-android.apk
+        path: tv/build/outputs/apk/debug/*.apk
+
+    - name: Read apk output metadata (Dev)
+      if: github.ref == 'refs/heads/dev'
+      id: apk-meta-dev
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: tv/build/outputs/apk/original/debug/output-metadata.json
     
-    - name: Parse apk infos
-      id: versionCode
+    - name: Parse apk infos (Release)
+      if: github.ref == 'refs/heads/main'
       run: |
-        echo "info_version_code=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
-        echo "info_version_name=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
-        
+        echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
+        echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+    
+    - name: Parse apk infos (Dev)
+      if: github.ref == 'refs/heads/dev'
+      run: |
+        echo "info_version_code=${{ fromJson(steps.apk-meta-dev.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
+        echo "info_version_name=${{ fromJson(steps.apk-meta-dev.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+
     - name: Publish Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
@@ -84,7 +106,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: |
-            tv/build/outputs/apk/release/*.apk
+            tv/build/outputs/apk/debug/*.apk
         tag_name: V${{ env.info_version_name }}
         name: V${{ env.info_version_name }}, Version${{ env.info_version_code }}
         prerelease: true
