@@ -10,6 +10,26 @@ plugins {
     alias(libs.plugins.sentry.android.gradle)
 }
 
+// 获取 Git 提交次数作为 versionCode
+fun getGitCommitCount(): Int {
+    return try {
+        val process = Runtime.getRuntime().exec("git rev-list --count HEAD")
+        process.inputStream.bufferedReader().readLine().toInt()
+    } catch (e: Exception) {
+        1 // 如果获取失败，默认返回 1
+    }
+}
+
+// 获取 Git 提交的短哈希作为 versionName 的一部分
+fun getGitCommitHash(): String {
+    return try {
+        val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
+        process.inputStream.bufferedReader().readLine()
+    } catch (e: Exception) {
+        "unknown" // 如果获取失败，返回 "unknown"
+    }
+}
+
 android {
     @Suppress("UNCHECKED_CAST")
     apply(extra["appConfig"] as BaseAppModuleExtension.() -> Unit)
@@ -21,8 +41,8 @@ android {
         applicationId = "com.github.mytv.android"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = getGitCommitCount()
+        versionName = "1.0.1.${getGitCommitCount()}.${getGitCommitHash()}"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -40,6 +60,13 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
 
+            ndk {
+                abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+            }
+        }
+        debug{
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             ndk {
                 abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
             }
