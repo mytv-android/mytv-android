@@ -12,22 +12,14 @@ plugins {
 
 // 获取 Git 提交次数作为 versionCode
 fun getGitCommitCount(): Int {
-    return try {
-        val process = Runtime.getRuntime().exec("git rev-list --count HEAD")
-        process.inputStream.bufferedReader().readLine().toInt()
-    } catch (e: Exception) {
-        1 // 如果获取失败，默认返回 1
-    }
+    val process = Runtime.getRuntime().exec("git rev-list --count HEAD")
+    return process.inputStream.bufferedReader().readLine().toInt()
 }
 
 // 获取 Git 提交的短哈希作为 versionName 的一部分
 fun getGitCommitHash(): String {
-    return try {
-        val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
-        process.inputStream.bufferedReader().readLine()
-    } catch (e: Exception) {
-        "unknown" // 如果获取失败，返回 "unknown"
-    }
+    val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
+    return process.inputStream.bufferedReader().readLine()
 }
 
 android {
@@ -66,6 +58,10 @@ android {
         }
         debug{
             isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             signingConfig = signingConfigs.getByName("release")
             ndk {
                 abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
