@@ -11,9 +11,9 @@ plugins {
 }
 
 // 获取 Git 提交次数作为 versionCode
-fun getGitCommitCount(): Int {
+fun getGitCommitCount(): String {
     val process = Runtime.getRuntime().exec("git rev-list --count HEAD")
-    return process.inputStream.bufferedReader().readLine().toInt()
+    return process.inputStream.bufferedReader().readLine()
 }
 
 // 获取 Git 提交的短哈希作为 versionName 的一部分
@@ -33,7 +33,7 @@ android {
         applicationId = "com.github.mytv.android"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = getGitCommitCount()
+        versionCode = getGitCommitCount().toInt()
         versionName = "1.0.1.${getGitCommitCount()}.${getGitCommitHash()}"
         vectorDrawables {
             useSupportLibrary = true
