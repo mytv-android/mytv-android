@@ -10,8 +10,7 @@ plugins {
     alias(libs.plugins.sentry.android.gradle)
 }
 @Suppress("KotlinConstantConditions")
-    val versionCode: Int by lazy { "git rev-list --count HEAD".exec().toInt() }
-
+    val versionCode: Int = "git rev-list --count HEAD".exec().toInt()
 // 获取 Git 提交的短哈希作为 versionName 的一部分
 fun getGitCommitHash(): String {
     val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
