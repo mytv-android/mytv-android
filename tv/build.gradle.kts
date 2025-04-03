@@ -11,7 +11,7 @@ plugins {
 }
 @Suppress("KotlinConstantConditions")
     fun String.exec() = String(Runtime.getRuntime().exec(this).inputStream.readBytes()).trim()
-    val versionCode: Int = "git rev-list --count HEAD".exec().toInt()
+    val versionCode: String = "git rev-list --count HEAD".exec()
 // 获取 Git 提交的短哈希作为 versionName 的一部分
 fun getGitCommitHash(): String {
     val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
