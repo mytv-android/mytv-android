@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.sentry.android.gradle)
 }
 @Suppress("KotlinConstantConditions")
+    fun String.exec() = String(Runtime.getRuntime().exec(this).inputStream.readBytes()).trim()
     val versionCode: Int = "git rev-list --count HEAD".exec().toInt()
 // 获取 Git 提交的短哈希作为 versionName 的一部分
 fun getGitCommitHash(): String {
