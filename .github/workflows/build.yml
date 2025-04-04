@@ -42,6 +42,8 @@ jobs:
       env:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+            VERSION_CODE: ${{ github.run_number }}
+            COMMIT_HASH: ${{ github.sha }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
@@ -49,6 +51,8 @@ jobs:
       env:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+            VERSION_CODE: ${{ github.run_number }}
+            COMMIT_HASH: ${{ github.sha }}
       run: ./gradlew :tv:assembleDebug
 
     - name: Upload Artifact 

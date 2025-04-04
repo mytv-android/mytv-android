@@ -9,14 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.sentry.android.gradle)
 }
-@Suppress("KotlinConstantConditions")
-    fun String.exec() = String(Runtime.getRuntime().exec(this).inputStream.readBytes()).trim()
-    val versionCode: String = "git rev-list --count HEAD".exec()
-// 获取 Git 提交的短哈希作为 versionName 的一部分
-fun getGitCommitHash(): String {
-    val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
-    return process.inputStream.bufferedReader().readLine()
-}
+
 
 android {
     @Suppress("UNCHECKED_CAST")
@@ -29,8 +22,8 @@ android {
         applicationId = "com.github.mytv.android"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = versionCode
-        versionName = "1.0.1.${versionCode}.${getGitCommitHash()}"
+        versionCode = "${System.getenv("VERSION_CODE")}".toInt()
+        versionName = "1.0.1.${System.getenv("VERSION_CODE")}.${System.getenv("COMMIT_HASH")}"
         vectorDrawables {
             useSupportLibrary = true
         }

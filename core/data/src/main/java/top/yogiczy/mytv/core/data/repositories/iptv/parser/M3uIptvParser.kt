@@ -38,9 +38,11 @@ class M3uIptvParser : IptvParser {
                         Regex("http-user-agent=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
                     val httpReferrer =
                         Regex("http-referrer=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                    val httpOrigin =
+                        Regex("http-origin=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
 
                     // 记录解析结果
-                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer")
+                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer, httpOrigin=$httpOrigin")
 
                     addedChannels = groupNames.map { groupName ->
                         IptvParser.ChannelItem(
@@ -51,6 +53,7 @@ class M3uIptvParser : IptvParser {
                             logo = logo,
                             httpUserAgent = httpUserAgent,
                             httpReferrer = httpReferrer,
+                            httpOrigin = httpOrigin,
                         )
                     }
                 } else {
@@ -63,6 +66,25 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key")) {
                         addedChannels =
                             addedChannels.map { it.copy(licenseKey = line.split("=").last()) }
+                    } else if (line.startsWith("#EXTVLCOPT")) {
+                        val httpOrigin =
+                        Regex("http-origin=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                        if (httpOrigin != null) {
+                            addedChannels =
+                                addedChannels.map { it.copy(httpOrigin = httpOrigin) }
+                        }
+                        val httpReferrer =
+                        Regex("http-referrer=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                        if (httpReferrer != null) {
+                            addedChannels =
+                                addedChannels.map { it.copy(httpReferrer = httpReferrer) }
+                        }
+                        val httpUserAgent =
+                        Regex("http-user-agent=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                        if (httpUserAgent != null) {
+                            addedChannels =
+                                addedChannels.map { it.copy(httpUserAgent = httpUserAgent) }
+                        }
                     } else {
                         // 记录URL行
                         logger.i("解析URL行: $line")
