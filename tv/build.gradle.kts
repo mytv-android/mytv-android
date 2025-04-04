@@ -10,17 +10,6 @@ plugins {
     alias(libs.plugins.sentry.android.gradle)
 }
 
-// 获取 Git 提交次数作为 versionCode
-fun getGitCommitCount(): String {
-    val process = Runtime.getRuntime().exec("git rev-list --count HEAD")
-    return process.inputStream.bufferedReader().readLine()
-}
-
-// 获取 Git 提交的短哈希作为 versionName 的一部分
-fun getGitCommitHash(): String {
-    val process = Runtime.getRuntime().exec("git rev-parse --short HEAD")
-    return process.inputStream.bufferedReader().readLine()
-}
 
 android {
     @Suppress("UNCHECKED_CAST")
@@ -33,8 +22,8 @@ android {
         applicationId = "com.github.mytv.android"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = getGitCommitCount().toInt()
-        versionName = "1.0.1.${getGitCommitCount()}.${getGitCommitHash()}"
+        versionCode = "${System.getenv("VERSION_CODE")}".toInt()
+        versionName = "1.0.1.${System.getenv("VERSION_CODE")}.${System.getenv("COMMIT_HASH")}"
         vectorDrawables {
             useSupportLibrary = true
         }

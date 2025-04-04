@@ -109,6 +109,7 @@ private fun rememberLineDelay(line: ChannelLine): Long {
                                 .apply {
                                     line.httpUserAgent?.let { header("User-Agent", it) }
                                     line.httpReferrer?.let { header("Referer", it) } // 添加 Referer 请求头
+                                    line.httpOrigin?.let { header("Origin", it) } // 添加 Origin 请求头
                                 }
                         }) { body -> body.string() }
                     } catch (_: IOException) {
