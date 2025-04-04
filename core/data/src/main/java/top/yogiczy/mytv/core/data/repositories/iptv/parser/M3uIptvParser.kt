@@ -66,25 +66,15 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key")) {
                         addedChannels =
                             addedChannels.map { it.copy(licenseKey = line.split("=").last()) }
-                    } else if (line.startsWith("#EXTVLCOPT")) {
-                        val httpOrigin =
-                        Regex("http-origin=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
-                        if (httpOrigin != null) {
-                            addedChannels =
-                                addedChannels.map { it.copy(httpOrigin = httpOrigin) }
-                        }
-                        val httpReferrer =
-                        Regex("http-referrer=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
-                        if (httpReferrer != null) {
-                            addedChannels =
-                                addedChannels.map { it.copy(httpReferrer = httpReferrer) }
-                        }
-                        val httpUserAgent =
-                        Regex("http-user-agent=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
-                        if (httpUserAgent != null) {
-                            addedChannels =
-                                addedChannels.map { it.copy(httpUserAgent = httpUserAgent) }
-                        }
+                    } else if (line.startsWith("#EXTVLCOPT:http-origin")) {
+                        addedChannels =
+                            addedChannels.map { it.copy(httpOrigin = line.split("=").last()) }
+                    } else if (line.startsWith("#EXTVLCOPT:http-referrer")) {
+                        addedChannels =
+                            addedChannels.map { it.copy(httpReferrer = line.split("=").last()) }
+                    } else if (line.startsWith("#EXTVLCOPT:http-user-agent")) {
+                        addedChannels =
+                            addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }                      
                     } else {
                         // 记录URL行
                         logger.i("解析URL行: $line")
