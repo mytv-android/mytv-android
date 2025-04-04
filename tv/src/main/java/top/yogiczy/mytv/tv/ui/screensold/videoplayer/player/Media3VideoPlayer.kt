@@ -127,9 +127,10 @@ class Media3VideoPlayer(
 
     private fun getDataSourceFactory(): DefaultDataSource.Factory {
         val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
-            "Referer" to (currentChannelLine.httpReferrer ?: "")) + mapOf(
-                "Origin" to (currentChannelLine.httpOrigin ?: ""))
-        ).filterValues { it.isNotEmpty() }
+            "Referer" to (currentChannelLine.httpReferrer ?: "")
+            ).filterValues { it.isNotEmpty() } + mapOf(
+                "Origin" to (currentChannelLine.httpOrigin ?: "")
+                ).filterValues { it.isNotEmpty() }
         
         // 使用应用内日志系统
         logger.i("播放地址: ${currentChannelLine.playableUrl}")
