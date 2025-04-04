@@ -37,13 +37,18 @@ jobs:
           echo ${{ secrets.SIGN_KEY }} > ./encoded_key
           base64 -d -i encoded_key > keystore.jks
       
+    - name : Add SHORT_SHA Environment Variable
+      id   : short-sha
+      shell: bash      
+      run  : echo "short_sha=`git rev-parse --short HEAD`" >> $GITHUB_ENV
+
     - name: Build with Gradle (Release)
       if: github.ref == 'refs/heads/main'
       env:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
-            COMMIT_HASH: ${{ github.sha }}
+            COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
@@ -52,7 +57,7 @@ jobs:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
-            COMMIT_HASH: ${{ github.sha }}
+            COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleDebug
 
     - name: Upload Artifact 
