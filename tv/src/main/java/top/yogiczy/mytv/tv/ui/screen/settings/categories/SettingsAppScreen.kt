@@ -38,7 +38,7 @@ fun SettingsAppScreen(
 
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 应用") },
+        header = { Text("设置 / 通用") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {

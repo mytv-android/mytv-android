@@ -26,13 +26,23 @@ class TxtIptvParser : IptvParser {
                 } else {
                     val res = line.split(",", "，")
                     if (res.size < 2) return@forEach
-
                     channelList.addAll(res[1].split("#").map { url ->
-                        IptvParser.ChannelItem(
-                            name = res[0].trim(),
-                            groupName = groupName ?: "其他",
-                            url = url.trim(),
-                        )
+                        if (url.startsWith("webview://")) {
+                            logger.i("检测到WebView链接: $url")
+                            logger.i("将URL的hybridType设置为WebView")
+                            IptvParser.ChannelItem(
+                                name = res[0].trim(),
+                                groupName = groupName ?: "其他",
+                                url = url.trim(), 
+                                hybridType = IptvParser.ChannelItem.HybridType.WebView,
+                            ) 
+                        }else{
+                            IptvParser.ChannelItem(
+                                name = res[0].trim(),
+                                groupName = groupName ?: "其他",
+                                url = url.trim(),
+                            )
+                        }
                     })
                 }
             }

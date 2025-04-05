@@ -127,19 +127,19 @@ fun SettingsVideoPlayerScreen(
             )
         }
 
-        item {
-            SettingsListItem(
-                headlineContent = "音量平衡",
-                supportingContent = "启用后，将统一均衡输出播放音量，解决直播源音量大小不一致的情况；仅支持Media3播放器",
-                trailingContent = {
-                    Switch(settingsViewModel.videoPlayerVolumeNormalization, null)
-                },
-                onSelect = {
-                    settingsViewModel.videoPlayerVolumeNormalization =
-                        !settingsViewModel.videoPlayerVolumeNormalization
-                },
-            )
-        }
+        // item {
+        //     SettingsListItem(
+        //         headlineContent = "音量平衡",
+        //         supportingContent = "启用后，将统一均衡输出播放音量，解决直播源音量大小不一致的情况；仅支持Media3播放器",
+        //         trailingContent = {
+        //             Switch(settingsViewModel.videoPlayerVolumeNormalization, null)
+        //         },
+        //         onSelect = {
+        //             settingsViewModel.videoPlayerVolumeNormalization =
+        //                 !settingsViewModel.videoPlayerVolumeNormalization
+        //         },
+        //     )
+        // }
     }
 }
 
