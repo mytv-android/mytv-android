@@ -128,7 +128,9 @@ class Media3VideoPlayer(
     private fun getDataSourceFactory(): DefaultDataSource.Factory {
         val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
             "Referer" to (currentChannelLine.httpReferrer ?: "")
-        ).filterValues { it.isNotEmpty() }
+            ).filterValues { it.isNotEmpty() } + mapOf(
+                "Origin" to (currentChannelLine.httpOrigin ?: "")
+                ).filterValues { it.isNotEmpty() }
         
         // 使用应用内日志系统
         logger.i("播放地址: ${currentChannelLine.playableUrl}")
@@ -389,7 +391,10 @@ class Media3VideoPlayer(
                     List(group.mediaTrackGroup.length) { trackIndex ->
                         group.mediaTrackGroup
                             .getFormat(trackIndex)
-                            // .takeIf { it.roleFlags == C.ROLE_FLAG_SUBTITLE }
+                            .takeIf { 
+                                (it.roleFlags and C.ROLE_FLAG_SUBTITLE != 0) || 
+                                (it.roleFlags and C.ROLE_FLAG_CAPTION != 0) 
+                            }
                             ?.toSubtitleMetadata()
                             ?.copy(isSelected = group.isTrackSelected(trackIndex))
                     }

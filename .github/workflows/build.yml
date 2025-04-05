@@ -37,30 +37,63 @@ jobs:
           echo ${{ secrets.SIGN_KEY }} > ./encoded_key
           base64 -d -i encoded_key > keystore.jks
       
-    - name: Build with Gradle
+    - name : Add SHORT_SHA Environment Variable
+      id   : short-sha
+      shell: bash      
+      run  : echo "short_sha=`git rev-parse --short HEAD`" >> $GITHUB_ENV
+
+    - name: Build with Gradle (Release)
+      if: github.ref == 'refs/heads/main'
       env:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+            VERSION_CODE: ${{ github.run_number }}
+            # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleRelease
     
-    - name: Upload Artifact
+    - name: Build with Gradle (Dev)
+      if: github.ref == 'refs/heads/dev'
+      env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+            VERSION_CODE: ${{ github.run_number }}
+            # COMMIT_HASH: ${{ env.short_sha }}
+      run: ./gradlew :tv:assembleDebug
+
+    - name: Upload Artifact 
       uses: actions/upload-artifact@v4
       with:
         name: mytv-android.apk
         path: tv/build/outputs/apk/release/*.apk
+    
+    - name: Move Metadata (Dev)
+      if: github.ref == 'refs/heads/dev'
+      run: mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+    
+    - name: Move Metadata  (Release)
+      if: github.ref == 'refs/heads/main'
+      run: mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
-    - name: Read alpha apk output metadata
-      id: apk-meta-alpha
+    - name: Read apk output metadata
+      id: apk-meta-release
       uses: juliangruber/read-file-action@v1
       with:
-        path: tv/build/outputs/apk/original/release/output-metadata.json
-    
+        path: tv/build/outputs/apk/release/output-metadata.json
+
     - name: Parse apk infos
-      id: versionCode
       run: |
-        echo "info_version_code=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
-        echo "info_version_name=${{ fromJson(steps.apk-meta-alpha.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
-        
+        echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
+        echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+
+    - name: Get changelog
+      id: changelog
+      run: |
+          {
+            echo "changelog<<EOF"
+            echo "$(git log --pretty=format:"- %s (%h)" ${{ github.event.before }}..${{ github.sha }})"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+          
     - name: Publish Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
@@ -68,7 +101,8 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }}, Version${{ env.info_version_code }}
+        name: V${{ env.info_version_name }} （stable通道）
+        body: ${{ env.changelog }}
         make_latest: true
 
     - name: Publish Pre-Release
@@ -78,5 +112,7 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }}, Version${{ env.info_version_code }}
+        name: V${{ env.info_version_name }} （dev通道）
+        body: ${{ env.changelog }}
+        generate_release_notes: true
         prerelease: true

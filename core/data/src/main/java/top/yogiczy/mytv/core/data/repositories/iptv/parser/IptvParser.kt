@@ -44,6 +44,7 @@ interface IptvParser {
         val logo: String? = null,
         val httpUserAgent: String? = null,
         val httpReferrer: String? = null,
+        val httpOrigin: String? = null,
         val hybridType: HybridType = HybridType.None,
         val manifestType: String? = null,
         val licenseType: String? = null,
@@ -66,6 +67,7 @@ interface IptvParser {
                                             url = it.url,
                                             httpUserAgent = it.httpUserAgent,
                                             httpReferrer = it.httpReferrer,
+                                            httpOrigin = it.httpOrigin,
                                             hybridType = when (it.hybridType) {
                                                 HybridType.WebView -> ChannelLine.HybridType.WebView
                                                 HybridType.None -> ChannelLine.HybridType.None

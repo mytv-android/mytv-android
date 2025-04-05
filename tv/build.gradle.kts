@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.sentry.android.gradle)
 }
 
+
 android {
     @Suppress("UNCHECKED_CAST")
     apply(extra["appConfig"] as BaseAppModuleExtension.() -> Unit)
@@ -21,8 +22,8 @@ android {
         applicationId = "com.github.mytv.android"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = "${System.getenv("VERSION_CODE")}".toInt()
+        versionName = "1.0.1.${System.getenv("VERSION_CODE")}"//.${System.getenv("COMMIT_HASH")}"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -40,6 +41,17 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
 
+            ndk {
+                abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+            }
+        }
+        debug{
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            signingConfig = signingConfigs.getByName("release")
             ndk {
                 abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
             }

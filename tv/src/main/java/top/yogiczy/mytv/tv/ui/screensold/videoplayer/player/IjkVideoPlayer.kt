@@ -65,6 +65,7 @@ class IjkVideoPlayer(
         val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
             "User-Agent" to (line.httpUserAgent ?: Configs.videoPlayerUserAgent),
             "Referer" to (line.httpReferrer ?: ""),
+            "Origin" to (line.httpOrigin ?: ""),
         ).filterValues { it.isNotEmpty() }
         
         // 使用应用内日志系统

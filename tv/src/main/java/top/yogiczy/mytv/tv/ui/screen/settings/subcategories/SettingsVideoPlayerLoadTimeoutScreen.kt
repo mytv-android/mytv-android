@@ -32,7 +32,7 @@ fun SettingsVideoPlayerLoadTimeoutScreen(
     onBackPressed: () -> Unit = {},
 ) {
     val currentTimeout = timeoutProvider()
-    val timeoutList = listOf(3, 5, 10, 15, 20, 25, 30, 60).map { it.toLong() * 1000 }
+    val timeoutList = listOf(1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 45, 60).map { it.toLong() * 1000 }
 
     val childPadding = rememberChildPadding()
 

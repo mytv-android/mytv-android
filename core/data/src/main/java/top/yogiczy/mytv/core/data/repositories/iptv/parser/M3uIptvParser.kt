@@ -38,9 +38,11 @@ class M3uIptvParser : IptvParser {
                         Regex("http-user-agent=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
                     val httpReferrer =
                         Regex("http-referrer=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                    val httpOrigin =
+                        Regex("http-origin=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
 
                     // 记录解析结果
-                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer")
+                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer, httpOrigin=$httpOrigin")
 
                     addedChannels = groupNames.map { groupName ->
                         IptvParser.ChannelItem(
@@ -51,6 +53,7 @@ class M3uIptvParser : IptvParser {
                             logo = logo,
                             httpUserAgent = httpUserAgent,
                             httpReferrer = httpReferrer,
+                            httpOrigin = httpOrigin,
                         )
                     }
                 } else {
@@ -63,6 +66,15 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key")) {
                         addedChannels =
                             addedChannels.map { it.copy(licenseKey = line.split("=").last()) }
+                    } else if (line.startsWith("#EXTVLCOPT:http-origin")) {
+                        addedChannels =
+                            addedChannels.map { it.copy(httpOrigin = line.split("=").last()) }
+                    } else if (line.startsWith("#EXTVLCOPT:http-referrer")) {
+                        addedChannels =
+                            addedChannels.map { it.copy(httpReferrer = line.split("=").last()) }
+                    } else if (line.startsWith("#EXTVLCOPT:http-user-agent")) {
+                        addedChannels =
+                            addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }                      
                     } else {
                         // 记录URL行
                         logger.i("解析URL行: $line")
