@@ -28,8 +28,6 @@ class TxtIptvParser : IptvParser {
                     if (res.size < 2) return@forEach
                     channelList.addAll(res[1].split("#").map { url ->
                         if (url.startsWith("webview://")) {
-                            logger.i("检测到WebView链接: $url")
-                            logger.i("将URL的hybridType设置为WebView")
                             IptvParser.ChannelItem(
                                 name = res[0].trim(),
                                 groupName = groupName ?: "其他",
