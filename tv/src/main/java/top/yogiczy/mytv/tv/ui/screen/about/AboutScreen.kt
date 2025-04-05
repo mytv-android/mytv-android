@@ -109,7 +109,7 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("技术交流 Telegram") },
+                    headlineContent = { Text("天光云影交流群 Telegram") },
                     trailingContent = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -182,7 +182,7 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("赞赏") },
+                    headlineContent = { Text("向天光云影作者赞赏") },
                     supportingContent = { Text("仅支持微信赞赏码") },
                     trailingContent = {
                         Icon(

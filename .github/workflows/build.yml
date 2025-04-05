@@ -114,4 +114,5 @@ jobs:
         tag_name: V${{ env.info_version_name }}
         name: V${{ env.info_version_name }}
         body: ${{ env.changelog }}
+        generate_release_notes: true
         prerelease: true
