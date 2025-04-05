@@ -101,7 +101,7 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }}
+        name: V${{ env.info_version_name }} （stable通道）
         body: ${{ env.changelog }}
         make_latest: true
 
@@ -112,7 +112,7 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }}
+        name: V${{ env.info_version_name }} （dev通道）
         body: ${{ env.changelog }}
         generate_release_notes: true
         prerelease: true
