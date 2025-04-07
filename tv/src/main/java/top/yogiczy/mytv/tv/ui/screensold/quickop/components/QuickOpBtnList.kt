@@ -67,7 +67,19 @@ fun QuickOpBtnList(
     var currentSubtitleTrack = ""
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }.distinctUntilChanged()
-            .collect { _ -> onUserAction() }
+            .collect {
+                val firstVisibleItemIndex = listState.firstVisibleItemIndex
+                val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItemsCount = listState.layoutInfo.totalItemsCount
+
+                if (firstVisibleItemIndex == 0) {
+                    // 如果到达开头，滚动到结尾
+                    listState.scrollToItem(totalItemsCount - 1)
+                } else if (lastVisibleItemIndex == totalItemsCount - 1) {
+                    // 如果到达结尾，滚动到开头
+                    listState.scrollToItem(0)
+                }
+            }
     }
     if (playerMetadata.video != null) {
         val videoTrack = playerMetadata.video
