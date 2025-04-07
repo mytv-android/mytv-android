@@ -103,6 +103,7 @@ jobs:
         tag_name: V${{ env.info_version_name }}
         name: V${{ env.info_version_name }} （stable通道）
         body: ${{ env.changelog }}
+        generate_release_notes: true
         make_latest: true
 
     - name: Publish Pre-Release

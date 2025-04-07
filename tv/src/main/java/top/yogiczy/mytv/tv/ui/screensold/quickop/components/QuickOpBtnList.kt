@@ -19,7 +19,7 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.core.util.utils.humanizeLanguage
-
+import top.yogiczy.mytv.core.util.utils.humanizeAudioChannels
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
@@ -71,14 +71,14 @@ fun QuickOpBtnList(
     }
     if (playerMetadata.video != null) {
         val videoTrack = playerMetadata.video
-        currentVideoTrack = "${videoTrack.width}x${videoTrack.height},${videoTrack.mimeType}" +
-            (if (videoTrack?.decoder != null) ",${videoTrack.decoder.toString()}" else "")
+        currentVideoTrack = "${videoTrack.width}x${videoTrack.height}"//,${videoTrack.mimeType}" +
+            //(if (videoTrack?.decoder != null) ",${videoTrack.decoder.toString()}" else "")
     }
     if (playerMetadata.audio != null) {
         val audioTrack = playerMetadata.audio
-        currentAudioTrack = audioTrack.mimeType.toString() + 
-            (if (audioTrack?.decoder != null) ",${audioTrack.decoder.toString()}" else "") +
-            (if (audioTrack?.channelsLabel != null) ",${audioTrack.channelsLabel}" else "")
+        currentAudioTrack = audioTrack.channels?.humanizeAudioChannels()?: "null" //audioTrack.mimeType.toString() + 
+            //(if (audioTrack?.decoder != null) ",${audioTrack.decoder.toString()}" else "") +
+            // (if (audioTrack?.channelsLabel != null) ",${audioTrack.channelsLabel}" else "")
     }
     if (playerMetadata.subtitleTracks.isNotEmpty()) {
         for (subtitleTrack in playerMetadata.subtitleTracks) {

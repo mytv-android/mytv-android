@@ -22,6 +22,7 @@ fun SettingsUiScreen(
     toUiScreenAutoCloseDelayScreen: () -> Unit = {},
     toUiDensityScaleRatioScreen: () -> Unit = {},
     toUiFontScaleRatioScreen: () -> Unit = {},
+    toUiVideoPlayerSubtitleSettingsScreen: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     SettingsCategoryScreen(
@@ -147,6 +148,15 @@ fun SettingsUiScreen(
                 headlineContent = "界面字体缩放比例",
                 trailingContent = "×${DecimalFormat("#.#").format(scaleRatio)}",
                 onSelect = toUiFontScaleRatioScreen,
+                link = true,
+            )
+        }
+
+        item {
+            SettingsListItem(
+                headlineContent = "字幕设置",
+                supportingContent = "字幕样式调整",
+                onSelect = toUiVideoPlayerSubtitleSettingsScreen,
                 link = true,
             )
         }

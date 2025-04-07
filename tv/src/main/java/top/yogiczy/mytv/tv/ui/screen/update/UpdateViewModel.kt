@@ -60,7 +60,9 @@ class UpdateViewModel(
     suspend fun downloadAndUpdate(latestFile: File) {
         if (!_isUpdateAvailable) return
         if (_isUpdating) return
-
+        if (latestFile.exists()) {
+            latestFile.delete()
+        }
         try {
             log.i("开始下载更新...")
             Snackbar.show(

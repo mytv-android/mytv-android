@@ -1,6 +1,7 @@
 package top.yogiczy.mytv.tv.ui.utils
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.encodeToString
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelFavoriteList
@@ -9,6 +10,7 @@ import top.yogiczy.mytv.core.data.entities.epgsource.EpgSource
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSourceList
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
+import top.yogiczy.mytv.core.data.entities.subtitle.VideoPlayerSubtitleStyle
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.data.utils.SP
@@ -155,6 +157,9 @@ object Configs {
 
         /** 界面字体缩放比例 */
         UI_FONT_SCALE_RATIO,
+
+        /** 播放器字幕样式 */
+        UI_VIDEO_PLAYER_SUBTITLE,
 
         /** 时间显示模式 */
         UI_TIME_SHOW_MODE,
@@ -506,6 +511,19 @@ object Configs {
         get() = SP.getFloat(KEY.UI_FONT_SCALE_RATIO.name, 1f)
         set(value) = SP.putFloat(KEY.UI_FONT_SCALE_RATIO.name, value)
 
+    /** 播放器字幕样式 */
+    var uiVideoPlayerSubtitle: VideoPlayerSubtitleStyle
+        get() = Globals.json.decodeFromString(
+                SP.getString(
+                    KEY.UI_VIDEO_PLAYER_SUBTITLE.name,
+                    Globals.json.encodeToString(VideoPlayerSubtitleStyle())
+                )
+            )
+        set(value) = SP.putString(
+            KEY.UI_VIDEO_PLAYER_SUBTITLE.name,
+            Globals.json.encodeToString(value)
+        )
+        
     /** 时间显示模式 */
     var uiTimeShowMode: UiTimeShowMode
         get() = UiTimeShowMode.fromValue(
@@ -785,6 +803,7 @@ object Configs {
             uiUseClassicPanelScreen = uiUseClassicPanelScreen,
             uiDensityScaleRatio = uiDensityScaleRatio,
             uiFontScaleRatio = uiFontScaleRatio,
+            uiVideoPlayerSubtitle = uiVideoPlayerSubtitle,
             uiTimeShowMode = uiTimeShowMode,
             uiFocusOptimize = uiFocusOptimize,
             uiScreenAutoCloseDelay = uiScreenAutoCloseDelay,
@@ -863,6 +882,7 @@ object Configs {
         configs.uiUseClassicPanelScreen?.let { uiUseClassicPanelScreen = it }
         configs.uiDensityScaleRatio?.let { uiDensityScaleRatio = it }
         configs.uiFontScaleRatio?.let { uiFontScaleRatio = it }
+        configs.uiVideoPlayerSubtitle?.let { uiVideoPlayerSubtitle = it }
         configs.uiTimeShowMode?.let { uiTimeShowMode = it }
         configs.uiFocusOptimize?.let { uiFocusOptimize = it }
         configs.uiScreenAutoCloseDelay?.let { uiScreenAutoCloseDelay = it }
@@ -939,6 +959,7 @@ object Configs {
         val uiUseClassicPanelScreen: Boolean? = null,
         val uiDensityScaleRatio: Float? = null,
         val uiFontScaleRatio: Float? = null,
+        val uiVideoPlayerSubtitle: @Contextual VideoPlayerSubtitleStyle? = null,
         val uiTimeShowMode: UiTimeShowMode? = null,
         val uiFocusOptimize: Boolean? = null,
         val uiScreenAutoCloseDelay: Long? = null,

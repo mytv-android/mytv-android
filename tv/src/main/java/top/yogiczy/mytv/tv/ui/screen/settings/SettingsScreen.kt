@@ -48,6 +48,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiDensitySca
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiFontScaleRatioScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiScreenAutoCloseScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiTimeShowModeScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiVideoPlayerSubtitleSettingsScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUpdateChannelScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerCoreScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerDisplayModeScreen
@@ -139,6 +140,9 @@ fun SettingsScreen(
                         },
                         toUiFontScaleRatioScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.UI_FONT_SCALE_RATIO.name)
+                        },
+                        toUiVideoPlayerSubtitleSettingsScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.UI_VIDEO_PLAYER_SUBTITLE.name)
                         },
                         onBackPressed = { navController.navigateUp() },
                     )
@@ -352,6 +356,17 @@ fun SettingsScreen(
                     SettingsUiFontScaleRatioScreen(
                         scaleRatioProvider = { settingsViewModel.uiFontScaleRatio },
                         onScaleRatioChanged = { settingsViewModel.uiFontScaleRatio = it },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.UI_VIDEO_PLAYER_SUBTITLE.name) {
+                    SettingsUiVideoPlayerSubtitleSettingsScreen(
+                        subtitleSettingsProvider = { settingsViewModel.uiVideoPlayerSubtitle },
+                        onSubtitleSettingsChanged = {
+                            settingsViewModel.uiVideoPlayerSubtitle = it
+                            // navController.navigateUp()
+                        },
                         onBackPressed = { navController.navigateUp() },
                     )
                 }

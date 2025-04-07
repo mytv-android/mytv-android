@@ -16,6 +16,7 @@ import top.yogiczy.mytv.core.data.entities.epgsource.EpgSource
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSourceList
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
+import top.yogiczy.mytv.core.data.entities.subtitle.VideoPlayerSubtitleStyle
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.tv.sync.CloudSyncProvider
 import top.yogiczy.mytv.tv.ui.screen.Screens
@@ -410,6 +411,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _uiVideoPlayerSubtitle by mutableStateOf(VideoPlayerSubtitleStyle())
+    var uiVideoPlayerSubtitle: VideoPlayerSubtitleStyle
+        get() = _uiVideoPlayerSubtitle
+        set(value) {
+            _uiVideoPlayerSubtitle = value
+            Configs.uiVideoPlayerSubtitle = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _uiTimeShowMode by mutableStateOf(Configs.UiTimeShowMode.HIDDEN)
     var uiTimeShowMode: Configs.UiTimeShowMode
         get() = _uiTimeShowMode
@@ -730,6 +740,7 @@ class SettingsViewModel : ViewModel() {
         _uiUseClassicPanelScreen = Configs.uiUseClassicPanelScreen
         _uiDensityScaleRatio = Configs.uiDensityScaleRatio
         _uiFontScaleRatio = Configs.uiFontScaleRatio
+        _uiVideoPlayerSubtitle = Configs.uiVideoPlayerSubtitle
         _uiTimeShowMode = Configs.uiTimeShowMode
         _uiFocusOptimize = Configs.uiFocusOptimize
         _uiScreenAutoCloseDelay = Configs.uiScreenAutoCloseDelay

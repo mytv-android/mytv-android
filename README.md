@@ -11,10 +11,10 @@
 </div>
     <p>基于天光云影3.3.7，使用Android原生开发的电视直播软件</p>
 
-<img src="./screenshots/Screenshot_dashboard.png" width="96%"/>
+<!-- <img src="./screenshots/Screenshot_dashboard.png" width="96%"/> -->
 <br/>
-<img src="./screenshots/Screenshot_channels.png" width="48%"/>
-<img src="./screenshots/Screenshot_search.png" width="48%"/>
+<!-- <img src="./screenshots/Screenshot_channels.png" width="48%"/>
+<img src="./screenshots/Screenshot_search.png" width="48%"/> -->
 </div>
 
 ## 使用
