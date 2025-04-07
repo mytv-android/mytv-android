@@ -79,6 +79,7 @@ fun QuickOpBtnList(
                     // 如果到达结尾，滚动到开头
                     listState.scrollToItem(0)
                 }
+                onUserAction()
             }
     }
     if (playerMetadata.video != null) {
