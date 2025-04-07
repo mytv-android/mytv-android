@@ -67,7 +67,21 @@ fun QuickOpBtnList(
     var currentSubtitleTrack = ""
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }.distinctUntilChanged()
-            .collect { _ -> onUserAction() }
+            .collect {
+                val firstVisibleItemIndex = listState.firstVisibleItemIndex
+                val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+                val totalItemsCount = listState.layoutInfo.totalItemsCount
+                val currentDirection = listState.firstVisibleItemScrollOffset
+
+                if (firstVisibleItemIndex == 0 && currentDirection > 0) {
+                    // 如果到达开头并尝试继续向前滚动，滚动到结尾
+                    listState.scrollToItem(totalItemsCount - 1)
+                } else if (lastVisibleItemIndex == totalItemsCount - 1 && currentDirection < 0) {
+                    // 如果到达结尾，滚动到开头
+                    listState.scrollToItem(0)
+                }
+                onUserAction()
+            }
     }
     if (playerMetadata.video != null) {
         val videoTrack = playerMetadata.video
@@ -97,7 +111,6 @@ fun QuickOpBtnList(
     ) {
         item {
             QuickOpBtn(
-                modifier = Modifier.focusOnLaunched(),
                 title = { 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Filled.LiveTv, contentDescription = "图标")
@@ -111,6 +124,7 @@ fun QuickOpBtnList(
 
         item {
             QuickOpBtn(
+                modifier = Modifier.focusOnLaunched(),
                 title = { 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.AutoMirrored.Filled.LibraryBooks, contentDescription = "图标")
