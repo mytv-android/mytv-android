@@ -246,8 +246,8 @@ object Configs {
         /** 云同步 webdav 密码 */
         CLOUD_SYNC_WEBDAV_PASSWORD,
 
-        /** 肥羊 AllInOne 文件路径 */
-        FEIYANG_ALLINONE_FILE_PATH,
+        // /** 肥羊 AllInOne 文件路径 */
+        // FEIYANG_ALLINONE_FILE_PATH,
     }
 
     /** ==================== 应用 ==================== */
@@ -680,10 +680,10 @@ object Configs {
         get() = SP.getString(KEY.CLOUD_SYNC_WEBDAV_PASSWORD.name, "")
         set(value) = SP.putString(KEY.CLOUD_SYNC_WEBDAV_PASSWORD.name, value)
 
-    /** 肥羊 AllInOne 文件路径 */
-    var feiyangAllInOneFilePath: String
-        get() = SP.getString(KEY.FEIYANG_ALLINONE_FILE_PATH.name, "")
-        set(value) = SP.putString(KEY.FEIYANG_ALLINONE_FILE_PATH.name, value)
+    // /** 肥羊 AllInOne 文件路径 */
+    // var feiyangAllInOneFilePath: String
+    //     get() = SP.getString(KEY.FEIYANG_ALLINONE_FILE_PATH.name, "")
+    //     set(value) = SP.putString(KEY.FEIYANG_ALLINONE_FILE_PATH.name, value)
 
     // 添加网络重试次数和间隔时间
     var networkRetryCount: Long
@@ -831,7 +831,7 @@ object Configs {
             cloudSyncWebDavUrl = cloudSyncWebDavUrl,
             cloudSyncWebDavUsername = cloudSyncWebDavUsername,
             cloudSyncWebDavPassword = cloudSyncWebDavPassword,
-            feiyangAllInOneFilePath = feiyangAllInOneFilePath,
+            // feiyangAllInOneFilePath = feiyangAllInOneFilePath,
             networkRetryCount = networkRetryCount,
             networkRetryInterval = networkRetryInterval,
         )
@@ -910,7 +910,7 @@ object Configs {
         configs.cloudSyncWebDavUrl?.let { cloudSyncWebDavUrl = it }
         configs.cloudSyncWebDavUsername?.let { cloudSyncWebDavUsername = it }
         configs.cloudSyncWebDavPassword?.let { cloudSyncWebDavPassword = it }
-        configs.feiyangAllInOneFilePath?.let { feiyangAllInOneFilePath = it }
+        // configs.feiyangAllInOneFilePath?.let { feiyangAllInOneFilePath = it }
         configs.networkRetryCount?.let { networkRetryCount = it }
         configs.networkRetryInterval?.let { networkRetryInterval = it }
     }
@@ -987,7 +987,7 @@ object Configs {
         val cloudSyncWebDavUrl: String? = null,
         val cloudSyncWebDavUsername: String? = null,
         val cloudSyncWebDavPassword: String? = null,
-        val feiyangAllInOneFilePath: String? = null,
+        // val feiyangAllInOneFilePath: String? = null,
         val networkRetryCount: Long? = null,
         val networkRetryInterval: Long? = null,
     ) {

@@ -149,9 +149,9 @@ object HttpServer : Loggable("HttpServer") {
                     handleFileContentWithDirPost(request, response)
                 }
 
-                server.post("/api/upload/allinone") { request, response ->
-                    handleUploadAllInOne(request, response)
-                }
+                // server.post("/api/upload/allinone") { request, response ->
+                //     handleUploadAllInOne(request, response)
+                // }
 
                 log.i("设置服务已启动: $serverUrl")
             } catch (ex: Exception) {
@@ -345,43 +345,43 @@ object HttpServer : Loggable("HttpServer") {
         responseSuccess(response)
     }
 
-    private fun handleUploadAllInOne(
-        request: AsyncHttpServerRequest,
-        response: AsyncHttpServerResponse,
-    ) {
-        val body = request.getBody<MultipartFormDataBody>()
+    // private fun handleUploadAllInOne(
+    //     request: AsyncHttpServerRequest,
+    //     response: AsyncHttpServerResponse,
+    // ) {
+    //     val body = request.getBody<MultipartFormDataBody>()
 
-        val contentLength = request.headers["Content-Length"]?.toLong() ?: 1
-        var hasReceived = 0L
+    //     val contentLength = request.headers["Content-Length"]?.toLong() ?: 1
+    //     var hasReceived = 0L
 
-        val allinoneFile = File(Globals.fileDir, "uploads/allinone").apply { parentFile?.mkdirs() }
+    //     val allinoneFile = File(Globals.fileDir, "uploads/allinone").apply { parentFile?.mkdirs() }
 
-        body.setMultipartCallback { part ->
-            if (part.isFile) {
-                with(allinoneFile.outputStream()) {
+    //     body.setMultipartCallback { part ->
+    //         if (part.isFile) {
+    //             with(allinoneFile.outputStream()) {
 
-                    body.setDataCallback { _, bb ->
-                        val byteArray = bb.allByteArray
-                        hasReceived += byteArray.size
-                        Snackbar.show(
-                            "正在接收文件: ${(hasReceived * 100f / contentLength).toInt()}%",
-                            leadingLoading = true,
-                            id = "uploading_file",
-                        )
-                        write(byteArray)
-                    }
-                }
-            }
-        }
+    //                 body.setDataCallback { _, bb ->
+    //                     val byteArray = bb.allByteArray
+    //                     hasReceived += byteArray.size
+    //                     Snackbar.show(
+    //                         "正在接收文件: ${(hasReceived * 100f / contentLength).toInt()}%",
+    //                         leadingLoading = true,
+    //                         id = "uploading_file",
+    //                     )
+    //                     write(byteArray)
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        body.setEndCallback {
-            body.dataEmitter.close()
-            Configs.feiyangAllInOneFilePath = allinoneFile.absolutePath
-            Snackbar.show("文件接收完成", id = "uploading_file")
-        }
+    //     body.setEndCallback {
+    //         body.dataEmitter.close()
+    //         Configs.feiyangAllInOneFilePath = allinoneFile.absolutePath
+    //         Snackbar.show("文件接收完成", id = "uploading_file")
+    //     }
 
-        responseSuccess(response)
-    }
+    //     responseSuccess(response)
+    // }
 
     private fun handleCloudSyncDataGet(response: AsyncHttpServerResponse) {
         wrapResponse(response).apply {

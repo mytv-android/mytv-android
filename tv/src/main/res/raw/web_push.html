@@ -275,7 +275,7 @@
                         </van-cell>
                     </van-cell-group>
 
-                    <van-cell-group inset title="肥羊">
+                    <!-- <van-cell-group inset title="肥羊">
                         <van-cell title="上传AllInOne">
                             <template #extra>
                                 <van-uploader :after-read="uploadAllInOneAfterRead" accept="*.*" />
@@ -295,7 +295,7 @@
                                 </van-button>
                             </div>
                         </van-cell>
-                    </van-cell-group>
+                    </van-cell-group> -->
                 </template>
 
                 <template v-else-if="tabActive === 'log'">
@@ -508,18 +508,18 @@
                     }
                 }
 
-                async function uploadAllInOneAfterRead(file) {
-                    try {
-                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
-                        const formData = new FormData()
-                        formData.append('filename', file.file)
-                        await requestApi('/api/upload/allinone', { method: "POST", body: formData })
-                        vant.closeToast()
-                    } catch (e) {
-                        vant.showFailToast('上传AllInOne失败')
-                        console.error(e)
-                    }
-                }
+                // async function uploadAllInOneAfterRead(file) {
+                //     try {
+                //         vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                //         const formData = new FormData()
+                //         formData.append('filename', file.file)
+                //         await requestApi('/api/upload/allinone', { method: "POST", body: formData })
+                //         vant.closeToast()
+                //     } catch (e) {
+                //         vant.showFailToast('上传AllInOne失败')
+                //         console.error(e)
+                //     }
+                // }
 
                 const videoPlayerHeadersExample = "Header-Name-1: Header-Value-1\nHeader-Name-2: Header-Value-2"
 
@@ -545,7 +545,7 @@
                     channelAlias,
                     updateChannelAlias,
                     uploadApkAfterRead,
-                    uploadAllInOneAfterRead,
+           //         uploadAllInOneAfterRead,
                     videoPlayerHeadersExample,
                 }
             }

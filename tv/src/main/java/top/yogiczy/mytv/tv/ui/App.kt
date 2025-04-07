@@ -23,7 +23,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
-import top.yogiczy.mytv.allinone.AllInOne
+// import top.yogiczy.mytv.allinone.AllInOne
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource.Companion.needExternalStoragePermission
 import top.yogiczy.mytv.tv.ui.material.Padding
 import top.yogiczy.mytv.tv.ui.material.PopupHandleableApplication
@@ -89,20 +89,20 @@ fun App(
     if (latestFile.exists()) {
         latestFile.delete()
     }
-    LaunchedEffect(settingsViewModel.iptvSourceCurrent) {
-        if (settingsViewModel.feiyangAllInOneFilePath.isNotBlank()) {
-            AllInOne.start(
-                context,
-                File(settingsViewModel.feiyangAllInOneFilePath),
-                onFail = {
-                    Snackbar.show("肥羊AllInOne 启动失败", type = SnackbarType.ERROR)
-                },
-                onUnsupported = {
-                    Snackbar.show("肥羊AllInOne 不支持当前平台", type = SnackbarType.ERROR)
-                },
-            )
-        }
-    }
+    // LaunchedEffect(settingsViewModel.iptvSourceCurrent) {
+    //     if (settingsViewModel.feiyangAllInOneFilePath.isNotBlank()) {
+    //         AllInOne.start(
+    //             context,
+    //             File(settingsViewModel.feiyangAllInOneFilePath),
+    //             onFail = {
+    //                 Snackbar.show("肥羊AllInOne 启动失败", type = SnackbarType.ERROR)
+    //             },
+    //             onUnsupported = {
+    //                 Snackbar.show("肥羊AllInOne 不支持当前平台", type = SnackbarType.ERROR)
+    //             },
+    //         )
+    //     }
+    // }
 }
 
 /**

@@ -160,7 +160,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:util"))
-    implementation(project(":allinone"))
+    // implementation(project(":allinone"))
     implementation(project(":gsyvideoplayer-ex_so"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
 
