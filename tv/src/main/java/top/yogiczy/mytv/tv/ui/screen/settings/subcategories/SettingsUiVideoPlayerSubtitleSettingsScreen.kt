@@ -273,21 +273,21 @@ fun SizePicker(
     ) {
         LazyVerticalGrid(
             modifier = modifier.fillMaxWidth(),
-            columns = GridCells.Fixed(8),
+            columns = GridCells.Fixed(6),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items((1..24).map { it * 5f }){ size ->
+            items((1..18).map { it * 10f }){ size ->
                 ListItem(
                     modifier = Modifier
                         .handleKeyEvents(onSelect = { onSizeSelected(size) })
-                        .width(60.dp) // 设置宽度
+                        .width(70.dp) // 设置宽度
                         .height(45.dp), // 设置高度
 
                     headlineContent = {
                         Text(
-                            text = String.format("%.0f", size), // 保留 1 位小数
+                            text = String.format("%.0f", size),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.size(29.dp)
+                            modifier = Modifier.size(39.dp)
                         )
                     },
                     trailingContent = {
