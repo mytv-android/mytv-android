@@ -16,7 +16,19 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
+      with:
+        fetch-depth: 0
+        submodules: 'true'
+    
+    - name: Get changelog
+      id: changelog
+      run: |
+          {
+            echo "changelog<<EOF"
+            echo "$(git log --pretty=format:"- %s (%h)" ${{ github.event.before }}..${{ github.sha }})"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+    
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
@@ -85,15 +97,6 @@ jobs:
         echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
         echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
 
-    - name: Get changelog
-      id: changelog
-      run: |
-          {
-            echo "changelog<<EOF"
-            echo "$(git log --pretty=format:"- %s (%h)" ${{ github.event.before }}..${{ github.sha }})"
-            echo "EOF"
-          } >> "$GITHUB_ENV"
-          
     - name: Publish Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
