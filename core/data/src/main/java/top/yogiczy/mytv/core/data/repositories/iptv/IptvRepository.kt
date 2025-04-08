@@ -56,7 +56,7 @@ class IptvRepository(private val source: IptvSource) :
             if (source.transformJs.isNullOrBlank()) return@withContext channelList
 
             val context = org.mozilla.javascript.Context.enter()
-            context.optimizationLevel = -1
+            context.setOptimizationLevel(-1)
             val result = runCatching {
                 val scope = context.initStandardObjects()
                 context.evaluateString(
