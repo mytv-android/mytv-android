@@ -51,7 +51,9 @@ object Downloader {
                 override fun read(sink: okio.Buffer, byteCount: Long): Long {
                     val bytesRead = super.read(sink, byteCount)
                     totalBytesRead += if (bytesRead != -1L) bytesRead else 0
-                    val progress = (totalBytesRead * 100 / contentLength()).toInt()
+                    var progress = (totalBytesRead * 100 / contentLength()).toInt()
+                    if (progress > 100) progress = 99
+                    if (progress < 0) progress = 0
                     CoroutineScope(Dispatchers.IO).launch {
                         onProgressCb?.invoke(progress)
                     }
