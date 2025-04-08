@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - dev
-  pull_request:
+  pull_request_target:
     branches:
       - dev
 
@@ -71,28 +71,40 @@ jobs:
             VERSION_CODE: ${{ github.run_number }}
             # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleDebug
+    
+    - name: Build with Gradle (Pull Request)
+      if: github.event_name == 'pull_request'
+      env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+            VERSION_CODE: ${{ github.run_number }}
+            # COMMIT_HASH: ${{ env.short_sha }}
+      run: ./gradlew :tv:assembleDebug
 
     - name: Upload Artifact 
+      if: github.event_name == 'push'
       uses: actions/upload-artifact@v4
       with:
         name: mytv-android.apk
         path: tv/build/outputs/apk/release/*.apk
     
     - name: Move Metadata (Dev)
-      if: github.ref == 'refs/heads/dev'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
       run: mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
     
     - name: Move Metadata  (Release)
-      if: github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
     - name: Read apk output metadata
+      if: github.event_name == 'push' && github.event_name == 'push'
       id: apk-meta-release
       uses: juliangruber/read-file-action@v1
       with:
         path: tv/build/outputs/apk/release/output-metadata.json
 
     - name: Parse apk infos
+      if: github.event_name == 'push'
       run: |
         echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
         echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV

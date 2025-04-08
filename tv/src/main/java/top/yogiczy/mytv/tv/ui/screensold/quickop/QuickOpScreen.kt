@@ -116,17 +116,17 @@ private fun QuickOpScreenTop(
         modifier = modifier
             .fillMaxWidth()
             .padding(childPadding.paddingValues),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CompositionLocalProvider(
-            LocalTextStyle provides MaterialTheme.typography.titleLarge
-        ) {
-            DashboardScreeIptvSource(
-                //currentIptvSourceProvider = { iptvSourceCurrent },
-                toSettingsIptvSourceScreen = toSettingsIptvSourceScreen,
-            )
-        }
+        // CompositionLocalProvider(
+        //     LocalTextStyle provides MaterialTheme.typography.titleLarge
+        // ) {
+        //     DashboardScreeIptvSource(
+        //         //currentIptvSourceProvider = { iptvSourceCurrent },
+        //         toSettingsIptvSourceScreen = toSettingsIptvSourceScreen,
+        //     )
+        // }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             ChannelNumber(channelNumberProvider = channelNumberProvider)
