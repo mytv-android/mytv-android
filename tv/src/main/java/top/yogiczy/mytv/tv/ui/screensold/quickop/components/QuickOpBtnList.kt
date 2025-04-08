@@ -38,8 +38,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.tv.material3.Icon
 import androidx.compose.ui.unit.dp
-
 import top.yogiczy.mytv.tv.ui.material.LazyRow
+import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import androidx.compose.ui.focus.focusRequester
 
 @Composable
 fun QuickOpBtnList(
@@ -97,10 +98,13 @@ fun QuickOpBtnList(
         state = listState,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(start = childPadding.start, end = childPadding.end),
-    ) {
+    ) {runtime ->
         item {
             QuickOpBtn(
-                modifier = Modifier.focusOnLaunched(),
+                modifier = Modifier
+                    .focusOnLaunched()
+                    .focusRequester(runtime.firstItemFocusRequester)
+                    .handleKeyEvents(onLeft = { runtime.scrollToLast()}),
                 title = { 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Filled.LiveTv, contentDescription = "图标")
@@ -255,6 +259,9 @@ fun QuickOpBtnList(
 
         item {
             QuickOpBtn(
+                modifier = Modifier
+                    .focusRequester(runtime.lastItemFocusRequester)
+                    .handleKeyEvents(onRight = { runtime.scrollToFirst() }),
                 title = { 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Filled.Settings, contentDescription = "图标")
