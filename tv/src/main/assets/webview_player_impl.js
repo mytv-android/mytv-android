@@ -35,7 +35,7 @@ function removeVideoPlayerControl() {
 
 function removeAllDivElements() {
     [...document.body.children].forEach((element) => {
-        if (element.tagName.toLowerCase() == 'div') {
+        if (element.tagName.toLowerCase() == 'div' || element.tagName.toLowerCase() == 'section') {
             console.info(element.innerHTML);
             element.remove()
         }
