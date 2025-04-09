@@ -109,6 +109,7 @@ fun MainContent(
                         )
                     }
                 },
+                onLongUp = { mainContentState.isIptvSourceScreenVisible = true },
                 onSelect = { mainContentState.isChannelScreenVisible = true },
                 onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
                 onSettings = { mainContentState.isQuickOpScreenVisible = true },
