@@ -59,7 +59,11 @@ fun UpdateScreen(
         else requestPermission()
     }
 
-    AppScreen(modifier = modifier) {
+    AppScreen(modifier = modifier,
+        header = { Text("关于 / 检查更新") },
+        canBack = true,
+        onBackPressed = onBackPressed,
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -87,9 +91,8 @@ fun UpdateScreen(
                         }
                     }
                 }
-
-                if (updateViewModel.isUpdateAvailable) {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(verticalArrangement = Arrangement.Center) {
+                    if (updateViewModel.isUpdateAvailable) {
                         if (updateViewModel.isUpdating) {
                             UpdateActionBtn(
                                 modifier = Modifier.focusOnLaunched(),
@@ -112,11 +115,12 @@ fun UpdateScreen(
                             onSelected = onBackPressed,
                         )
                     }
-                } else {
-                    UpdateActionBtn(
-                        title = "当前为最新版本",
-                        onSelected = onBackPressed,
-                    )
+                    else {
+                        UpdateActionBtn(
+                            title = "当前为最新版本",
+                            onSelected = onBackPressed,
+                        )
+                    }
                 }
             }
         }
