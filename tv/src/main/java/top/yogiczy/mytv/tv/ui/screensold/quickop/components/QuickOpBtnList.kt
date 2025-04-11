@@ -38,8 +38,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ClearAll
 import androidx.tv.material3.Icon
 import androidx.compose.ui.unit.dp
-
 import top.yogiczy.mytv.tv.ui.material.LazyRow
+import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import androidx.compose.ui.focus.focusRequester
 
 @Composable
 fun QuickOpBtnList(
@@ -74,19 +75,16 @@ fun QuickOpBtnList(
     }
     if (playerMetadata.video != null) {
         val videoTrack = playerMetadata.video
-        currentVideoTrack = "${videoTrack.width}x${videoTrack.height}"//,${videoTrack.mimeType}" +
-            //(if (videoTrack?.decoder != null) ",${videoTrack.decoder.toString()}" else "")
+        currentVideoTrack = "${videoTrack.width}x${videoTrack.height}"
     }
     if (playerMetadata.audio != null) {
         val audioTrack = playerMetadata.audio
-        currentAudioTrack = audioTrack.channels?.humanizeAudioChannels()?: "null" //audioTrack.mimeType.toString() + 
-            //(if (audioTrack?.decoder != null) ",${audioTrack.decoder.toString()}" else "") +
-            // (if (audioTrack?.channelsLabel != null) ",${audioTrack.channelsLabel}" else "")
+        currentAudioTrack = audioTrack.channels?.humanizeAudioChannels()?: "null" 
     }
     if (playerMetadata.subtitleTracks.isNotEmpty()) {
         for (subtitleTrack in playerMetadata.subtitleTracks) {
             if (subtitleTrack.isSelected == true) {
-                currentSubtitleTrack = subtitleTrack.mimeType.toString() + "," + (subtitleTrack.language?.humanizeLanguage() ?: "null")
+                currentSubtitleTrack = subtitleTrack.language?.humanizeLanguage() ?: "null"
                 break
             }
         }
@@ -97,10 +95,13 @@ fun QuickOpBtnList(
         state = listState,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(start = childPadding.start, end = childPadding.end),
-    ) {
+    ) {runtime ->
         item {
             QuickOpBtn(
-                modifier = Modifier.focusOnLaunched(),
+                modifier = Modifier
+                    .focusOnLaunched()
+                    .focusRequester(runtime.firstItemFocusRequester)
+                    .handleKeyEvents(onLeft = { runtime.scrollToLast()}),
                 title = { 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Filled.LiveTv, contentDescription = "图标")
@@ -221,7 +222,8 @@ fun QuickOpBtnList(
                 onSelect = {
                     settingsViewModel.videoPlayerCore = when (settingsViewModel.videoPlayerCore) {
                         Configs.VideoPlayerCore.MEDIA3 -> Configs.VideoPlayerCore.IJK
-                        Configs.VideoPlayerCore.IJK -> Configs.VideoPlayerCore.MEDIA3
+                        Configs.VideoPlayerCore.IJK -> Configs.VideoPlayerCore.X5
+                        Configs.VideoPlayerCore.X5 -> Configs.VideoPlayerCore.MEDIA3
                     }
                 },
             )
@@ -255,6 +257,9 @@ fun QuickOpBtnList(
 
         item {
             QuickOpBtn(
+                modifier = Modifier
+                    .focusRequester(runtime.lastItemFocusRequester)
+                    .handleKeyEvents(onRight = { runtime.scrollToFirst() }),
                 title = { 
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Filled.Settings, contentDescription = "图标")

@@ -212,18 +212,4 @@ public interface IMediaPlayer {
      * AndroidMediaPlayer: M:
      */
     void setDataSource(IMediaDataSource mediaDataSource);
-
-    void setOnSEIRefreshListener(OnSEIRefreshListener onSEIRefreshListener);
-
-    void setOnAudioVividMetadataListener(OnAudioVividMetadataListener onAudioVividMetadataListener);
-
-    interface OnSEIRefreshListener {
-        void onSEIRefresh(IMediaPlayer iMediaPlayer, int i, int i2);
-    }
-
-    interface OnAudioVividMetadataListener {
-        void onMetadataChanged(IMediaPlayer iMediaPlayer);
-    }
-
-
 }

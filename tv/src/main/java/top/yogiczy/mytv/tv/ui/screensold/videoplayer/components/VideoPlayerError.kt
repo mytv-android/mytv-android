@@ -91,6 +91,7 @@ private fun getErrorCodeDesc(error: String): String? {
         "MEDIA3_ERROR_DRM_SYSTEM_ERROR" -> "DRM系统错误，请检查视频源。"
         "MEDIA3_ERROR_DRM_DEVICE_REVOKED" -> "DRM设备被吊销，请检查视频源。"
         "MEDIA3_ERROR_DRM_LICENSE_EXPIRED" -> "DRM授权已过期，请检查视频源。"
+        "TBS_ERROR_VIDEOPLAYER_NOTAVAILABLE" -> "X5视频播放器不可用，请使用其他播放器。"
         else -> null
     }
 }

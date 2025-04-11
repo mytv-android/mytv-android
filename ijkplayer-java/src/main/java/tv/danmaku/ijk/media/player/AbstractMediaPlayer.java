@@ -122,29 +122,4 @@ public abstract class AbstractMediaPlayer implements IMediaPlayer {
     public void setDataSource(IMediaDataSource mediaDataSource) {
         throw new UnsupportedOperationException();
     }
-
-    public final void notifyOnSEIRefresh(int i, int i2) {
-        IMediaPlayer.OnSEIRefreshListener onSEIRefreshListener = this.mOnSEIRefreshListener;
-        if (onSEIRefreshListener != null) {
-            onSEIRefreshListener.onSEIRefresh(this, i, i2);
-        }
-    }
-
-    @Override
-    public final void setOnSEIRefreshListener(IMediaPlayer.OnSEIRefreshListener onSEIRefreshListener) {
-        this.mOnSEIRefreshListener = onSEIRefreshListener;
-    }
-
-    @Override
-    public final void setOnAudioVividMetadataListener(IMediaPlayer.OnAudioVividMetadataListener onAudioVividMetadataListener) {
-        this.onAudioVividMetadataListener = onAudioVividMetadataListener;
-    }
-
-    public final void notifyOnAudioVividMetadataChanged() {
-        IMediaPlayer.OnAudioVividMetadataListener onAudioVividMetadataListener = this.onAudioVividMetadataListener;
-        if (onAudioVividMetadataListener != null) {
-            onAudioVividMetadataListener.onMetadataChanged(this);
-        }
-    }
-
 }

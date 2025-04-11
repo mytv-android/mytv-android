@@ -180,7 +180,10 @@ object Configs {
         /** ==================== 播放器 ==================== */
         /** 播放器 内核 */
         VIDEO_PLAYER_CORE,
-
+        
+        /** WebView 内核 */
+        WEBVIEW_CORE,
+        
         /** 播放器 渲染方式 */
         VIDEO_PLAYER_RENDER_MODE,
 
@@ -560,6 +563,13 @@ object Configs {
         )
         set(value) = SP.putInt(KEY.VIDEO_PLAYER_CORE.name, value.value)
 
+    /** WebView 内核 */
+    var webViewCore: WebViewCore
+        get() = WebViewCore.fromValue(
+            SP.getInt(KEY.WEBVIEW_CORE.name, WebViewCore.SYSTEM.value)
+        )
+        set(value) = SP.putInt(KEY.WEBVIEW_CORE.name, value.value)
+
     /** 播放器 渲染方式 */
     var videoPlayerRenderMode: VideoPlayerRenderMode
         get() = VideoPlayerRenderMode.fromValue(
@@ -736,11 +746,28 @@ object Configs {
         MEDIA3(0, "Media3"),
 
         /** IJK */
-        IJK(1, "IjkPlayer");
+        IJK(1, "IjkPlayer"),
+
+        /** X5 */
+        X5(2, "X5Player");
 
         companion object {
             fun fromValue(value: Int): VideoPlayerCore {
                 return entries.firstOrNull { it.value == value } ?: MEDIA3
+            }
+        }
+    }
+
+    enum class WebViewCore(val value: Int, val label: String) {
+        /** 系统内核 */
+        SYSTEM(0, "Android"),
+
+        /** X5内核 */
+        X5(1, "TBS X5");
+
+        companion object {
+            fun fromValue(value: Int): WebViewCore {
+                return entries.firstOrNull { it.value == value } ?: SYSTEM
             }
         }
     }
@@ -810,6 +837,7 @@ object Configs {
             updateForceRemind = updateForceRemind,
             updateChannel = updateChannel,
             videoPlayerCore = videoPlayerCore,
+            webViewCore = webViewCore,
             videoPlayerRenderMode = videoPlayerRenderMode,
             videoPlayerUserAgent = videoPlayerUserAgent,
             videoPlayerHeaders = videoPlayerHeaders,
@@ -889,6 +917,7 @@ object Configs {
         configs.updateForceRemind?.let { updateForceRemind = it }
         configs.updateChannel?.let { updateChannel = it }
         configs.videoPlayerCore?.let { videoPlayerCore = it }
+        configs.webViewCore?.let { webViewCore = it }
         configs.videoPlayerRenderMode?.let { videoPlayerRenderMode = it }
         configs.videoPlayerUserAgent?.let { videoPlayerUserAgent = it }
         configs.videoPlayerHeaders?.let { videoPlayerHeaders = it }
@@ -966,6 +995,7 @@ object Configs {
         val updateForceRemind: Boolean? = null,
         val updateChannel: String? = null,
         val videoPlayerCore: VideoPlayerCore? = null,
+        val webViewCore: WebViewCore? = null,
         val videoPlayerRenderMode: VideoPlayerRenderMode? = null,
         val videoPlayerUserAgent: String? = null,
         val videoPlayerHeaders: String? = null,

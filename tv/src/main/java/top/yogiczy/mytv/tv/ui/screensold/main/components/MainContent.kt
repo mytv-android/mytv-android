@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
+import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList.Companion.channelList
@@ -15,6 +16,7 @@ import top.yogiczy.mytv.core.data.entities.epg.EpgList
 import top.yogiczy.mytv.core.data.entities.epg.EpgList.Companion.match
 import top.yogiczy.mytv.core.data.entities.epg.EpgList.Companion.recentProgramme
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
+import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
 import top.yogiczy.mytv.core.data.repositories.epg.EpgRepository
 import top.yogiczy.mytv.core.data.repositories.iptv.IptvRepository
 import top.yogiczy.mytv.tv.ui.material.PopupContent
@@ -47,9 +49,11 @@ import top.yogiczy.mytv.tv.ui.screensold.videoplayercontroller.VideoPlayerContro
 import top.yogiczy.mytv.tv.ui.screensold.videoplayerdiaplaymode.VideoPlayerDisplayModeScreen
 import top.yogiczy.mytv.tv.ui.screensold.videotracks.VideoTracksScreen
 import top.yogiczy.mytv.tv.ui.screensold.webview.WebViewScreen
+import top.yogiczy.mytv.tv.ui.screensold.webview.WebViewScreen_X5
 import top.yogiczy.mytv.tv.ui.utils.backHandler
 import top.yogiczy.mytv.tv.ui.utils.handleDragGestures
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.ui.utils.Configs
 
 @Composable
 fun MainContent(
@@ -109,6 +113,7 @@ fun MainContent(
                         )
                     }
                 },
+                onLongUp = { mainContentState.isIptvSourceScreenVisible = true },
                 onSelect = { mainContentState.isChannelScreenVisible = true },
                 onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
                 onSettings = { mainContentState.isQuickOpScreenVisible = true },
@@ -152,24 +157,48 @@ fun MainContent(
 
         Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
             val channelLine = mainContentState.currentChannelLine
-            WebViewScreen(
-                urlProvider = {
-                    Pair(
-                        channelLine.url,
-                        channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+            when (settingsViewModel.webViewCore) {
+                Configs.WebViewCore.SYSTEM -> {
+                    WebViewScreen(
+                        urlProvider = {
+                            Pair(
+                                channelLine.url,
+                                channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                            )
+                        },
+                        onVideoResolutionChanged = { width, height ->
+                            videoPlayerState.metadata = videoPlayerState.metadata.copy(
+                                video = (videoPlayerState.metadata.video
+                                    ?: VideoPlayer.Metadata.Video()).copy(
+                                    width = width,
+                                    height = height,
+                                ),
+                            )
+                            mainContentState.isTempChannelScreenVisible = false
+                        },
                     )
-                },
-                onVideoResolutionChanged = { width, height ->
-                    videoPlayerState.metadata = videoPlayerState.metadata.copy(
-                        video = (videoPlayerState.metadata.video
-                            ?: VideoPlayer.Metadata.Video()).copy(
-                            width = width,
-                            height = height,
-                        ),
+                }
+                Configs.WebViewCore.X5 -> {
+                    WebViewScreen_X5(
+                        urlProvider = {
+                            Pair(
+                                channelLine.url,
+                                channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                            )
+                        },
+                        onVideoResolutionChanged = { width, height ->
+                            videoPlayerState.metadata = videoPlayerState.metadata.copy(
+                                video = (videoPlayerState.metadata.video
+                                    ?: VideoPlayer.Metadata.Video()).copy(
+                                    width = width,
+                                    height = height,
+                                ),
+                            )
+                            mainContentState.isTempChannelScreenVisible = false
+                        },
                     )
-                    mainContentState.isTempChannelScreenVisible = false
-                },
-            )
+                } 
+            }
         }
     }
 
@@ -259,7 +288,7 @@ fun MainContent(
     ) {
         IptvSourceScreen(
             currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
-            iptvSourceListProvider = { settingsViewModel.iptvSourceList },
+            iptvSourceListProvider = {IptvSourceList(Constants.IPTV_SOURCE_LIST + settingsViewModel.iptvSourceList)},
             onIptvSourceChanged = {
                 mainContentState.isIptvSourceScreenVisible = false
                 settingsViewModel.iptvSourceCurrent = it

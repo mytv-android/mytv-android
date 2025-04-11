@@ -92,7 +92,7 @@ class Media3VideoPlayer(
                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
                 .setMaxVideoSize(Integer.MAX_VALUE, Integer.MAX_VALUE)
                 .setForceHighestSupportedBitrate(true)
-                .setPreferredTextLanguages("zh")
+                .setPreferredTextLanguage("zh")
                 .build()
         }
 
@@ -174,7 +174,11 @@ class Media3VideoPlayer(
 
         return when (contentTypeForce ?: Util.inferContentType(uri)) {
             C.CONTENT_TYPE_HLS -> {
-                HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                HlsMediaSource.Factory(dataSourceFactory)
+                    .apply{
+                        setAllowChunklessPreparation(true)
+                    }
+                    .createMediaSource(mediaItem)
             }
 
             C.CONTENT_TYPE_DASH -> {
@@ -391,10 +395,6 @@ class Media3VideoPlayer(
                     List(group.mediaTrackGroup.length) { trackIndex ->
                         group.mediaTrackGroup
                             .getFormat(trackIndex)
-                            .takeIf { 
-                                (it.roleFlags and C.ROLE_FLAG_SUBTITLE != 0) || 
-                                (it.roleFlags and C.ROLE_FLAG_CAPTION != 0) 
-                            }
                             ?.toSubtitleMetadata()
                             ?.copy(isSelected = group.isTrackSelected(trackIndex))
                     }
@@ -598,24 +598,19 @@ class Media3VideoPlayer(
             .setOverrideForType(TrackSelectionOverride(group, trackIndex))
             .build()
     }
-    //或字幕语言属性${track?.language.toString()}
+    
     override fun selectSubtitleTrack(track: Metadata.Subtitle?) {
-        if (track == null) {  
-            logger.i("字幕${track.toString()}为空，不予加载")
+        if (track?.language == null) {  
             videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
                 .buildUpon()
                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                 .build()
             return
         }
-
-        if (track.language == null) {
-            track.language = "默认"
-        }
         videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
             .buildUpon()
             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-            .setPreferredTextLanguages(track.language?: "默认")
+            .setPreferredTextLanguage(track.language)
             .build()
     }
 

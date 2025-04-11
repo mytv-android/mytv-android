@@ -1,6 +1,5 @@
 package top.yogiczy.mytv.tv.ui.screen.settings
 
-import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsNetworkRetryIntervalScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSourceList
@@ -51,6 +51,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiTimeShowMo
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiVideoPlayerSubtitleSettingsScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUpdateChannelScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerCoreScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsWebViewCoreScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerDisplayModeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerLoadTimeoutScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerRenderModeScreen
@@ -172,6 +173,9 @@ fun SettingsScreen(
                         toVideoPlayerCoreScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.VIDEO_PLAYER_CORE.name)
                         },
+                        toWebviewCoreScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.WEBVIEW_CORE.name)
+                        },
                         toVideoPlayerRenderModeScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.VIDEO_PLAYER_RENDER_MODE.name)
                         },
@@ -231,7 +235,7 @@ fun SettingsScreen(
                 composable(SettingsSubCategories.IPTV_SOURCE.name) {
                     SettingsIptvSourceScreen(
                         currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
-                        iptvSourceListProvider = { settingsViewModel.iptvSourceList },
+                        iptvSourceListProvider = { IptvSourceList(Constants.IPTV_SOURCE_LIST + settingsViewModel.iptvSourceList) },
                         onSetCurrent = {
                             settingsViewModel.iptvSourceCurrent = it
                             settingsViewModel.iptvChannelGroupHiddenList = emptySet()
@@ -398,6 +402,17 @@ fun SettingsScreen(
                         coreProvider = { settingsViewModel.videoPlayerCore },
                         onCoreChanged = {
                             settingsViewModel.videoPlayerCore = it
+                            navController.navigateUp()
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.WEBVIEW_CORE.name) {
+                    SettingsWebViewCoreScreen(
+                        coreProvider = { settingsViewModel.webViewCore },
+                        onCoreChanged = {
+                            settingsViewModel.webViewCore = it
                             navController.navigateUp()
                         },
                         onBackPressed = { navController.navigateUp() },

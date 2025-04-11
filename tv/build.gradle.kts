@@ -23,7 +23,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = "${System.getenv("VERSION_CODE")}".toInt()
-        versionName = "1.0.2.${System.getenv("VERSION_CODE")}"//.${System.getenv("COMMIT_HASH")}"
+        versionName = "1.1.0.${System.getenv("VERSION_CODE")}"//.${System.getenv("COMMIT_HASH")}"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -163,7 +163,7 @@ dependencies {
     // implementation(project(":allinone"))
     implementation(project(":gsyvideoplayer-ex_so"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
-
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

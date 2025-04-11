@@ -115,9 +115,10 @@ fun WebViewScreen(
                     settings.domStorageEnabled = true
                     isHorizontalScrollBarEnabled = false
                     isVerticalScrollBarEnabled = false
-                    /*isClickable = false
+                    isClickable = false
                     isFocusable = false
-                    isFocusableInTouchMode = false*/
+                    isLongClickable = false
+                    isFocusableInTouchMode = false
 
                     addJavascriptInterface(
                         MyWebViewInterface(

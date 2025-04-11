@@ -21,6 +21,7 @@ fun SettingsVideoPlayerScreen(
     modifier: Modifier = Modifier,
     settingsViewModel: SettingsViewModel = settingsVM,
     toVideoPlayerCoreScreen: () -> Unit = {},
+    toWebviewCoreScreen: () -> Unit = {},
     toVideoPlayerRenderModeScreen: () -> Unit = {},
     toVideoPlayerDisplayModeScreen: () -> Unit = {},
     toVideoPlayerLoadTimeoutScreen: () -> Unit = {},
@@ -34,7 +35,7 @@ fun SettingsVideoPlayerScreen(
         item {
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "内核",
+                headlineContent = "视频播放器内核",
                 trailingContent = settingsViewModel.videoPlayerCore.label,
                 onSelect = toVideoPlayerCoreScreen,
                 link = true,
@@ -94,6 +95,15 @@ fun SettingsVideoPlayerScreen(
                 headlineContent = "全局显示模式",
                 trailingContent = settingsViewModel.videoPlayerDisplayMode.label,
                 onSelect = toVideoPlayerDisplayModeScreen,
+                link = true,
+            )
+        }
+
+        item {
+            SettingsListItem(
+                headlineContent = "WebView内核",
+                trailingContent = settingsViewModel.webViewCore.label,
+                onSelect = toWebviewCoreScreen,
                 link = true,
             )
         }

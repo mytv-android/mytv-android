@@ -160,12 +160,12 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
             AndroidView(
                 factory = { SubtitleView(it) },
                 update = { subtitleView ->
-                    subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_PX, textSize.value)
-                    subtitleView.setStyle(currentSubtitleSettings.style)
                     val exampleCue = Cue.Builder()
                         .setText("示例字幕") // 设置字幕内容
                         .build()
-                    subtitleView.setCues(listOf(exampleCue)) // 将字幕内容应用到 SubtitleView
+                    subtitleView.setCues(listOf(exampleCue))
+                    subtitleView.setStyle(currentSubtitleSettings.style)
+                    subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.value)
                 }
             )
         }

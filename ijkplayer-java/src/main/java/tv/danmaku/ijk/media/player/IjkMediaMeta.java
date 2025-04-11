@@ -88,7 +88,6 @@ public class IjkMediaMeta {
     public static final long AV_CH_LAYOUT_5POINT0 = (AV_CH_LAYOUT_SURROUND
             | AV_CH_SIDE_LEFT | AV_CH_SIDE_RIGHT);
     public static final long AV_CH_LAYOUT_5POINT1 = (AV_CH_LAYOUT_5POINT0 | AV_CH_LOW_FREQUENCY);
-    public static final long AV_CH_AV3A_LAYOUT_5POINT1POINT4 = (AV_CH_LAYOUT_5POINT1 | AV_CH_TOP_FRONT_LEFT | AV_CH_TOP_FRONT_RIGHT | AV_CH_TOP_BACK_LEFT | AV_CH_TOP_BACK_RIGHT);
     public static final long AV_CH_LAYOUT_5POINT0_BACK = (AV_CH_LAYOUT_SURROUND
             | AV_CH_BACK_LEFT | AV_CH_BACK_RIGHT);
     public static final long AV_CH_LAYOUT_5POINT1_BACK = (AV_CH_LAYOUT_5POINT0_BACK | AV_CH_LOW_FREQUENCY);
@@ -129,11 +128,6 @@ public class IjkMediaMeta {
     public static final int FF_PROFILE_H264_HIGH_444_PREDICTIVE = 244;
     public static final int FF_PROFILE_H264_HIGH_444_INTRA = (244|FF_PROFILE_H264_INTRA);
     public static final int FF_PROFILE_H264_CAVLC_444 = 44;
-
-    // 补充HEVC的定义
-    public static final int FF_PROFILE_HEVC_MAIN = 1;
-    public static final int FF_PROFILE_HEVC_MAIN_10 = 2;
-
 
     public Bundle mMediaMeta;
 
@@ -394,16 +388,10 @@ public class IjkMediaMeta {
             if (mChannelLayout <= 0) {
                 return "N/A";
             } else {
-                if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_MONO) {
+                if (mChannelLayout == AV_CH_LAYOUT_MONO) {
                     return "mono";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_STEREO) {
+                } else if (mChannelLayout == AV_CH_LAYOUT_STEREO) {
                     return "stereo";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_SURROUND) {
-                    return "surround";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_5POINT1) {
-                    return "5.1";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_AV3A_LAYOUT_5POINT1POINT4) {
-                    return "5.1.4";
                 } else {
                     return String.format(Locale.US, "%x", mChannelLayout);
                 }
