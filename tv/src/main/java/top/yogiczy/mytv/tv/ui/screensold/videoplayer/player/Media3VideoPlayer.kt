@@ -92,7 +92,7 @@ class Media3VideoPlayer(
                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
                 .setMaxVideoSize(Integer.MAX_VALUE, Integer.MAX_VALUE)
                 .setForceHighestSupportedBitrate(true)
-                .setPreferredTextLanguages("zh")
+                .setPreferredTextLanguage("zh")
                 .build()
         }
 
@@ -610,7 +610,7 @@ class Media3VideoPlayer(
         videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
             .buildUpon()
             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-            .setPreferredTextLanguages(track.language)
+            .setPreferredTextLanguage(track.language)
             .build()
     }
 

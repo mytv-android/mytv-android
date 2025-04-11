@@ -165,7 +165,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                         .build()
                     subtitleView.setCues(listOf(exampleCue))
                     subtitleView.setStyle(currentSubtitleSettings.style)
-                    subtitleView.setFixedTextSize(Cue.TEXT_SIZE_TYPE_ABSOLUTE, textSize.value)
+                    subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.value)
                 }
             )
         }

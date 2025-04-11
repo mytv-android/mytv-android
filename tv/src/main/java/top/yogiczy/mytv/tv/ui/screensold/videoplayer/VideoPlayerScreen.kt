@@ -100,14 +100,14 @@ fun VideoPlayerScreen(
             val style = settingsVM.uiVideoPlayerSubtitle.style
 
             AndroidView(
-                factory = { SubtitleView(context) },
-                update = { subtitleView ->
-                    // 设置字幕的样式
-                    state.instance.onCues { cues -> 
-                        subtitleView.setCues(cues) 
+                factory = { 
+                    SubtitleView(context).apply {
+                        setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
+                        setStyle(style)
                     }
-                    subtitleView.setFixedTextSize(Cue.TEXT_SIZE_TYPE_ABSOLUTE, textSize)
-                    subtitleView.setStyle(style)
+                },
+                update = {
+                    state.instance.onCues { cues -> it.setCues(cues) }
                 },
             )
         }
