@@ -75,19 +75,16 @@ fun QuickOpBtnList(
     }
     if (playerMetadata.video != null) {
         val videoTrack = playerMetadata.video
-        currentVideoTrack = "${videoTrack.width}x${videoTrack.height}"//,${videoTrack.mimeType}" +
-            //(if (videoTrack?.decoder != null) ",${videoTrack.decoder.toString()}" else "")
+        currentVideoTrack = "${videoTrack.width}x${videoTrack.height}"
     }
     if (playerMetadata.audio != null) {
         val audioTrack = playerMetadata.audio
-        currentAudioTrack = audioTrack.channels?.humanizeAudioChannels()?: "null" //audioTrack.mimeType.toString() + 
-            //(if (audioTrack?.decoder != null) ",${audioTrack.decoder.toString()}" else "") +
-            // (if (audioTrack?.channelsLabel != null) ",${audioTrack.channelsLabel}" else "")
+        currentAudioTrack = audioTrack.channels?.humanizeAudioChannels()?: "null" 
     }
     if (playerMetadata.subtitleTracks.isNotEmpty()) {
         for (subtitleTrack in playerMetadata.subtitleTracks) {
             if (subtitleTrack.isSelected == true) {
-                currentSubtitleTrack = subtitleTrack.mimeType.toString() + "," + (subtitleTrack.language?.humanizeLanguage() ?: "null")
+                currentSubtitleTrack = subtitleTrack.language?.humanizeLanguage() ?: "null"
                 break
             }
         }
