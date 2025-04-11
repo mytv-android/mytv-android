@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.zIndex
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.common.text.Cue
 import androidx.media3.ui.SubtitleView
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
@@ -101,11 +102,12 @@ fun VideoPlayerScreen(
             AndroidView(
                 factory = { SubtitleView(context) },
                 update = { subtitleView ->
-                    // 设置字幕字体大小（相对于视频高度的比例）
-                    subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
                     // 设置字幕的样式
+                    state.instance.onCues { cues -> 
+                        subtitleView.setCues(cues) 
+                    }
+                    subtitleView.setFixedTextSize(Cue.TEXT_SIZE_TYPE_ABSOLUTE, textSize)
                     subtitleView.setStyle(style)
-                    state.instance.onCues { cues -> subtitleView.setCues(cues) }
                 },
             )
         }

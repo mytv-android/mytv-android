@@ -31,7 +31,7 @@ object Constants {
         listOf(
             IptvSource(
                 name = "默认直播源",
-                url = "https://gh-proxy.com/https://raw.githubusercontent.com/0047ol/China-TV-Live-M3U8/refs/heads/main/tv.m3u",
+                url = "https://gh-proxy.com/https://raw.githubusercontent.com/mytv-android/iptv-api/refs/heads/master/output/result.m3u",
             )
         )
     )
