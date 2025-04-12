@@ -336,24 +336,4 @@ public class MediaPlayerProxy implements IMediaPlayer {
     public boolean isLooping() {
         return mBackEndMediaPlayer.isLooping();
     }
-
-    @Override
-    public void setOnAudioVividMetadataListener(IMediaPlayer.OnAudioVividMetadataListener onAudioVividMetadataListener) {
-        this.mBackEndMediaPlayer.setOnAudioVividMetadataListener(onAudioVividMetadataListener);
-    }
-
-    @Override
-    public void setOnSEIRefreshListener(final IMediaPlayer.OnSEIRefreshListener onSEIRefreshListener) {
-        if (onSEIRefreshListener != null) {
-            this.mBackEndMediaPlayer.setOnSEIRefreshListener(new IMediaPlayer.OnSEIRefreshListener() {
-                @Override
-                public void onSEIRefresh(IMediaPlayer iMediaPlayer, int i, int i2) {
-                    onSEIRefreshListener.onSEIRefresh(MediaPlayerProxy.this, i, i2);
-                }
-            });
-        } else {
-            this.mBackEndMediaPlayer.setOnSEIRefreshListener(null);
-        }
-    }
-
 }

@@ -18,6 +18,7 @@ import io.sentry.android.core.SentryAndroid
 import top.yogiczy.mytv.core.data.AppData
 import top.yogiczy.mytv.core.data.utils.Globals
 import kotlin.system.exitProcess
+import com.tencent.smtt.sdk.QbSdk
 
 class MyTVApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
@@ -27,6 +28,7 @@ class MyTVApplication : Application(), ImageLoaderFactory {
         crashHandle()
         AppData.init(applicationContext)
         UnsafeTrustManager.enableUnsafeTrustManager()
+        preInitX5Core()
     }
 
     override fun newImageLoader(): ImageLoader {
@@ -91,4 +93,13 @@ class MyTVApplication : Application(), ImageLoaderFactory {
             exitProcess(1)
         }
     }
+    /**
+     * 初始化X5内核
+     */
+    private fun preInitX5Core() {
+        //预加载x5内核
+        val intent = Intent(this, X5CorePreLoadService::class.java)
+        startService(intent)
+    }
+
 }

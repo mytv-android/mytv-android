@@ -18,6 +18,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
+import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.X5VideoPlayer
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.IjkVideoPlayer
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.Media3VideoPlayer
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
@@ -174,6 +175,7 @@ fun rememberVideoPlayerState(
         val player = when (videoPlayerCore) {
             Configs.VideoPlayerCore.MEDIA3 -> Media3VideoPlayer(context, coroutineScope)
             Configs.VideoPlayerCore.IJK -> IjkVideoPlayer(context, coroutineScope)
+            Configs.VideoPlayerCore.X5 -> X5VideoPlayer(context, coroutineScope)
         }
 
         VideoPlayerState(player, defaultDisplayModeProvider)

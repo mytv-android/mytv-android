@@ -474,6 +474,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _webViewCore by mutableStateOf(Configs.WebViewCore.SYSTEM)
+    var webViewCore: Configs.WebViewCore
+        get() = _webViewCore
+        set(value) {
+            _webViewCore = value
+            Configs.webViewCore = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _videoPlayerRenderMode by mutableStateOf(Configs.VideoPlayerRenderMode.SURFACE_VIEW)
     var videoPlayerRenderMode: Configs.VideoPlayerRenderMode
         get() = _videoPlayerRenderMode
@@ -747,6 +756,7 @@ class SettingsViewModel : ViewModel() {
         _updateForceRemind = Configs.updateForceRemind
         _updateChannel = Configs.updateChannel
         _videoPlayerCore = Configs.videoPlayerCore
+        _webViewCore = Configs.webViewCore
         _videoPlayerRenderMode = Configs.videoPlayerRenderMode
         _videoPlayerUserAgent = Configs.videoPlayerUserAgent
         _videoPlayerHeaders = Configs.videoPlayerHeaders

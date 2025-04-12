@@ -23,8 +23,8 @@ import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
+import android.graphics.Rect;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.media.RingtoneManager;
@@ -54,7 +54,6 @@ import java.util.Map;
 
 import tv.danmaku.ijk.media.player.annotations.AccessedByNative;
 import tv.danmaku.ijk.media.player.annotations.CalledByNative;
-import tv.danmaku.ijk.media.player.av3a.AudioVividMetaDataHandler;
 import tv.danmaku.ijk.media.player.misc.IAndroidIO;
 import tv.danmaku.ijk.media.player.misc.IMediaDataSource;
 import tv.danmaku.ijk.media.player.misc.ITrackInfo;
@@ -67,10 +66,25 @@ import tv.danmaku.ijk.media.player.pragma.DebugLog;
  *         Java wrapper of ffplay.
  */
 public final class IjkMediaPlayer extends AbstractMediaPlayer {
+    private final static String TAG = IjkMediaPlayer.class.getName();
+
+    private static final int MEDIA_NOP = 0; // interface test message
+    private static final int MEDIA_PREPARED = 1;
+    private static final int MEDIA_PLAYBACK_COMPLETE = 2;
+    private static final int MEDIA_BUFFERING_UPDATE = 3;
+    private static final int MEDIA_SEEK_COMPLETE = 4;
+    private static final int MEDIA_SET_VIDEO_SIZE = 5;
+    private static final int MEDIA_TIMED_TEXT = 99;
+    private static final int MEDIA_ERROR = 100;
+    private static final int MEDIA_INFO = 200;
+
+    protected static final int MEDIA_SET_VIDEO_SAR = 10001;
+
     //----------------------------------------
     // options
     public static final int IJK_LOG_UNKNOWN = 0;
     public static final int IJK_LOG_DEFAULT = 1;
+
     public static final int IJK_LOG_VERBOSE = 2;
     public static final int IJK_LOG_DEBUG = 3;
     public static final int IJK_LOG_INFO = 4;
@@ -78,27 +92,32 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     public static final int IJK_LOG_ERROR = 6;
     public static final int IJK_LOG_FATAL = 7;
     public static final int IJK_LOG_SILENT = 8;
+
     public static final int OPT_CATEGORY_FORMAT     = 1;
     public static final int OPT_CATEGORY_CODEC      = 2;
     public static final int OPT_CATEGORY_SWS        = 3;
     public static final int OPT_CATEGORY_PLAYER     = 4;
+
     public static final int SDL_FCC_YV12 = 0x32315659; // YV12
     public static final int SDL_FCC_RV16 = 0x36315652; // RGB565
     public static final int SDL_FCC_RV32 = 0x32335652; // RGBX8888
+    //----------------------------------------
+
     //----------------------------------------
     // properties
     public static final int PROP_FLOAT_VIDEO_DECODE_FRAMES_PER_SECOND       = 10001;
     public static final int PROP_FLOAT_VIDEO_OUTPUT_FRAMES_PER_SECOND       = 10002;
     public static final int FFP_PROP_FLOAT_PLAYBACK_RATE                    = 10003;
     public static final int FFP_PROP_FLOAT_DROP_FRAME_RATE                  = 10007;
+
     public static final int FFP_PROP_INT64_SELECTED_VIDEO_STREAM            = 20001;
     public static final int FFP_PROP_INT64_SELECTED_AUDIO_STREAM            = 20002;
     public static final int FFP_PROP_INT64_SELECTED_TIMEDTEXT_STREAM        = 20011;
+
     public static final int FFP_PROP_INT64_VIDEO_DECODER                    = 20003;
     public static final int FFP_PROP_INT64_AUDIO_DECODER                    = 20004;
     public static final int     FFP_PROPV_DECODER_UNKNOWN                   = 0;
     public static final int     FFP_PROPV_DECODER_AVCODEC                   = 1;
-    //----------------------------------------
     public static final int     FFP_PROPV_DECODER_MEDIACODEC                = 2;
     public static final int     FFP_PROPV_DECODER_VIDEOTOOLBOX              = 3;
     public static final int FFP_PROP_INT64_VIDEO_CACHED_DURATION            = 20005;
@@ -121,20 +140,35 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     public static final int FFP_PROP_INT64_TCP_SPEED                        = 20200;
     public static final int FFP_PROP_INT64_LATEST_SEEK_LOAD_DURATION        = 20300;
     public static final int FFP_PROP_INT64_IMMEDIATE_RECONNECT              = 20211;
-    public static final int MEDIA_SEI_DATA = 201;
-    public static final int MSG_AV3A_METADATA_CHANGED = 200001;
-    protected static final int MEDIA_SET_VIDEO_SAR = 10001;
-    private final static String TAG = IjkMediaPlayer.class.getName();
-    private static final int MEDIA_NOP = 0; // interface test message
-    private static final int MEDIA_PREPARED = 1;
-    private static final int MEDIA_PLAYBACK_COMPLETE = 2;
-    private static final int MEDIA_BUFFERING_UPDATE = 3;
-    private static final int MEDIA_SEEK_COMPLETE = 4;
-    private static final int MEDIA_SET_VIDEO_SIZE = 5;
-    private static final int MEDIA_TIMED_TEXT = 99;
     //----------------------------------------
-    private static final int MEDIA_ERROR = 100;
-    private static final int MEDIA_INFO = 200;
+
+    @AccessedByNative
+    private long mNativeMediaPlayer;
+    @AccessedByNative
+    private long mNativeMediaDataSource;
+
+    @AccessedByNative
+    private long mNativeAndroidIO;
+
+    @AccessedByNative
+    private int mNativeSurfaceTexture;
+
+    @AccessedByNative
+    private int mListenerContext;
+
+    private SurfaceHolder mSurfaceHolder;
+    private EventHandler mEventHandler;
+    private PowerManager.WakeLock mWakeLock = null;
+    private boolean mScreenOnWhilePlaying;
+    private boolean mStayAwake;
+
+    private int mVideoWidth;
+    private int mVideoHeight;
+    private int mVideoSarNum;
+    private int mVideoSarDen;
+
+    private String mDataSource;
+
     /**
      * Default library loader
      * Load them by yourself, if your libraries are not installed at default place.
@@ -145,32 +179,31 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
             System.loadLibrary(libName);
         }
     };
+
     private static volatile boolean mIsLibLoaded = false;
+    public static void loadLibrariesOnce(IjkLibLoader libLoader) {
+        synchronized (IjkMediaPlayer.class) {
+            if (!mIsLibLoaded) {
+                if (libLoader == null)
+                    libLoader = sLocalLibLoader;
+
+                libLoader.loadLibrary("ijkffmpeg");
+                libLoader.loadLibrary("ijksdl");
+                libLoader.loadLibrary("ijkplayer");
+                mIsLibLoaded = true;
+            }
+        }
+    }
+
     private static volatile boolean mIsNativeInitialized = false;
-    public final AudioVividMetaDataHandler audioVividMetaDataHandler = new AudioVividMetaDataHandler(this);
-    @AccessedByNative
-    private long mNativeMediaPlayer;
-    @AccessedByNative
-    private long mNativeMediaDataSource;
-    @AccessedByNative
-    private long mNativeAndroidIO;
-    @AccessedByNative
-    private int mNativeSurfaceTexture;
-    @AccessedByNative
-    private int mListenerContext;
-    private SurfaceHolder mSurfaceHolder;
-    private EventHandler mEventHandler;
-    private PowerManager.WakeLock mWakeLock = null;
-    private boolean mScreenOnWhilePlaying;
-    private boolean mStayAwake;
-    private int mVideoWidth;
-    private int mVideoHeight;
-    private int mVideoSarNum;
-    private int mVideoSarDen;
-    private String mDataSource;
-    private OnControlMessageListener mOnControlMessageListener;
-    private OnNativeInvokeListener mOnNativeInvokeListener;
-    private OnMediaCodecSelectListener mOnMediaCodecSelectListener;
+    private static void initNativeOnce() {
+        synchronized (IjkMediaPlayer.class) {
+            if (!mIsNativeInitialized) {
+                native_init();
+                mIsNativeInitialized = true;
+            }
+        }
+    }
 
     /**
      * Default constructor. Consider using one of the create() methods for
@@ -183,7 +216,6 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
      */
     public IjkMediaPlayer() {
         this(sLocalLibLoader);
-
     }
 
     /**
@@ -194,131 +226,6 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     public IjkMediaPlayer(IjkLibLoader libLoader) {
         initPlayer(libLoader);
     }
-
-    public static void loadLibrariesOnce(IjkLibLoader libLoader) {
-        synchronized (IjkMediaPlayer.class) {
-            if (!mIsLibLoaded) {
-                if (libLoader == null)
-                    libLoader = sLocalLibLoader;
-
-                libLoader.loadLibrary("wsrtcsdk");
-                libLoader.loadLibrary("ijkffmpeg");
-                libLoader.loadLibrary("ijksdl");
-                libLoader.loadLibrary("ijkplayer");
-                libLoader.loadLibrary("RtsSDK");
-                mIsLibLoaded = true;
-            }
-        }
-    }
-
-    private static void initNativeOnce() {
-        synchronized (IjkMediaPlayer.class) {
-            if (!mIsNativeInitialized) {
-                native_init();
-                mIsNativeInitialized = true;
-            }
-        }
-    }
-
-    public static String getColorFormatName(int mediaCodecColorFormat) {
-        return _getColorFormatName(mediaCodecColorFormat);
-    }
-
-    private static native String _getColorFormatName(int mediaCodecColorFormat);
-
-    private static native void native_init();
-
-    /*
-     * Called from native code when an interesting event happens. This method
-     * just uses the EventHandler system to post the event back to the main app
-     * thread. We use a weak reference to the original IjkMediaPlayer object so
-     * that the native code is safe from the object disappearing from underneath
-     * it. (This is the cookie passed to native_setup().)
-     */
-    @CalledByNative
-    private static void postEventFromNative(Object weakThiz, int what,
-            int arg1, int arg2, Object obj) {
-        if (weakThiz == null)
-            return;
-
-        @SuppressWarnings("rawtypes")
-        IjkMediaPlayer mp = (IjkMediaPlayer) ((WeakReference) weakThiz).get();
-        if (mp == null) {
-            return;
-        }
-
-        if (what == MEDIA_INFO && arg1 == MEDIA_INFO_STARTED_AS_NEXT) {
-            // this acquires the wakelock if needed, and sets the client side
-            // state
-            mp.start();
-        }
-        if (mp.mEventHandler != null) {
-            Message m = mp.mEventHandler.obtainMessage(what, arg1, arg2, obj);
-            mp.mEventHandler.sendMessage(m);
-        }
-    }
-
-    @CalledByNative
-    private static boolean onNativeInvoke(Object weakThiz, int what, Bundle args) {
-        DebugLog.ifmt(TAG, "onNativeInvoke %d", what);
-        if (weakThiz == null || !(weakThiz instanceof WeakReference<?>))
-            throw new IllegalStateException("<null weakThiz>.onNativeInvoke()");
-
-        @SuppressWarnings("unchecked")
-        WeakReference<IjkMediaPlayer> weakPlayer = (WeakReference<IjkMediaPlayer>) weakThiz;
-        IjkMediaPlayer player = weakPlayer.get();
-        if (player == null)
-            throw new IllegalStateException("<null weakPlayer>.onNativeInvoke()");
-
-        OnNativeInvokeListener listener = player.mOnNativeInvokeListener;
-        if (listener != null && listener.onNativeInvoke(what, args))
-            return true;
-
-        switch (what) {
-            case OnNativeInvokeListener.CTRL_WILL_CONCAT_RESOLVE_SEGMENT: {
-                OnControlMessageListener onControlMessageListener = player.mOnControlMessageListener;
-                if (onControlMessageListener == null)
-                    return false;
-
-                int segmentIndex = args.getInt(OnNativeInvokeListener.ARG_SEGMENT_INDEX, -1);
-                if (segmentIndex < 0)
-                    throw new InvalidParameterException("onNativeInvoke(invalid segment index)");
-
-                String newUrl = onControlMessageListener.onControlResolveSegmentUrl(segmentIndex);
-                if (newUrl == null)
-                    throw new RuntimeException(new IOException("onNativeInvoke() = <NULL newUrl>"));
-
-                args.putString(OnNativeInvokeListener.ARG_URL, newUrl);
-                return true;
-            }
-            default:
-                return false;
-        }
-    }
-
-    @CalledByNative
-    private static String onSelectCodec(Object weakThiz, String mimeType, int profile, int level) {
-        if (weakThiz == null || !(weakThiz instanceof WeakReference<?>))
-            return null;
-
-        @SuppressWarnings("unchecked")
-        WeakReference<IjkMediaPlayer> weakPlayer = (WeakReference<IjkMediaPlayer>) weakThiz;
-        IjkMediaPlayer player = weakPlayer.get();
-        if (player == null)
-            return null;
-
-        OnMediaCodecSelectListener listener = player.mOnMediaCodecSelectListener;
-        if (listener == null)
-            listener = DefaultMediaCodecSelector.sInstance;
-
-        return listener.onMediaCodecSelect(player, mimeType, profile, level);
-    }
-
-    public static native void native_profileBegin(String libName);
-
-    public static native void native_profileEnd();
-
-    public static native void native_setLogLevel(int level);
 
     private void initPlayer(IjkLibLoader libLoader) {
         loadLibrariesOnce(libLoader);
@@ -480,6 +387,30 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     /**
      * Sets the data source (file-path or http/rtsp URL) to use.
      *
+     * @param path
+     *            the path of the file, or the http/rtsp URL of the stream you
+     *            want to play
+     * @throws IllegalStateException
+     *             if it is called in an invalid state
+     *
+     *             <p>
+     *             When <code>path</code> refers to a local file, the file may
+     *             actually be opened by a process other than the calling
+     *             application. This implies that the pathname should be an
+     *             absolute path (as any other process runs with unspecified
+     *             current working directory), and that the pathname should
+     *             reference a world-readable file.
+     */
+    @Override
+    public void setDataSource(String path)
+            throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
+        mDataSource = path;
+        _setDataSource(path, null, null);
+    }
+
+    /**
+     * Sets the data source (file-path or http/rtsp URL) to use.
+     *
      * @param path the path of the file, or the http/rtsp URL of the stream you want to play
      * @param headers the headers associated with the http request for the stream you want to play
      * @throws IllegalStateException if it is called in an invalid state
@@ -501,68 +432,6 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
             }
         }
         setDataSource(path);
-    }
-
-    /**
-     * Sets the data source (FileDescriptor) to use.  The FileDescriptor must be
-     * seekable (N.B. a LocalSocket is not seekable). It is the caller's responsibility
-     * to close the file descriptor. It is safe to do so as soon as this call returns.
-     *
-     * @param fd the FileDescriptor for the file you want to play
-     * @param offset the offset into the file where the data to be played starts, in bytes
-     * @param length the length in bytes of the data to be played
-     * @throws IllegalStateException if it is called in an invalid state
-     */
-    private void setDataSource(FileDescriptor fd, long offset, long length)
-            throws IOException, IllegalArgumentException, IllegalStateException {
-        // FIXME: handle offset, length
-        setDataSource(fd);
-    }
-
-    public void setAndroidIOCallback(IAndroidIO androidIO)
-            throws IllegalArgumentException, SecurityException, IllegalStateException {
-        _setAndroidIOCallback(androidIO);
-    }
-
-    private native void _setDataSource(String path, String[] keys, String[] values)
-            throws IOException, IllegalArgumentException, SecurityException, IllegalStateException;
-
-    private native void _setDataSourceFd(int fd)
-            throws IOException, IllegalArgumentException, SecurityException, IllegalStateException;
-
-    private native void _setDataSource(IMediaDataSource mediaDataSource)
-            throws IllegalArgumentException, SecurityException, IllegalStateException;
-
-    private native void _setAndroidIOCallback(IAndroidIO androidIO)
-            throws IllegalArgumentException, SecurityException, IllegalStateException;
-
-    @Override
-    public String getDataSource() {
-        return mDataSource;
-    }
-
-    /**
-     * Sets the data source (file-path or http/rtsp URL) to use.
-     *
-     * @param path
-     *            the path of the file, or the http/rtsp URL of the stream you
-     *            want to play
-     * @throws IllegalStateException
-     *             if it is called in an invalid state
-     *
-     *             <p>
-     *             When <code>path</code> refers to a local file, the file may
-     *             actually be opened by a process other than the calling
-     *             application. This implies that the pathname should be an
-     *             absolute path (as any other process runs with unspecified
-     *             current working directory), and that the pathname should
-     *             reference a world-readable file.
-     */
-    @Override
-    public void setDataSource(String path)
-            throws IOException, IllegalArgumentException, SecurityException, IllegalStateException {
-        mDataSource = path;
-        _setDataSource(path, null, null);
     }
 
     /**
@@ -598,9 +467,47 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         }
     }
 
+    /**
+     * Sets the data source (FileDescriptor) to use.  The FileDescriptor must be
+     * seekable (N.B. a LocalSocket is not seekable). It is the caller's responsibility
+     * to close the file descriptor. It is safe to do so as soon as this call returns.
+     *
+     * @param fd the FileDescriptor for the file you want to play
+     * @param offset the offset into the file where the data to be played starts, in bytes
+     * @param length the length in bytes of the data to be played
+     * @throws IllegalStateException if it is called in an invalid state
+     */
+    private void setDataSource(FileDescriptor fd, long offset, long length)
+            throws IOException, IllegalArgumentException, IllegalStateException {
+        // FIXME: handle offset, length
+        setDataSource(fd);
+    }
+
     public void setDataSource(IMediaDataSource mediaDataSource)
             throws IllegalArgumentException, SecurityException, IllegalStateException {
         _setDataSource(mediaDataSource);
+    }
+
+    public void setAndroidIOCallback(IAndroidIO androidIO)
+            throws IllegalArgumentException, SecurityException, IllegalStateException {
+        _setAndroidIOCallback(androidIO);
+    }
+
+    private native void _setDataSource(String path, String[] keys, String[] values)
+            throws IOException, IllegalArgumentException, SecurityException, IllegalStateException;
+
+    private native void _setDataSourceFd(int fd)
+            throws IOException, IllegalArgumentException, SecurityException, IllegalStateException;
+
+    private native void _setDataSource(IMediaDataSource mediaDataSource)
+            throws IllegalArgumentException, SecurityException, IllegalStateException;
+
+    private native void _setAndroidIOCallback(IAndroidIO androidIO)
+            throws IllegalArgumentException, SecurityException, IllegalStateException;
+
+    @Override
+    public String getDataSource() {
+        return mDataSource;
     }
 
     @Override
@@ -812,6 +719,18 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
 
     private native void _reset();
 
+    /**
+     * Sets the player to be looping or non-looping.
+     *
+     * @param looping whether to loop or not
+     */
+    @Override
+    public void setLooping(boolean looping) {
+        int loopCount = looping ? 0 : 1;
+        setOption(OPT_CATEGORY_PLAYER, "loop", loopCount);
+        _setLoopCount(loopCount);
+    }
+
     private native void _setLoopCount(int loopCount);
 
     /**
@@ -823,18 +742,6 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     public boolean isLooping() {
         int loopCount = _getLoopCount();
         return loopCount != 1;
-    }
-
-    /**
-     * Sets the player to be looping or non-looping.
-     *
-     * @param looping whether to loop or not
-     */
-    @Override
-    public void setLooping(boolean looping) {
-        int loopCount = looping ? 0 : 1;
-        setOption(OPT_CATEGORY_PLAYER, "loop", loopCount);
-        _setLoopCount(loopCount);
     }
 
     private native int _getLoopCount();
@@ -932,11 +839,8 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     }
 
     private native float _getPropertyFloat(int property, float defaultValue);
-
     private native void  _setPropertyFloat(int property, float value);
-
     private native long  _getPropertyLong(int property, long defaultValue);
-
     private native void  _setPropertyLong(int property, long value);
 
     public float getDropFrameRate() {
@@ -997,7 +901,6 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     }
 
     private native String _getVideoCodecInfo();
-
     private native String _getAudioCodecInfo();
 
     public void setOption(int category, String name, String value)
@@ -1011,36 +914,34 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
     }
 
     private native void _setOption(int category, String name, String value);
-
     private native void _setOption(int category, String name, long value);
 
     public Bundle getMediaMeta() {
         return _getMediaMeta();
     }
-
     private native Bundle _getMediaMeta();
+
+    public static String getColorFormatName(int mediaCodecColorFormat) {
+        return _getColorFormatName(mediaCodecColorFormat);
+    }
+
+    private static native String _getColorFormatName(int mediaCodecColorFormat);
 
     @Override
     public void setAudioStreamType(int streamtype) {
         // do nothing
     }
 
-    /*
-     * ControlMessage
-     */
-
     @Override
     public void setKeepInBackground(boolean keepInBackground) {
         // do nothing
     }
 
+    private static native void native_init();
+
     private native void native_setup(Object IjkMediaPlayer_this);
 
     private native void native_finalize();
-
-    /*
-     * NativeInvoke
-     */
 
     private native void native_message_loop(Object IjkMediaPlayer_this);
 
@@ -1055,106 +956,6 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
 
     public void setCacheShare(int share) {
         _setPropertyLong(FFP_PROP_INT64_SHARE_CACHE_DATA, (long)share);
-    }
-
-    /*
-     * MediaCodec select
-     */
-
-    public void setOnControlMessageListener(OnControlMessageListener listener) {
-        mOnControlMessageListener = listener;
-    }
-
-    public void setOnNativeInvokeListener(OnNativeInvokeListener listener) {
-        mOnNativeInvokeListener = listener;
-    }
-
-    public void setOnMediaCodecSelectListener(OnMediaCodecSelectListener listener) {
-        mOnMediaCodecSelectListener = listener;
-    }
-
-    public void resetListeners() {
-        super.resetListeners();
-        mOnMediaCodecSelectListener = null;
-    }
-
-    private native int native_setAv3aMetadataFloat(int i, int i2, float f2);
-
-    private native float native_getAv3aMetadataFloat(int i, int i2);
-
-    private native int native_getAv3aMetadataInt(int i, int i2);
-
-    private native String native_getAv3aMetadataString(int i, int i2);
-
-    public int setAv3aMetadataFloat(int i, int i2, float f2) {
-        return native_setAv3aMetadataFloat(i, i2, f2);
-    }
-
-    public float getAv3aMetadataFloat(int i, int i2) {
-        return native_getAv3aMetadataFloat(i, i2);
-    }
-
-    public int getAv3aMetadataInt(int i, int i2) {
-        return native_getAv3aMetadataInt(i, i2);
-    }
-
-    public String getAv3aMetadataString(int i, int i2) {
-        return native_getAv3aMetadataString(i, i2);
-    }
-
-    private native void _setGyro(float f2, float f3, float f4);
-
-    public void setGyro(float f2, float f3, float f4) {
-        _setGyro(f2, f3, f4);
-    }
-
-    private native int _setStreamSelectedPLV(int i, boolean z);
-
-    public int selectTrackPLV(int i) {
-        return _setStreamSelectedPLV(i, true);
-    }
-
-    public interface OnControlMessageListener {
-        String onControlResolveSegmentUrl(int segment);
-    }
-
-    public interface OnNativeInvokeListener {
-
-        int CTRL_WILL_TCP_OPEN = 0x20001;               // NO ARGS
-        int CTRL_DID_TCP_OPEN = 0x20002;                // ARG_ERROR, ARG_FAMILIY, ARG_IP, ARG_PORT, ARG_FD
-
-        int CTRL_WILL_HTTP_OPEN = 0x20003;              // ARG_URL, ARG_SEGMENT_INDEX, ARG_RETRY_COUNTER
-        int CTRL_WILL_LIVE_OPEN = 0x20005;              // ARG_URL, ARG_RETRY_COUNTER
-        int CTRL_WILL_CONCAT_RESOLVE_SEGMENT = 0x20007; // ARG_URL, ARG_SEGMENT_INDEX, ARG_RETRY_COUNTER
-
-        int EVENT_WILL_HTTP_OPEN = 0x1;                 // ARG_URL
-        int EVENT_DID_HTTP_OPEN = 0x2;                  // ARG_URL, ARG_ERROR, ARG_HTTP_CODE
-        int EVENT_WILL_HTTP_SEEK = 0x3;                 // ARG_URL, ARG_OFFSET
-        int EVENT_DID_HTTP_SEEK = 0x4;                  // ARG_URL, ARG_OFFSET, ARG_ERROR, ARG_HTTP_CODE, ARG_FILE_SIZE
-
-        String ARG_URL = "url";
-        String ARG_SEGMENT_INDEX = "segment_index";
-        String ARG_RETRY_COUNTER = "retry_counter";
-
-        String ARG_ERROR = "error";
-        String ARG_FAMILIY = "family";
-        String ARG_IP = "ip";
-        String ARG_PORT = "port";
-        String ARG_FD = "fd";
-
-        String ARG_OFFSET = "offset";
-        String ARG_HTTP_CODE = "http_code";
-        String ARG_FILE_SIZE = "file_size";
-
-        /*
-         * @return true if invoke is handled
-         * @throws Exception on any error
-         */
-        boolean onNativeInvoke(int what, Bundle args);
-    }
-
-    public interface OnMediaCodecSelectListener {
-        String onMediaCodecSelect(IMediaPlayer mp, String mimeType, int profile, int level);
     }
 
     private static class EventHandler extends Handler {
@@ -1176,7 +977,6 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
 
             switch (msg.what) {
             case MEDIA_PREPARED:
-                player.stayAwake(true);
                 player.notifyOnPrepared();
                 return;
 
@@ -1250,18 +1050,170 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
                         player.mVideoSarNum, player.mVideoSarDen);
                 break;
 
-            case MEDIA_SEI_DATA:
-                player.notifyOnSEIRefresh(msg.arg1, msg.arg2);
-                break;
-
-            case MSG_AV3A_METADATA_CHANGED:
-                player.notifyOnAudioVividMetadataChanged();
-                break;
-
             default:
                 DebugLog.e(TAG, "Unknown message type " + msg.what);
             }
         }
+    }
+
+    /*
+     * Called from native code when an interesting event happens. This method
+     * just uses the EventHandler system to post the event back to the main app
+     * thread. We use a weak reference to the original IjkMediaPlayer object so
+     * that the native code is safe from the object disappearing from underneath
+     * it. (This is the cookie passed to native_setup().)
+     */
+    @CalledByNative
+    private static void postEventFromNative(Object weakThiz, int what,
+            int arg1, int arg2, Object obj) {
+        if (weakThiz == null)
+            return;
+
+        @SuppressWarnings("rawtypes")
+        IjkMediaPlayer mp = (IjkMediaPlayer) ((WeakReference) weakThiz).get();
+        if (mp == null) {
+            return;
+        }
+
+        if (what == MEDIA_INFO && arg1 == MEDIA_INFO_STARTED_AS_NEXT) {
+            // this acquires the wakelock if needed, and sets the client side
+            // state
+            mp.start();
+        }
+        if (mp.mEventHandler != null) {
+            Message m = mp.mEventHandler.obtainMessage(what, arg1, arg2, obj);
+            mp.mEventHandler.sendMessage(m);
+        }
+    }
+
+    /*
+     * ControlMessage
+     */
+
+    private OnControlMessageListener mOnControlMessageListener;
+    public void setOnControlMessageListener(OnControlMessageListener listener) {
+        mOnControlMessageListener = listener;
+    }
+
+    public interface OnControlMessageListener {
+        String onControlResolveSegmentUrl(int segment);
+    }
+
+    /*
+     * NativeInvoke
+     */
+
+    private OnNativeInvokeListener mOnNativeInvokeListener;
+    public void setOnNativeInvokeListener(OnNativeInvokeListener listener) {
+        mOnNativeInvokeListener = listener;
+    }
+
+    public interface OnNativeInvokeListener {
+
+        int CTRL_WILL_TCP_OPEN = 0x20001;               // NO ARGS
+        int CTRL_DID_TCP_OPEN = 0x20002;                // ARG_ERROR, ARG_FAMILIY, ARG_IP, ARG_PORT, ARG_FD
+
+        int CTRL_WILL_HTTP_OPEN = 0x20003;              // ARG_URL, ARG_SEGMENT_INDEX, ARG_RETRY_COUNTER
+        int CTRL_WILL_LIVE_OPEN = 0x20005;              // ARG_URL, ARG_RETRY_COUNTER
+        int CTRL_WILL_CONCAT_RESOLVE_SEGMENT = 0x20007; // ARG_URL, ARG_SEGMENT_INDEX, ARG_RETRY_COUNTER
+
+        int EVENT_WILL_HTTP_OPEN = 0x1;                 // ARG_URL
+        int EVENT_DID_HTTP_OPEN = 0x2;                  // ARG_URL, ARG_ERROR, ARG_HTTP_CODE
+        int EVENT_WILL_HTTP_SEEK = 0x3;                 // ARG_URL, ARG_OFFSET
+        int EVENT_DID_HTTP_SEEK = 0x4;                  // ARG_URL, ARG_OFFSET, ARG_ERROR, ARG_HTTP_CODE, ARG_FILE_SIZE
+
+        String ARG_URL = "url";
+        String ARG_SEGMENT_INDEX = "segment_index";
+        String ARG_RETRY_COUNTER = "retry_counter";
+
+        String ARG_ERROR = "error";
+        String ARG_FAMILIY = "family";
+        String ARG_IP = "ip";
+        String ARG_PORT = "port";
+        String ARG_FD = "fd";
+
+        String ARG_OFFSET = "offset";
+        String ARG_HTTP_CODE = "http_code";
+        String ARG_FILE_SIZE = "file_size";
+
+        /*
+         * @return true if invoke is handled
+         * @throws Exception on any error
+         */
+        boolean onNativeInvoke(int what, Bundle args);
+    }
+
+    @CalledByNative
+    private static boolean onNativeInvoke(Object weakThiz, int what, Bundle args) {
+        DebugLog.ifmt(TAG, "onNativeInvoke %d", what);
+        if (weakThiz == null || !(weakThiz instanceof WeakReference<?>))
+            throw new IllegalStateException("<null weakThiz>.onNativeInvoke()");
+
+        @SuppressWarnings("unchecked")
+        WeakReference<IjkMediaPlayer> weakPlayer = (WeakReference<IjkMediaPlayer>) weakThiz;
+        IjkMediaPlayer player = weakPlayer.get();
+        if (player == null)
+            throw new IllegalStateException("<null weakPlayer>.onNativeInvoke()");
+
+        OnNativeInvokeListener listener = player.mOnNativeInvokeListener;
+        if (listener != null && listener.onNativeInvoke(what, args))
+            return true;
+
+        switch (what) {
+            case OnNativeInvokeListener.CTRL_WILL_CONCAT_RESOLVE_SEGMENT: {
+                OnControlMessageListener onControlMessageListener = player.mOnControlMessageListener;
+                if (onControlMessageListener == null)
+                    return false;
+
+                int segmentIndex = args.getInt(OnNativeInvokeListener.ARG_SEGMENT_INDEX, -1);
+                if (segmentIndex < 0)
+                    throw new InvalidParameterException("onNativeInvoke(invalid segment index)");
+
+                String newUrl = onControlMessageListener.onControlResolveSegmentUrl(segmentIndex);
+                if (newUrl == null)
+                    throw new RuntimeException(new IOException("onNativeInvoke() = <NULL newUrl>"));
+
+                args.putString(OnNativeInvokeListener.ARG_URL, newUrl);
+                return true;
+            }
+            default:
+                return false;
+        }
+    }
+
+    /*
+     * MediaCodec select
+     */
+
+    public interface OnMediaCodecSelectListener {
+        String onMediaCodecSelect(IMediaPlayer mp, String mimeType, int profile, int level);
+    }
+    private OnMediaCodecSelectListener mOnMediaCodecSelectListener;
+    public void setOnMediaCodecSelectListener(OnMediaCodecSelectListener listener) {
+        mOnMediaCodecSelectListener = listener;
+    }
+
+    public void resetListeners() {
+        super.resetListeners();
+        mOnMediaCodecSelectListener = null;
+    }
+
+    @CalledByNative
+    private static String onSelectCodec(Object weakThiz, String mimeType, int profile, int level) {
+        if (weakThiz == null || !(weakThiz instanceof WeakReference<?>))
+            return null;
+
+        @SuppressWarnings("unchecked")
+        WeakReference<IjkMediaPlayer> weakPlayer = (WeakReference<IjkMediaPlayer>) weakThiz;
+        IjkMediaPlayer player = weakPlayer.get();
+        if (player == null)
+            return null;
+
+        OnMediaCodecSelectListener listener = player.mOnMediaCodecSelectListener;
+        if (listener == null)
+            listener = DefaultMediaCodecSelector.sInstance;
+
+        return listener.onMediaCodecSelect(player, mimeType, profile, level);
     }
 
     public static class DefaultMediaCodecSelector implements OnMediaCodecSelectListener {
@@ -1329,4 +1281,7 @@ public final class IjkMediaPlayer extends AbstractMediaPlayer {
         }
     }
 
+    public static native void native_profileBegin(String libName);
+    public static native void native_profileEnd();
+    public static native void native_setLogLevel(int level);
 }
