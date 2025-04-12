@@ -194,10 +194,11 @@ enum class SettingsCategories(
     val icon: ImageVector,
     val title: String,
 ) {
-    APP(Icons.Outlined.Devices, "应用"),
-    IPTV(Icons.Outlined.LiveTv, "直播源"),
+    APP(Icons.Outlined.Devices, "通用"),
+    IPTV(Icons.Outlined.LiveTv, "播放源"),
     EPG(Icons.AutoMirrored.Outlined.LibraryBooks, "节目单"),
     UI(Icons.Outlined.DisplaySettings, "界面"),
+    THEME(Icons.Outlined.ColorLens, "主题"),
     CONTROL(Icons.Outlined.ControlCamera, "控制"),
     VIDEO_PLAYER(Icons.Outlined.SmartDisplay, "播放器"),
     UPDATE(Icons.Outlined.Update, "更新"),
@@ -205,11 +206,10 @@ enum class SettingsCategories(
     // FAVORITE(Icons.Outlined.FavoriteBorder, "收藏"),
     // EPG_RESERVE(Icons.Default.BookmarkBorder, "预约"),
     NETWORK(Icons.Outlined.Wifi, "网络"),
-    THEME(Icons.Outlined.ColorLens, "主题"),
     CLOUD_SYNC(Icons.Outlined.CloudSync, "云同步"),
+    PERMISSIONS(Icons.Outlined.Shield, "权限"),
     DEBUG(Icons.Outlined.BugReport, "调试"),
     LOG(Icons.AutoMirrored.Outlined.FormatListBulleted, "日志"),
-    PERMISSIONS(Icons.Outlined.Shield, "权限"),
 }
 
 enum class SettingsSubCategories {
@@ -223,12 +223,15 @@ enum class SettingsSubCategories {
     UI_SCREEN_AUTO_CLOSE_DELAY,
     UI_DENSITY_SCALE_RATIO,
     UI_FONT_SCALE_RATIO,
+    UI_VIDEO_PLAYER_SUBTITLE,
     VIDEO_PLAYER_CORE,
     VIDEO_PLAYER_RENDER_MODE,
     VIDEO_PLAYER_DISPLAY_MODE,
     VIDEO_PLAYER_LOAD_TIMEOUT,
     UPDATE_CHANNEL,
     CLOUD_SYNC_PROVIDER,
+    NETWORK_RETRY_COUNT,
+    NETWORK_RETRY_INTERVAL
 }
 
 @Preview(device = "id:Android TV (720p)")

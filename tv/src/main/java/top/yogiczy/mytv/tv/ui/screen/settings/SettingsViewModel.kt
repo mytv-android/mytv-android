@@ -16,6 +16,8 @@ import top.yogiczy.mytv.core.data.entities.epgsource.EpgSource
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSourceList
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
+import top.yogiczy.mytv.core.data.entities.subtitle.VideoPlayerSubtitleStyle
+import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.tv.sync.CloudSyncProvider
 import top.yogiczy.mytv.tv.ui.screen.Screens
 import top.yogiczy.mytv.tv.ui.screen.components.AppThemeDef
@@ -148,7 +150,15 @@ class SettingsViewModel : ViewModel() {
             Configs.iptvHybridMode = value
             afterSetWhenCloudSyncAutoPull()
         }
-
+    
+    private var _iptvHybridYangshipinCookie by mutableStateOf("")
+    var iptvHybridYangshipinCookie: String
+        get() = _iptvHybridYangshipinCookie
+        set(value) {
+            _iptvHybridYangshipinCookie = value
+            Configs.iptvHybridYangshipinCookie = value
+            afterSetWhenCloudSyncAutoPull()
+        }
     private var _iptvSimilarChannelMerge by mutableStateOf(false)
     var iptvSimilarChannelMerge: Boolean
         get() = _iptvSimilarChannelMerge
@@ -176,6 +186,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _iptvPLTVToTVOD by mutableStateOf(true)
+    var iptvPLTVToTVOD: Boolean
+        get() = _iptvPLTVToTVOD
+        set(value) {
+            _iptvPLTVToTVOD = value
+            Configs.iptvPLTVToTVOD = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+    
     private var _iptvChannelFavoriteEnable by mutableStateOf(false)
     var iptvChannelFavoriteEnable: Boolean
         get() = _iptvChannelFavoriteEnable
@@ -254,6 +273,24 @@ class SettingsViewModel : ViewModel() {
         set(value) {
             _iptvChannelChangeListLoop = value
             Configs.iptvChannelChangeListLoop = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _iptvChannelChangeCrossGroup by mutableStateOf(false)
+    var iptvChannelChangeCrossGroup: Boolean
+        get() = _iptvChannelChangeCrossGroup
+        set(value) {
+            _iptvChannelChangeCrossGroup = value
+            Configs.iptvChannelChangeCrossGroup = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _iptvChannelChangeLineWithLeftRight by mutableStateOf(false)
+    var iptvChannelChangeLineWithLeftRight: Boolean
+        get() = _iptvChannelChangeLineWithLeftRight
+        set(value) {
+            _iptvChannelChangeLineWithLeftRight = value
+            Configs.iptvChannelChangeLineWithLeftRight = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -371,6 +408,15 @@ class SettingsViewModel : ViewModel() {
         set(value) {
             _uiFontScaleRatio = value
             Configs.uiFontScaleRatio = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _uiVideoPlayerSubtitle by mutableStateOf(VideoPlayerSubtitleStyle())
+    var uiVideoPlayerSubtitle: VideoPlayerSubtitleStyle
+        get() = _uiVideoPlayerSubtitle
+        set(value) {
+            _uiVideoPlayerSubtitle = value
+            Configs.uiVideoPlayerSubtitle = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -500,6 +546,33 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _videoPlayerVolumeNormalization by mutableStateOf(false)
+    var videoPlayerVolumeNormalization: Boolean
+        get() = _videoPlayerVolumeNormalization
+        set(value) {
+            _videoPlayerVolumeNormalization = value
+            Configs.videoPlayerVolumeNormalization = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _networkRetryCount by mutableLongStateOf(Constants.NETWORK_RETRY_COUNT)
+    var networkRetryCount: Long
+        get() = _networkRetryCount
+        set(value) {
+            _networkRetryCount = value
+            Configs.networkRetryCount = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _networkRetryInterval by mutableLongStateOf(Constants.NETWORK_RETRY_INTERVAL)
+    var networkRetryInterval: Long
+        get() = _networkRetryInterval
+        set(value) {
+            _networkRetryInterval = value
+            Configs.networkRetryInterval = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _themeAppCurrent by mutableStateOf<AppThemeDef?>(null)
     var themeAppCurrent: AppThemeDef?
         get() = _themeAppCurrent
@@ -597,14 +670,14 @@ class SettingsViewModel : ViewModel() {
             Configs.cloudSyncWebDavPassword = value
         }
 
-    private var _feiyangAllInOneFilePath by mutableStateOf("")
-    var feiyangAllInOneFilePath: String
-        get() = _feiyangAllInOneFilePath
-        set(value) {
-            _feiyangAllInOneFilePath = value
-            Configs.feiyangAllInOneFilePath = value
-            afterSetWhenCloudSyncAutoPull()
-        }
+    // private var _feiyangAllInOneFilePath by mutableStateOf("")
+    // var feiyangAllInOneFilePath: String
+    //     get() = _feiyangAllInOneFilePath
+    //     set(value) {
+    //         _feiyangAllInOneFilePath = value
+    //         Configs.feiyangAllInOneFilePath = value
+    //         afterSetWhenCloudSyncAutoPull()
+    //     }
 
     private fun afterSetWhenCloudSyncAutoPull() {
         // if (_cloudSyncAutoPull) Snackbar.show("云同步：自动拉取已启用")
@@ -619,6 +692,11 @@ class SettingsViewModel : ViewModel() {
                 System.currentTimeMillis() < it.startAt + 60 * 1000
             }
         )
+
+        _iptvChannelChangeListLoop = Configs.iptvChannelChangeListLoop
+        _iptvChannelChangeCrossGroup = Configs.iptvChannelChangeCrossGroup
+        _iptvChannelChangeLineWithLeftRight = Configs.iptvChannelChangeLineWithLeftRight
+        _epgEnable = Configs.epgEnable
     }
 
     fun refresh() {
@@ -636,9 +714,11 @@ class SettingsViewModel : ViewModel() {
         _iptvSourceList = Configs.iptvSourceList
         _iptvChannelGroupHiddenList = Configs.iptvChannelGroupHiddenList
         _iptvHybridMode = Configs.iptvHybridMode
+        _iptvHybridYangshipinCookie = Configs.iptvHybridYangshipinCookie
         _iptvSimilarChannelMerge = Configs.iptvSimilarChannelMerge
         _iptvChannelLogoProvider = Configs.iptvChannelLogoProvider
         _iptvChannelLogoOverride = Configs.iptvChannelLogoOverride
+        _iptvPLTVToTVOD = Configs.iptvPLTVToTVOD
         _iptvChannelFavoriteEnable = Configs.iptvChannelFavoriteEnable
         _iptvChannelFavoriteListVisible = Configs.iptvChannelFavoriteListVisible
         _iptvChannelFavoriteList = Configs.iptvChannelFavoriteList
@@ -647,7 +727,6 @@ class SettingsViewModel : ViewModel() {
         _iptvChannelLinePlayableUrlList = Configs.iptvChannelLinePlayableUrlList
         _iptvChannelChangeFlip = Configs.iptvChannelChangeFlip
         _iptvChannelNoSelectEnable = Configs.iptvChannelNoSelectEnable
-        _iptvChannelChangeListLoop = Configs.iptvChannelChangeListLoop
         _epgEnable = Configs.epgEnable
         _epgSourceCurrent = Configs.epgSourceCurrent
         _epgSourceList = Configs.epgSourceList
@@ -661,6 +740,7 @@ class SettingsViewModel : ViewModel() {
         _uiUseClassicPanelScreen = Configs.uiUseClassicPanelScreen
         _uiDensityScaleRatio = Configs.uiDensityScaleRatio
         _uiFontScaleRatio = Configs.uiFontScaleRatio
+        _uiVideoPlayerSubtitle = Configs.uiVideoPlayerSubtitle
         _uiTimeShowMode = Configs.uiTimeShowMode
         _uiFocusOptimize = Configs.uiFocusOptimize
         _uiScreenAutoCloseDelay = Configs.uiScreenAutoCloseDelay
@@ -675,6 +755,8 @@ class SettingsViewModel : ViewModel() {
         _videoPlayerForceAudioSoftDecode = Configs.videoPlayerForceAudioSoftDecode
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem
         _videoPlayerSkipMultipleFramesOnSameVSync = Configs.videoPlayerSkipMultipleFramesOnSameVSync
+        _networkRetryCount = Configs.networkRetryCount
+        _networkRetryInterval = Configs.networkRetryInterval
         _themeAppCurrent = Configs.themeAppCurrent
         _cloudSyncAutoPull = Configs.cloudSyncAutoPull
         _cloudSyncProvider = Configs.cloudSyncProvider
@@ -687,7 +769,8 @@ class SettingsViewModel : ViewModel() {
         _cloudSyncWebDavUrl = Configs.cloudSyncWebDavUrl
         _cloudSyncWebDavUsername = Configs.cloudSyncWebDavUsername
         _cloudSyncWebDavPassword = Configs.cloudSyncWebDavPassword
-        _feiyangAllInOneFilePath = Configs.feiyangAllInOneFilePath
+        // _feiyangAllInOneFilePath = Configs.feiyangAllInOneFilePath
+        _videoPlayerVolumeNormalization = Configs.videoPlayerVolumeNormalization
     }
 
     companion object {

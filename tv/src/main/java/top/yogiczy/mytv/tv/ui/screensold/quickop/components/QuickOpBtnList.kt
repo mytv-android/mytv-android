@@ -4,19 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
-import androidx.compose.material.icons.outlined.ArrowBackIosNew
-import androidx.compose.material.icons.outlined.AspectRatio
-import androidx.compose.material.icons.outlined.Audiotrack
-import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material.icons.outlined.ClearAll
-import androidx.compose.material.icons.outlined.ControlCamera
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.SlowMotionVideo
-import androidx.compose.material.icons.outlined.Subtitles
-import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -26,6 +13,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.Text
 import kotlinx.coroutines.flow.distinctUntilChanged
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
@@ -35,14 +23,38 @@ import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
+import top.yogiczy.mytv.core.util.utils.humanizeLanguage
+import top.yogiczy.mytv.core.util.utils.humanizeAudioChannels
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.Alignment
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.LibraryBooks
+import androidx.compose.material.icons.automirrored.filled.FormatListBulleted
+import androidx.compose.material.icons.filled.LiveTv
+import androidx.compose.material.icons.filled.ControlCamera
+import androidx.compose.material.icons.filled.SmartDisplay
+import androidx.compose.material.icons.filled.AspectRatio
+import androidx.compose.material.icons.filled.VideoLibrary
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.Subtitles
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ClearAll
+import androidx.tv.material3.Icon
+import androidx.compose.ui.unit.dp
+import top.yogiczy.mytv.tv.ui.material.LazyRow
+import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import androidx.compose.ui.focus.focusRequester
 
 @Composable
 fun QuickOpBtnList(
     modifier: Modifier = Modifier,
     channelProvider: () -> Channel = { Channel.EMPTY },
     channelLineIdxProvider: () -> Int = { 0 },
-    playerDisplayModeProvider: () -> VideoPlayerDisplayMode = { VideoPlayerDisplayMode.ORIGINAL },
     playerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
     onShowVideoPlayerController: () -> Unit = {},
@@ -51,18 +63,22 @@ fun QuickOpBtnList(
     onShowAudioTracks: () -> Unit = {},
     onShowSubtitleTracks: () -> Unit = {},
     onShowMoreSettings: () -> Unit = {},
+    onShowDashboardScreen: () -> Unit = {},
     onClearCache: () -> Unit = {},
-    toDashboardScreen: () -> Unit = {},
     onUserAction: () -> Unit = {},
-    onDismissRequest: () -> Unit = {},
 ) {
     val childPadding = rememberChildPadding()
     val listState = rememberLazyListState()
     val playerMetadata = playerMetadataProvider()
-
+    val settingsViewModel = settingsVM
+    var currentVideoTrack = ""
+    var currentAudioTrack = ""
+    var currentSubtitleTrack = ""
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }.distinctUntilChanged()
-            .collect { _ -> onUserAction() }
+            .collect {
+                onUserAction()
+            }
     }
 
     LazyRow(
@@ -70,12 +86,23 @@ fun QuickOpBtnList(
         state = listState,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(start = childPadding.start, end = childPadding.end),
-    ) {
+    ) {runtime ->
         item {
             QuickOpBtn(
-                modifier = Modifier.focusOnLaunched(),
+                modifier = Modifier
+                    .focusOnLaunched()
+                    .focusRequester(runtime.firstItemFocusRequester)
+                    .handleKeyEvents(onLeft = { runtime.scrollToLast()}),
+                title = "播放源",
+                imageVector = Icons.Filled.LiveTv,
+                onSelect = onShowIptvSource,
+            )
+        }
+
+        item {
+            QuickOpBtn(
                 title = "节目单",
-                imageVector = Icons.Outlined.Book,
+                imageVector = Icons.AutoMirrored.Filled.LibraryBooks,
                 onSelect = onShowEpg,
             )
         }
@@ -90,7 +117,7 @@ fun QuickOpBtnList(
 
             QuickOpBtn(
                 title = lineName,
-                imageVector = Icons.AutoMirrored.Outlined.FormatListBulleted,
+                imageVector = Icons.AutoMirrored.Filled.FormatListBulleted,
                 onSelect = onShowChannelLine,
             )
         }
@@ -98,25 +125,23 @@ fun QuickOpBtnList(
         item {
             QuickOpBtn(
                 title = "播放控制",
-                imageVector = Icons.Outlined.ControlCamera,
+                imageVector = Icons.Filled.ControlCamera,
                 onSelect = onShowVideoPlayerController,
             )
         }
 
         item {
             QuickOpBtn(
-                title = playerDisplayModeProvider().label,
-                imageVector = Icons.Outlined.AspectRatio,
+                title = settingsViewModel.videoPlayerDisplayMode.label,
+                imageVector = Icons.Filled.AspectRatio,
                 onSelect = onShowVideoPlayerDisplayMode,
             )
         }
 
         item {
-            val settingsViewModel = settingsVM
-
             QuickOpBtn(
-                title = settingsVM.videoPlayerCore.label,
-                imageVector = Icons.Outlined.SlowMotionVideo,
+                title = "播放器："+settingsViewModel.videoPlayerCore.label,
+                imageVector = Icons.Filled.SmartDisplay,
                 onSelect = {
                     settingsViewModel.videoPlayerCore = when (settingsViewModel.videoPlayerCore) {
                         Configs.VideoPlayerCore.MEDIA3 -> Configs.VideoPlayerCore.IJK
@@ -130,7 +155,7 @@ fun QuickOpBtnList(
             item {
                 QuickOpBtn(
                     title = playerMetadataProvider().video?.shortLabel ?: "视轨",
-                    imageVector = Icons.Outlined.Videocam,
+                    imageVector = Icons.Filled.VideoLibrary,
                     onSelect = onShowVideoTracks,
                 )
             }
@@ -140,7 +165,7 @@ fun QuickOpBtnList(
             item {
                 QuickOpBtn(
                     title = playerMetadataProvider().audio?.shortLabel ?: "音轨",
-                    imageVector = Icons.Outlined.Audiotrack,
+                    imageVector = Icons.Filled.MusicNote,
                     onSelect = onShowAudioTracks,
                 )
             }
@@ -150,7 +175,7 @@ fun QuickOpBtnList(
             item {
                 QuickOpBtn(
                     title = playerMetadataProvider().subtitle?.shortLabel ?: "字幕",
-                    imageVector = Icons.Outlined.Subtitles,
+                    imageVector = Icons.Filled.Subtitles,
                     onSelect = onShowSubtitleTracks,
                 )
             }
@@ -159,32 +184,27 @@ fun QuickOpBtnList(
         item {
             QuickOpBtn(
                 title = "清除缓存",
-                imageVector = Icons.Outlined.ClearAll,
+                imageVector = Icons.Filled.ClearAll,
                 onSelect = onClearCache,
             )
         }
 
-        item {
+        item{
             QuickOpBtn(
-                title = "主界面",
-                imageVector = Icons.Outlined.Home,
-                onSelect = toDashboardScreen,
+                title = "主页",
+                imageVector = Icons.Filled.Home,
+                onSelect = onShowDashboardScreen,
             )
         }
 
         item {
             QuickOpBtn(
+                modifier = Modifier
+                    .focusRequester(runtime.lastItemFocusRequester)
+                    .handleKeyEvents(onRight = { runtime.scrollToFirst() }),
                 title = "设置",
-                imageVector = Icons.Outlined.Settings,
+                imageVector = Icons.Filled.Settings,
                 onSelect = onShowMoreSettings,
-            )
-        }
-
-        item {
-            QuickOpBtn(
-                title = "返回",
-                imageVector = Icons.Outlined.ArrowBackIosNew,
-                onSelect = onDismissRequest,
             )
         }
     }

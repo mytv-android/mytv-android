@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
+import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList.Companion.channelList
@@ -15,6 +16,7 @@ import top.yogiczy.mytv.core.data.entities.epg.EpgList
 import top.yogiczy.mytv.core.data.entities.epg.EpgList.Companion.match
 import top.yogiczy.mytv.core.data.entities.epg.EpgList.Companion.recentProgramme
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
+import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
 import top.yogiczy.mytv.core.data.repositories.epg.EpgRepository
 import top.yogiczy.mytv.core.data.repositories.iptv.IptvRepository
 import top.yogiczy.mytv.tv.ui.material.PopupContent
@@ -22,6 +24,8 @@ import top.yogiczy.mytv.tv.ui.material.Snackbar
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.material.popupable
 import top.yogiczy.mytv.tv.ui.screen.settings.SettingsSubCategories
+import top.yogiczy.mytv.tv.ui.screen.main.MainViewModel
+import top.yogiczy.mytv.tv.ui.screen.main.mainVM
 import top.yogiczy.mytv.tv.ui.screen.settings.SettingsViewModel
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.screensold.audiotracks.AudioTracksScreen
@@ -37,6 +41,7 @@ import top.yogiczy.mytv.tv.ui.screensold.epg.EpgScreen
 import top.yogiczy.mytv.tv.ui.screensold.epgreverse.EpgReverseScreen
 import top.yogiczy.mytv.tv.ui.screensold.quickop.QuickOpScreen
 import top.yogiczy.mytv.tv.ui.screensold.subtitletracks.SubtitleTracksScreen
+import top.yogiczy.mytv.tv.ui.screensold.iptvsource.IptvSourceScreen
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.VideoPlayerScreen
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.rememberVideoPlayerState
@@ -58,6 +63,7 @@ fun MainContent(
     onChannelFavoriteToggle: (Channel) -> Unit = {},
     toSettingsScreen: (SettingsSubCategories?) -> Unit = {},
     toDashboardScreen: () -> Unit = {},
+    onReload: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -90,7 +96,7 @@ fun MainContent(
                     else mainContentState.changeCurrentChannelToNext()
                 },
                 onLeft = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx - 1,
@@ -98,13 +104,14 @@ fun MainContent(
                     }
                 },
                 onRight = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx + 1,
                         )
                     }
                 },
+                onLongUp = { mainContentState.isIptvSourceScreenVisible = true },
                 onSelect = { mainContentState.isChannelScreenVisible = true },
                 onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
                 onSettings = { mainContentState.isQuickOpScreenVisible = true },
@@ -123,7 +130,7 @@ fun MainContent(
                     else mainContentState.changeCurrentChannelToNext()
                 },
                 onSwipeRight = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx - 1,
@@ -131,7 +138,7 @@ fun MainContent(
                     }
                 },
                 onSwipeLeft = {
-                    if (mainContentState.currentChannel.lineList.size > 1) {
+                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
                         mainContentState.changeCurrentChannel(
                             mainContentState.currentChannel,
                             mainContentState.currentChannelLineIdx + 1,
@@ -143,11 +150,18 @@ fun MainContent(
         VideoPlayerScreen(
             state = videoPlayerState,
             showMetadataProvider = { settingsViewModel.debugShowVideoPlayerMetadata },
+            forceTextureView = false,
         )
 
-        Visibility({ mainContentState.currentChannelLine.url.startsWith("webview://") }) {
+        Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
+            val channelLine = mainContentState.currentChannelLine
             WebViewScreen(
-                urlProvider = { mainContentState.currentChannelLine.url },
+                urlProvider = {
+                    Pair(
+                        channelLine.url,
+                        channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                    )
+                },
                 onVideoResolutionChanged = { width, height ->
                     videoPlayerState.metadata = videoPlayerState.metadata.copy(
                         video = (videoPlayerState.metadata.video
@@ -176,6 +190,7 @@ fun MainContent(
     Visibility({
         !mainContentState.isTempChannelScreenVisible
                 && !mainContentState.isChannelScreenVisible
+                && !mainContentState.isIptvSourceScreenVisible
                 && !mainContentState.isQuickOpScreenVisible
                 && !mainContentState.isEpgScreenVisible
                 && !mainContentState.isChannelLineScreenVisible
@@ -189,6 +204,7 @@ fun MainContent(
     Visibility({
         mainContentState.isTempChannelScreenVisible
                 && !mainContentState.isChannelScreenVisible
+                && !mainContentState.isIptvSourceScreenVisible
                 && !mainContentState.isQuickOpScreenVisible
                 && !mainContentState.isEpgScreenVisible
                 && !mainContentState.isChannelLineScreenVisible
@@ -237,6 +253,24 @@ fun MainContent(
                 )
             },
             onClose = { mainContentState.isEpgScreenVisible = false },
+        )
+    }
+
+    PopupContent(
+        visibleProvider = { mainContentState.isIptvSourceScreenVisible },
+        onDismissRequest = { mainContentState.isIptvSourceScreenVisible = false },
+    ) {
+        IptvSourceScreen(
+            currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
+            iptvSourceListProvider = {IptvSourceList(Constants.IPTV_SOURCE_LIST + settingsViewModel.iptvSourceList)},
+            onIptvSourceChanged = {
+                mainContentState.isIptvSourceScreenVisible = false
+                settingsViewModel.iptvSourceCurrent = it
+                settingsViewModel.iptvChannelGroupHiddenList = emptySet()
+                settingsViewModel.iptvChannelLastPlay = Channel.EMPTY
+                onReload()
+            },
+            onClose = { mainContentState.isIptvSourceScreenVisible = false },
         )
     }
 
@@ -364,8 +398,11 @@ fun MainContent(
             },
             epgListProvider = epgListProvider,
             currentPlaybackEpgProgrammeProvider = { mainContentState.currentPlaybackEpgProgramme },
-            playerDisplayModeProvider = { videoPlayerState.displayMode },
             videoPlayerMetadataProvider = { videoPlayerState.metadata },
+            onShowIptvSource ={
+                mainContentState.isQuickOpScreenVisible = false
+                mainContentState.isIptvSourceScreenVisible = true
+            },
             onShowEpg = {
                 mainContentState.isQuickOpScreenVisible = false
                 mainContentState.isEpgScreenVisible = true
@@ -398,6 +435,10 @@ fun MainContent(
                 mainContentState.isQuickOpScreenVisible = false
                 toSettingsScreen(it)
             },
+            toDashboardScreen = {
+                mainContentState.isQuickOpScreenVisible = false
+                toDashboardScreen()
+            },
             onClearCache = {
                 settingsViewModel.iptvChannelLinePlayableHostList = emptySet()
                 settingsViewModel.iptvChannelLinePlayableUrlList = emptySet()
@@ -406,10 +447,6 @@ fun MainContent(
                     EpgRepository(settingsViewModel.epgSourceCurrent).clearCache()
                     Snackbar.show("缓存已清除，请重启应用")
                 }
-            },
-            toDashboardScreen = {
-                mainContentState.isQuickOpScreenVisible = false
-                toDashboardScreen()
             },
             onClose = { mainContentState.isQuickOpScreenVisible = false },
         )

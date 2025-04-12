@@ -15,14 +15,15 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 @Composable
 fun WebViewPlaceholder(
     modifier: Modifier = Modifier,
+    message: String = "加载中...",
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black.copy(0.8f)),
+            .background(Color.Black.copy(alpha = 0.5f)), // 修改透明度为50%
     ) {
         Text(
-            text = "混合模式（webview）",
+            text = message,
             modifier = Modifier.align(Alignment.Center),
             style = MaterialTheme.typography.titleLarge,
         )

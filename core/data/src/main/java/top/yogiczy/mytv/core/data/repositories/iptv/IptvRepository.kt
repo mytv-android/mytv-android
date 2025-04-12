@@ -13,9 +13,8 @@ import top.yogiczy.mytv.core.data.repositories.iptv.parser.IptvParser.ChannelIte
 import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.data.utils.Logger
 import kotlin.time.measureTimedValue
-
 /**
- * 直播源数据获取
+ * 播放源数据获取
  */
 class IptvRepository(private val source: IptvSource) :
     FileCacheRepository(source.cacheFileName("json")) {
@@ -37,7 +36,7 @@ class IptvRepository(private val source: IptvSource) :
         val raw = rawRepository.getRaw()
         val parser = IptvParser.instances.first { it.isSupport(source.url, raw) }
 
-        log.d("开始解析直播源（${source.name}）...")
+        log.d("开始解析播放源（${source.name}）...")
         return measureTimedValue {
             val list = parser.parse(raw)
             Globals.json.encodeToString(withContext(Dispatchers.Default) {
@@ -46,7 +45,7 @@ class IptvRepository(private val source: IptvSource) :
                     .toChannelGroupList()
             })
         }.let {
-            log.i("解析直播源（${source.name}）完成", null, it.duration)
+            log.i("解析播放源（${source.name}）完成", null, it.duration)
             it.value
         }
     }
@@ -72,7 +71,7 @@ class IptvRepository(private val source: IptvSource) :
             org.mozilla.javascript.Context.exit()
 
             if (result.isFailure) {
-                log.e("转换直播源（${source.name}）错误: ${result.exceptionOrNull()}")
+                log.e("转换播放源（${source.name}）错误: ${result.exceptionOrNull()}")
             }
 
             if (result.isSuccess) Globals.json.decodeFromString(result.getOrNull()!!)
@@ -80,7 +79,7 @@ class IptvRepository(private val source: IptvSource) :
         }
 
     /**
-     * 获取直播源分组列表
+     * 获取播放源分组列表
      */
     suspend fun getChannelGroupList(cacheTime: Long): ChannelGroupList {
         try {
@@ -89,10 +88,10 @@ class IptvRepository(private val source: IptvSource) :
             }
 
             return Globals.json.decodeFromString<ChannelGroupList>(json).also { groupList ->
-                log.i("加载直播源（${source.name}）：${groupList.size}个分组，${groupList.sumOf { it.channelList.size }}个频道")
+                log.i("加载播放源（${source.name}）：${groupList.size}个分组，${groupList.sumOf { it.channelList.size }}个频道")
             }
         } catch (ex: Exception) {
-            log.e("加载直播源（${source.name}）失败", ex)
+            log.e("加载播放源（${source.name}）失败", ex)
             throw ex
         }
     }
@@ -126,13 +125,15 @@ private class IptvRawRepository(private val source: IptvSource) : FileCacheRepos
 
     suspend fun getRaw(cacheTime: Long = 0): String {
         return getOrRefresh(if (source.isLocal) Long.MAX_VALUE else cacheTime) {
-            log.d("获取直播源: $source")
+
+
+            log.d("获取播放源: $source")
 
             try {
                 source.url.request { body -> body.string() } ?: ""
             } catch (ex: Exception) {
-                log.e("获取直播源（${source.name}）失败", ex)
-                throw HttpException("获取直播源失败，请检查网络连接", ex)
+                log.e("获取播放源（${source.name}）失败", ex)
+                throw HttpException("获取播放源失败，请检查网络连接", ex)
             }
         }
     }

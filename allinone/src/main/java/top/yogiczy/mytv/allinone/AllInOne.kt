@@ -14,7 +14,7 @@ object AllInOne {
 
     suspend fun start(
         context: Context,
-        allinonePath: String,
+        allinoneBin: File,
         onFail: () -> Unit = {},
         onUnsupported: () -> Unit = {},
     ) {
@@ -31,9 +31,6 @@ object AllInOne {
                     onUnsupported()
                     return@runCatching
                 }
-
-                val allinoneBin = File(allinonePath.split(" ").first())
-                val allinoneParams = allinonePath.split(" ").drop(1).joinToString(" ")
 
                 val allinone = File(context.filesDir, "allinone").apply {
                     if (allinoneBin.lastModified() > lastModified()) {
@@ -69,8 +66,7 @@ object AllInOne {
                         "-b ${etcResolvConf.absolutePath}:/etc/resolv.conf",
                         "-b ${etcSsl}:/etc/ssl",
                         "-w ${pwdDir.absolutePath}",
-                        " ${allinone.absolutePath}",
-                        " $allinoneParams",
+                        allinone.absolutePath,
                     ).joinToString(" ")
                 )
 

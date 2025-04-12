@@ -176,7 +176,7 @@ private fun LiveChannelsChannelInfoTags(
             Tag("${channelLineIdx + 1}/${channel.lineList.size}", colors = tagColors)
         }
 
-        if (line.url.startsWith("webview://")) {
+        if (line.hybridType == ChannelLine.HybridType.WebView) {
             Tag(ChannelUtil.getHybridWebViewUrlProvider(line.url), colors = tagColors)
         } else {
             if (line.url.isIPv6()) Tag("IPv6", colors = tagColors)

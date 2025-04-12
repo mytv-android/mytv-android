@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>天光云影</title>
+    <title>管理后台</title>
     <link href="./web_push_css.css" rel="stylesheet" />
     <script src="./web_push_js.js"></script>
 
@@ -30,7 +30,7 @@
                         <van-cell title="点击进入高级模式" is-link url="/advance"></van-cell>
                     </van-cell-group>
 
-                    <van-cell-group inset title="直播源">
+                    <van-cell-group inset title="播放源">
                         <van-cell title="自定义直播源">
                             <template #label>
                                 <van-space class="w-full" direction="vertical" size="small">
@@ -72,6 +72,23 @@
                                     <div class="flex justify-end">
                                         <van-button @click="pushIptvSource" size="small" type="primary">
                                             推送直播源
+                                        </van-button>
+                                    </div>
+                                </van-space>
+                            </template>
+                        </van-cell>
+
+                        <van-cell title="网页源央视频Cookie">
+                            <template #label>
+                                <van-space class="w-full" direction="vertical" size="small">
+                                    <span>请在网页版打开央视频网站，并在登录后复制所有cookie</span>
+                        
+                                    <van-field class="!p-0" 
+                                        v-model="configs.iptvHybridYangshipinCookie"></van-field>
+                        
+                                    <div class="flex justify-end">
+                                        <van-button @click="pushConfigs" size="small" type="primary">
+                                            推送
                                         </van-button>
                                     </div>
                                 </van-space>
@@ -258,14 +275,14 @@
                         </van-cell>
                     </van-cell-group>
 
-                    <van-cell-group inset title="二进制">
-                        <van-cell title="上传二进制">
+                    <!-- <van-cell-group inset title="肥羊">
+                        <van-cell title="上传AllInOne">
                             <template #extra>
                                 <van-uploader :after-read="uploadAllInOneAfterRead" accept="*.*" />
                             </template>
                         </van-cell>
 
-                        <van-cell title="二进制文件地址">
+                        <van-cell title="AllInOne文件地址">
                             <template #label>
                                 <van-field class="!p-0" v-model="configs.feiyangAllInOneFilePath"></van-field>
                             </template>
@@ -278,7 +295,7 @@
                                 </van-button>
                             </div>
                         </van-cell>
-                    </van-cell-group>
+                    </van-cell-group> -->
                 </template>
 
                 <template v-else-if="tabActive === 'log'">
@@ -491,18 +508,18 @@
                     }
                 }
 
-                async function uploadAllInOneAfterRead(file) {
-                    try {
-                        vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
-                        const formData = new FormData()
-                        formData.append('filename', file.file)
-                        await requestApi('/api/upload/allinone', { method: "POST", body: formData })
-                        vant.closeToast()
-                    } catch (e) {
-                        vant.showFailToast('上传AllInOne失败')
-                        console.error(e)
-                    }
-                }
+                // async function uploadAllInOneAfterRead(file) {
+                //     try {
+                //         vant.showLoadingToast({ message: '加载中...', forbidClick: true, duration: 0 })
+                //         const formData = new FormData()
+                //         formData.append('filename', file.file)
+                //         await requestApi('/api/upload/allinone', { method: "POST", body: formData })
+                //         vant.closeToast()
+                //     } catch (e) {
+                //         vant.showFailToast('上传AllInOne失败')
+                //         console.error(e)
+                //     }
+                // }
 
                 const videoPlayerHeadersExample = "Header-Name-1: Header-Value-1\nHeader-Name-2: Header-Value-2"
 
@@ -528,7 +545,7 @@
                     channelAlias,
                     updateChannelAlias,
                     uploadApkAfterRead,
-                    uploadAllInOneAfterRead,
+           //         uploadAllInOneAfterRead,
                     videoPlayerHeadersExample,
                 }
             }

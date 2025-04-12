@@ -76,7 +76,7 @@ fun ChannelInfo(
                     Tag("${channelLineIdx + 1}/${channel.lineList.size}", colors = tagColors)
                 }
 
-                if (line.url.startsWith("webview://")) {
+                if (line.hybridType == ChannelLine.HybridType.WebView) {
                     Tag(ChannelUtil.getHybridWebViewUrlProvider(line.url), colors = tagColors)
                 } else {
                     Tag(if (line.url.isIPv6()) "IPV6" else "IPV4", colors = tagColors)

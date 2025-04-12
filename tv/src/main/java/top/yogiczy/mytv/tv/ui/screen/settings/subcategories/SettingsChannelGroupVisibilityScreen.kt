@@ -42,7 +42,7 @@ fun SettingsChannelGroupVisibilityScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 直播源 / 频道分组管理") },
+        header = { Text("设置 / 播放源 / 频道分组管理") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {

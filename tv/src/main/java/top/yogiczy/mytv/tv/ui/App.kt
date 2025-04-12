@@ -23,7 +23,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.debounce
-import top.yogiczy.mytv.allinone.AllInOne
+// import top.yogiczy.mytv.allinone.AllInOne
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource.Companion.needExternalStoragePermission
 import top.yogiczy.mytv.tv.ui.material.Padding
 import top.yogiczy.mytv.tv.ui.material.PopupHandleableApplication
@@ -41,6 +41,7 @@ import top.yogiczy.mytv.tv.ui.theme.SAFE_AREA_VERTICAL_PADDING
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
 import top.yogiczy.mytv.tv.ui.utils.rememberReadExternalStoragePermission
 import java.io.File
+import top.yogiczy.mytv.core.data.utils.Globals
 
 @Composable
 fun App(
@@ -84,21 +85,24 @@ fun App(
         val (hasPermission, requestPermission) = rememberReadExternalStoragePermission()
         LaunchedEffect(Unit) { if (!hasPermission) requestPermission() }
     }
-
-    LaunchedEffect(settingsViewModel.iptvSourceCurrent) {
-        if (settingsViewModel.feiyangAllInOneFilePath.isNotBlank()) {
-            AllInOne.start(
-                context,
-                settingsViewModel.feiyangAllInOneFilePath,
-                onFail = {
-                    Snackbar.show("二进制 启动失败", type = SnackbarType.ERROR)
-                },
-                onUnsupported = {
-                    Snackbar.show("二进制 不支持当前平台", type = SnackbarType.ERROR)
-                },
-            )
-        }
+    val latestFile = File(Globals.cacheDir, "latest.apk")
+    if (latestFile.exists()) {
+        latestFile.delete()
     }
+    // LaunchedEffect(settingsViewModel.iptvSourceCurrent) {
+    //     if (settingsViewModel.feiyangAllInOneFilePath.isNotBlank()) {
+    //         AllInOne.start(
+    //             context,
+    //             File(settingsViewModel.feiyangAllInOneFilePath),
+    //             onFail = {
+    //                 Snackbar.show("肥羊AllInOne 启动失败", type = SnackbarType.ERROR)
+    //             },
+    //             onUnsupported = {
+    //                 Snackbar.show("肥羊AllInOne 不支持当前平台", type = SnackbarType.ERROR)
+    //             },
+    //         )
+    //     }
+    // }
 }
 
 /**

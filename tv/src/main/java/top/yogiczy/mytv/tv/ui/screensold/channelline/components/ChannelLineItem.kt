@@ -61,8 +61,8 @@ fun ChannelLineItem(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (line.url.startsWith("webview://")) {
-                    Tag("混合")
+                if (line.hybridType == ChannelLine.HybridType.WebView) {
+                    Tag("网页")
                     Tag(ChannelUtil.getHybridWebViewUrlProvider(line.url))
                 } else {
                     Tag(if (line.url.isIPv6()) "IPv6" else "IPv4")
@@ -108,6 +108,8 @@ private fun rememberLineDelay(line: ChannelLine): Long {
                             builder
                                 .apply {
                                     line.httpUserAgent?.let { header("User-Agent", it) }
+                                    line.httpReferrer?.let { header("Referer", it) } // 添加 Referer 请求头
+                                    line.httpOrigin?.let { header("Origin", it) } // 添加 Origin 请求头
                                 }
                         }) { body -> body.string() }
                     } catch (_: IOException) {
@@ -143,7 +145,8 @@ private fun ChannelLineItemPreview() {
             ChannelLineItem(
                 lineProvider = {
                     ChannelLine(
-                        url = "webview://https://tv.cctv.com/live/cctv1/",
+                        url = "https://tv.cctv.com/live/cctv1/",
+                        hybridType = ChannelLine.HybridType.WebView,
                     )
                 },
                 lineIdxProvider = { 0 },

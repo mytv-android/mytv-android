@@ -68,7 +68,7 @@ fun SettingsEpgSourceScreen(
     onClearCache: (EpgSource) -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
-    val epgSourceList = Constants.EPG_SOURCE_LIST + epgSourceListProvider()
+    val epgSourceList = epgSourceListProvider()
 
     val childPadding = rememberChildPadding()
     val listState = rememberLazyListState()
@@ -93,6 +93,8 @@ fun SettingsEpgSourceScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             itemsIndexed(epgSourceList) { index, epgSource ->
+                // epgSource.url 为空字符则跳过
+                if (epgSource.url.isBlank()) return@itemsIndexed
                 EpgSourceItem(
                     modifier = Modifier
                         .ifElse(

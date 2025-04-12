@@ -75,7 +75,7 @@ fun SettingsIptvSourceScreen(
     onClearCache: (IptvSource) -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
-    val iptvSourceList = IptvSourceList(Constants.IPTV_SOURCE_LIST + iptvSourceListProvider())
+    val iptvSourceList = IptvSourceList(iptvSourceListProvider())
 
     val coroutineScope = rememberCoroutineScope()
     val iptvSourceDetails = remember { mutableStateMapOf<Int, IptvSourceDetail>() }
@@ -104,7 +104,7 @@ fun SettingsIptvSourceScreen(
 
     AppScreen(
         modifier = modifier,
-        header = { Text("设置 / 直播源 / 自定义直播源") },
+        header = { Text("设置 / 播放源 / 自定义播放源") },
         headerExtra = {
             AppScaffoldHeaderBtn(
                 title = "刷新全部",
@@ -249,7 +249,7 @@ private fun IptvSourceItem(
                         listOf(
                             "共${iptvSourceDetail.channelGroupCount}个分组",
                             "${iptvSourceDetail.channelCount}个频道",
-                            "${iptvSourceDetail.lineCount}条线路"
+                            "${iptvSourceDetail.lineCount}条源"
                         ).joinToString("，")
                     )
                 }

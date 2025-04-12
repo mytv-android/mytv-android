@@ -23,6 +23,8 @@ import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList.Companion.ch
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLineList
 import top.yogiczy.mytv.core.data.entities.channel.ChannelList
+import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource
+import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgramme
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserve
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
@@ -30,6 +32,7 @@ import top.yogiczy.mytv.core.data.utils.ChannelUtil
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.utils.Loggable
 import top.yogiczy.mytv.core.util.utils.urlHost
+import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.tv.ui.material.Snackbar
 import top.yogiczy.mytv.tv.ui.screen.settings.SettingsViewModel
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
@@ -57,7 +60,6 @@ class MainContentState(
     val currentChannelLineIdx get() = _currentChannelLineIdx
 
     val currentChannelLine get() = _currentChannel.lineList[_currentChannelLineIdx]
-
     private var _currentPlaybackEpgProgramme by mutableStateOf<EpgProgramme?>(null)
     val currentPlaybackEpgProgramme get() = _currentPlaybackEpgProgramme
 
@@ -82,6 +84,13 @@ class MainContentState(
         get() = _isVideoPlayerControllerScreenVisible
         set(value) {
             _isVideoPlayerControllerScreenVisible = value
+        }
+
+    private var _isIptvSourceScreenVisible by mutableStateOf(false)
+    var isIptvSourceScreenVisible
+        get() = _isIptvSourceScreenVisible
+        set(value) {
+            _isIptvSourceScreenVisible = value
         }
 
     private var _isQuickOpScreenVisible by mutableStateOf(false)
@@ -216,15 +225,37 @@ class MainContentState(
     private fun getPrevChannel(): Channel {
         return getPrevFavoriteChannel() ?: run {
             val channelGroupList = channelGroupListProvider()
-            return if (settingsViewModel.iptvChannelChangeListLoop) {
-                val group =
-                    channelGroupList.getOrElse(channelGroupList.channelGroupIdx(_currentChannel)) { channelGroupList.first() }
-                val currentIdx = group.channelList.indexOf(_currentChannel)
-                group.channelList.getOrElse(currentIdx - 1) { group.channelList.last() }
-            } else {
+            
+            if (settingsViewModel.iptvChannelChangeCrossGroup) {
+                // 跨分组切换逻辑
                 val currentIdx = channelGroupList.channelIdx(_currentChannel)
-                channelGroupList.channelList.getOrElse(currentIdx - 1) {
+                val prevIdx = if (currentIdx <= 0) {
+                    if (settingsViewModel.iptvChannelChangeListLoop) 
+                        channelGroupList.channelList.size - 1 
+                    else 
+                        0
+                } else {
+                    currentIdx - 1
+                }
+                channelGroupList.channelList.getOrElse(prevIdx) {
                     channelGroupList.channelLastOrNull() ?: Channel()
+                }
+            } else {
+                // 分组内切换逻辑
+                val group = channelGroupList.getOrElse(channelGroupList.channelGroupIdx(_currentChannel)) { channelGroupList.first() }
+                val currentIdx = group.channelList.indexOf(_currentChannel)
+                if (currentIdx <= 0) {
+                    // 当前是分组内第一个
+                    if (settingsViewModel.iptvChannelChangeListLoop) {
+                        // 循环开启时，返回分组内最后一个
+                        group.channelList.last()
+                    } else {
+                        // 循环关闭时，保持当前频道不变
+                        _currentChannel
+                    }
+                } else {
+                    // 返回分组内前一个
+                    group.channelList[currentIdx - 1]
                 }
             }
         }
@@ -233,15 +264,37 @@ class MainContentState(
     private fun getNextChannel(): Channel {
         return getNextFavoriteChannel() ?: run {
             val channelGroupList = channelGroupListProvider()
-            return if (settingsViewModel.iptvChannelChangeListLoop) {
-                val group =
-                    channelGroupList.getOrElse(channelGroupList.channelGroupIdx(_currentChannel)) { channelGroupList.first() }
-                val currentIdx = group.channelList.indexOf(_currentChannel)
-                group.channelList.getOrElse(currentIdx + 1) { group.channelList.first() }
-            } else {
+            
+            if (settingsViewModel.iptvChannelChangeCrossGroup) {
+                // 跨分组切换逻辑
                 val currentIdx = channelGroupList.channelIdx(_currentChannel)
-                channelGroupList.channelList.getOrElse(currentIdx + 1) {
+                val nextIdx = if (currentIdx >= channelGroupList.channelList.size - 1) {
+                    if (settingsViewModel.iptvChannelChangeListLoop) 
+                        0 
+                    else 
+                        channelGroupList.channelList.size - 1
+                } else {
+                    currentIdx + 1
+                }
+                channelGroupList.channelList.getOrElse(nextIdx) {
                     channelGroupList.channelFirstOrNull() ?: Channel()
+                }
+            } else {
+                // 分组内切换逻辑
+                val group = channelGroupList.getOrElse(channelGroupList.channelGroupIdx(_currentChannel)) { channelGroupList.first() }
+                val currentIdx = group.channelList.indexOf(_currentChannel)
+                if (currentIdx >= group.channelList.size - 1) {
+                    // 当前是分组内最后一个
+                    if (settingsViewModel.iptvChannelChangeListLoop) {
+                        // 循环开启时，返回分组内第一个
+                        group.channelList.first()
+                    } else {
+                        // 循环关闭时，保持当前频道不变
+                        _currentChannel
+                    }
+                } else {
+                    // 返回分组内下一个
+                    group.channelList[currentIdx + 1]
                 }
             }
         }
@@ -294,16 +347,24 @@ class MainContentState(
                 timeFormat.format(_currentPlaybackEpgProgramme!!.endAt),
             ).joinToString("")
             url = if (URI(url).query.isNullOrBlank()) "$url?$query" else "$url&$query"
+            if (Configs.iptvPLTVToTVOD)
+            {
             url = ChannelUtil.urlToCanPlayback(url)
+            }
+            
         }
         val line = currentChannelLine.copy(url = url)
 
         log.d("播放${_currentChannel.name}（${_currentChannelLineIdx + 1}/${_currentChannel.lineList.size}）: $line")
 
-        if (line.url.startsWith("webview://")) {
+        if (line.hybridType == ChannelLine.HybridType.WebView) {
+            log.i("检测到WebView类型URL: ${line.url}")
+            log.i("正在使用WebView打开而不是视频播放器")
             videoPlayerState.metadata = VideoPlayer.Metadata()
             videoPlayerState.stop()
         } else {
+            log.i("检测到普通视频URL: ${line.url}")
+            log.i("hybridType: ${line.hybridType}, 使用视频播放器播放")
             videoPlayerState.prepare(line)
         }
     }

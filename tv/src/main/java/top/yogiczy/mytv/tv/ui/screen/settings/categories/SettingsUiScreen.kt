@@ -22,6 +22,7 @@ fun SettingsUiScreen(
     toUiScreenAutoCloseDelayScreen: () -> Unit = {},
     toUiDensityScaleRatioScreen: () -> Unit = {},
     toUiFontScaleRatioScreen: () -> Unit = {},
+    toUiVideoPlayerSubtitleSettingsScreen: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     SettingsCategoryScreen(
@@ -152,6 +153,15 @@ fun SettingsUiScreen(
         }
 
         item {
+            SettingsListItem(
+                headlineContent = "字幕设置",
+                supportingContent = "字幕样式调整",
+                onSelect = toUiVideoPlayerSubtitleSettingsScreen,
+                link = true,
+            )
+        }
+
+        item {
             val focusOptimize = settingsViewModel.uiFocusOptimize
 
             SettingsListItem(
@@ -165,6 +175,22 @@ fun SettingsUiScreen(
                 },
             )
         }
+
+        item {
+            val favoriteEnable = settingsViewModel.iptvChannelFavoriteEnable
+
+            SettingsListItem(
+                headlineContent = "启用收藏",
+                supportingContent = "是否显示播放源频道收藏列表",
+                trailingContent = {
+                    Switch(favoriteEnable, null)
+                },
+                onSelect = {
+                    settingsViewModel.iptvChannelFavoriteEnable = !favoriteEnable
+                },
+            )
+        }
+
     }
 }
 

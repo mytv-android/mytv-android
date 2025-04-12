@@ -205,9 +205,10 @@ fun MainScreen(
                                 navController.navigateSingleTop(Screens.Settings())
                             }
                         },
-                        toDashboardScreen  ={
+                        toDashboardScreen = {
                             navController.navigateSingleTop(Screens.Dashboard())
                         },
+                        onReload = { reload() },
                         onBackPressed = {
                             if (settingsViewModel.appStartupScreen == Screens.Live.name) {
                                 onBackPressed()

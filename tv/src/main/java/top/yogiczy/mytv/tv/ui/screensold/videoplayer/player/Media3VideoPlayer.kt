@@ -21,6 +21,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.util.Util
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.rtmp.RtmpDataSource
 import androidx.media3.exoplayer.DecoderReuseEvaluation
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.ExoPlayer
@@ -31,6 +32,7 @@ import androidx.media3.exoplayer.drm.FrameworkMediaDrm
 import androidx.media3.exoplayer.drm.LocalMediaDrmCallback
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.rtsp.RtspMediaSource
+import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
@@ -44,6 +46,7 @@ import kotlinx.coroutines.launch
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.util.utils.toHeaders
 import top.yogiczy.mytv.tv.ui.utils.Configs
+import top.yogiczy.mytv.core.data.utils.Logger
 
 @OptIn(UnstableApi::class)
 class Media3VideoPlayer(
@@ -51,6 +54,7 @@ class Media3VideoPlayer(
     private val coroutineScope: CoroutineScope,
 ) : VideoPlayer(coroutineScope) {
 
+    private val logger = Logger.create("Media3VideoPlayer")
     private var videoPlayer = getPlayer()
 
     private var softDecode: Boolean? = null
@@ -88,12 +92,12 @@ class Media3VideoPlayer(
                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
                 .setMaxVideoSize(Integer.MAX_VALUE, Integer.MAX_VALUE)
                 .setForceHighestSupportedBitrate(true)
-                .setPreferredTextLanguages("zh")
+                .setPreferredTextLanguage("zh")
                 .build()
         }
 
-        MediaCodecVideoRenderer.skipMultipleFramesOnSameVsync =
-            Configs.videoPlayerSkipMultipleFramesOnSameVSync
+        // MediaCodecVideoRenderer.skipMultipleFramesOnSameVsync =
+        //     Configs.videoPlayerSkipMultipleFramesOnSameVSync
         return ExoPlayer.Builder(context)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
@@ -121,11 +125,22 @@ class Media3VideoPlayer(
     }
 
     private fun getDataSourceFactory(): DefaultDataSource.Factory {
+        val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
+            "Referer" to (currentChannelLine.httpReferrer ?: "")
+            ).filterValues { it.isNotEmpty() } + mapOf(
+                "Origin" to (currentChannelLine.httpOrigin ?: "")
+                ).filterValues { it.isNotEmpty() }
+        
+        // 使用应用内日志系统
+        logger.i("播放地址: ${currentChannelLine.playableUrl}")
+        logger.i("请求头: $headers")
+        logger.i("User-Agent: ${currentChannelLine.httpUserAgent ?: Configs.videoPlayerUserAgent}")
+        
         return DefaultDataSource.Factory(
             context,
             DefaultHttpDataSource.Factory().apply {
                 setUserAgent(currentChannelLine.httpUserAgent ?: Configs.videoPlayerUserAgent)
-                setDefaultRequestProperties(Configs.videoPlayerHeaders.toHeaders())
+                setDefaultRequestProperties(headers)
                 setConnectTimeoutMs(Configs.videoPlayerLoadTimeout.toInt())
                 setReadTimeoutMs(Configs.videoPlayerLoadTimeout.toInt())
                 setKeepPostFor302Redirects(true)
@@ -140,18 +155,29 @@ class Media3VideoPlayer(
 
         var contentTypeForce = contentType
 
-        if (uri.toString().startsWith("rtp://")) {
-            contentTypeForce = C.CONTENT_TYPE_RTSP
-        }
+        if (contentTypeForce == null){
+            if (uri.toString().startsWith("rtp://") || uri.toString().startsWith("rtsp://")) {
+                contentTypeForce = C.CONTENT_TYPE_RTSP
+            }
 
-        if (currentChannelLine.manifestType == "mpd") {
-            contentTypeForce = C.CONTENT_TYPE_DASH
+            if (currentChannelLine.manifestType == "mpd") {
+                contentTypeForce = C.CONTENT_TYPE_DASH
+            }
+
+            if (uri.toString().startsWith("rtmp://")){
+                contentTypeForce = C.CONTENT_TYPE_OTHER
+            }
         }
 
         val dataSourceFactory = getDataSourceFactory()
+
         return when (contentTypeForce ?: Util.inferContentType(uri)) {
             C.CONTENT_TYPE_HLS -> {
-                HlsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                HlsMediaSource.Factory(dataSourceFactory)
+                    .apply{
+                        setAllowChunklessPreparation(true)
+                    }
+                    .createMediaSource(mediaItem)
             }
 
             C.CONTENT_TYPE_DASH -> {
@@ -201,9 +227,17 @@ class Media3VideoPlayer(
             }
 
             C.CONTENT_TYPE_OTHER -> {
-                ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                if (uri.toString().startsWith("rtmp://")) {
+                    ProgressiveMediaSource.Factory(RtmpDataSource.Factory()).createMediaSource(mediaItem)
+                }
+                else{
+                    ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                }
             }
 
+            C.CONTENT_TYPE_SS -> {
+                SsMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+            }
             else -> {
                 triggerError(PlaybackException.UNSUPPORTED_TYPE)
                 null
@@ -252,7 +286,9 @@ class Media3VideoPlayer(
                             prepare(C.CONTENT_TYPE_RTSP)
                         } else if (contentTypeAttempts[C.CONTENT_TYPE_OTHER] != true) {
                             prepare(C.CONTENT_TYPE_OTHER)
-                        } else {
+                        } else if(contentTypeAttempts[C.CONTENT_TYPE_SS] != true){
+                            prepare(C.CONTENT_TYPE_SS)
+                        }else {
                             triggerError(PlaybackException.UNSUPPORTED_TYPE)
                         }
                     }
@@ -363,7 +399,6 @@ class Media3VideoPlayer(
                     List(group.mediaTrackGroup.length) { trackIndex ->
                         group.mediaTrackGroup
                             .getFormat(trackIndex)
-                            .takeIf { it.roleFlags == C.ROLE_FLAG_SUBTITLE }
                             ?.toSubtitleMetadata()
                             ?.copy(isSelected = group.isTrackSelected(trackIndex))
                     }
@@ -377,6 +412,7 @@ class Media3VideoPlayer(
                 subtitleTracks = subtitleFormats,
                 subtitle = subtitleFormats.firstOrNull { it.isSelected == true },
             )
+            
 
             triggerMetadata(metadata)
         }
@@ -417,7 +453,7 @@ class Media3VideoPlayer(
     private fun Format.toAudioMetadata(audio: Metadata.Audio? = null): Metadata.Audio {
         return (audio ?: Metadata.Audio()).copy(
             channels = channelCount,
-            channelsLabel = if (sampleMimeType == MimeTypes.AUDIO_AV3A) "菁彩声" else null,
+            channelsLabel = if (sampleMimeType == "audio/av3a") "菁彩声" else null,
             sampleRate = sampleRate,
             bitrate = bitrate,
             mimeType = sampleMimeType,
@@ -570,21 +606,19 @@ class Media3VideoPlayer(
             .setOverrideForType(TrackSelectionOverride(group, trackIndex))
             .build()
     }
-
+    
     override fun selectSubtitleTrack(track: Metadata.Subtitle?) {
-        if (track?.language == null) {
+        if (track?.language == null) {  
             videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
                 .buildUpon()
                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                 .build()
-
             return
         }
-
         videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
             .buildUpon()
             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-            .setPreferredTextLanguages(track.language)
+            .setPreferredTextLanguage(track.language)
             .build()
     }
 

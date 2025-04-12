@@ -21,15 +21,16 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "天光云影v3.3"
+rootProject.name = "电视直播"
 
 include(":core:data")
 include(":core:util")
 include(":core:designsystem")
 include(":tv")
-include(":mobile")
+// include(":mobile")
 include(":ijkplayer-java")
-include(":allinone")
+// include(":allinone")
+include(":gsyvideoplayer-ex_so")
 
 val mediaSettingsFile = file("../media/core_settings.gradle")
 if (mediaSettingsFile.exists()) {
@@ -37,5 +38,3 @@ if (mediaSettingsFile.exists()) {
     apply(from = mediaSettingsFile)
 }
 
-include(":tbsx5")
-project(":tbsx5").projectDir = file("../YYKM/tbsx5")

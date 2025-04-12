@@ -34,7 +34,7 @@ fun SettingsControlScreen(
                     Switch(enable, null)
                 },
                 onSelect = {
-                    settingsViewModel.iptvChannelNoSelectEnable = !enable
+                    settingsViewModel.iptvChannelNoSelectEnable = !settingsViewModel.iptvChannelNoSelectEnable
                 },
             )
         }
@@ -50,7 +50,7 @@ fun SettingsControlScreen(
                     Switch(flip, null)
                 },
                 onSelect = {
-                    settingsViewModel.iptvChannelChangeFlip = !flip
+                    settingsViewModel.iptvChannelChangeFlip = !settingsViewModel.iptvChannelChangeFlip
                 },
             )
         }
@@ -59,12 +59,43 @@ fun SettingsControlScreen(
             val loop = settingsViewModel.iptvChannelChangeListLoop
 
             SettingsListItem(
-                headlineContent = "换台列表首尾循环",
+                headlineContent = "频道列表首尾循环",
+                supportingContent = "启用后，到达列表首尾时将循环切换到另一端",
                 trailingContent = {
                     Switch(loop, null)
                 },
                 onSelect = {
-                    settingsViewModel.iptvChannelChangeListLoop = !loop
+                    settingsViewModel.iptvChannelChangeListLoop = !settingsViewModel.iptvChannelChangeListLoop
+                },
+            )
+        }
+        
+        item {
+            val crossGroup = settingsViewModel.iptvChannelChangeCrossGroup
+
+            SettingsListItem(
+                headlineContent = "频道切换跨分组",
+                supportingContent = "启用后，上下键可在所有频道间切换；关闭则仅在当前分组内切换",
+                trailingContent = {
+                    Switch(crossGroup, null)
+                },
+                onSelect = {
+                    settingsViewModel.iptvChannelChangeCrossGroup = !settingsViewModel.iptvChannelChangeCrossGroup
+                },
+            )
+        }
+        
+        item {
+            val changeLineWithLeftRight = settingsViewModel.iptvChannelChangeLineWithLeftRight
+
+            SettingsListItem(
+                headlineContent = "左右键切换播放源",
+                supportingContent = "启用后，左右键可切换当前频道的不同播放源；关闭则禁用此功能",
+                trailingContent = {
+                    Switch(changeLineWithLeftRight, null)
+                },
+                onSelect = {
+                    settingsViewModel.iptvChannelChangeLineWithLeftRight = !settingsViewModel.iptvChannelChangeLineWithLeftRight
                 },
             )
         }

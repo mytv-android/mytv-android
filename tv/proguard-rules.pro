@@ -25,10 +25,17 @@
 -keep class com.wangsu.httpclient.** { *; }
 -keep class org.mozilla.javascript.** { *; }
 
+# 保留 jdk.dynalink 相关的类
+-keep class jdk.dynalink.** { *; }
+-keepclassmembers class jdk.dynalink.** { *; }
+
+# 保留 org.mozilla.javascript 相关的类
+-keepclassmembers class org.mozilla.javascript.** { *; }
+
 -dontwarn java.awt.**
 -dontwarn java.beans.**
 -dontwarn javax.swing.**
-
+-dontwarn jdk.dynalink.**
 -dontwarn dalvik.system.VMStack
 -keep class com.tencent.smtt.** { *; }
 -keep class com.tencent.tbs.** { *; }

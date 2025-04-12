@@ -1,5 +1,6 @@
 package top.yogiczy.mytv.tv.ui.screen.settings
 
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsNetworkRetryIntervalScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -13,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSourceList
@@ -41,10 +43,12 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsEpgSourceScr
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvHybridModeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvSourceCacheTimeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvSourceScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsNetworkRetryCountScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiDensityScaleRatioScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiFontScaleRatioScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiScreenAutoCloseScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiTimeShowModeScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiVideoPlayerSubtitleSettingsScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUpdateChannelScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerCoreScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerDisplayModeScreen
@@ -137,6 +141,22 @@ fun SettingsScreen(
                         toUiFontScaleRatioScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.UI_FONT_SCALE_RATIO.name)
                         },
+                        toUiVideoPlayerSubtitleSettingsScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.UI_VIDEO_PLAYER_SUBTITLE.name)
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsCategories.NETWORK.name) {
+                    SettingsNetworkScreen(
+                        settingsViewModel = settingsViewModel,
+                        toNetworkRetryCountScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.NETWORK_RETRY_COUNT.name)
+                        },
+                        toNetworkRetryIntervalScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.NETWORK_RETRY_INTERVAL.name)
+                        },
                         onBackPressed = { navController.navigateUp() },
                     )
                 }
@@ -170,12 +190,6 @@ fun SettingsScreen(
                         toUpdateChannelScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.UPDATE_CHANNEL.name)
                         },
-                        onBackPressed = { navController.navigateUp() },
-                    )
-                }
-
-                composable(SettingsCategories.NETWORK.name) {
-                    SettingsNetworkScreen(
                         onBackPressed = { navController.navigateUp() },
                     )
                 }
@@ -217,7 +231,7 @@ fun SettingsScreen(
                 composable(SettingsSubCategories.IPTV_SOURCE.name) {
                     SettingsIptvSourceScreen(
                         currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
-                        iptvSourceListProvider = { settingsViewModel.iptvSourceList },
+                        iptvSourceListProvider = { IptvSourceList(Constants.IPTV_SOURCE_LIST + settingsViewModel.iptvSourceList) },
                         onSetCurrent = {
                             settingsViewModel.iptvSourceCurrent = it
                             settingsViewModel.iptvChannelGroupHiddenList = emptySet()
@@ -342,6 +356,39 @@ fun SettingsScreen(
                     SettingsUiFontScaleRatioScreen(
                         scaleRatioProvider = { settingsViewModel.uiFontScaleRatio },
                         onScaleRatioChanged = { settingsViewModel.uiFontScaleRatio = it },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.UI_VIDEO_PLAYER_SUBTITLE.name) {
+                    SettingsUiVideoPlayerSubtitleSettingsScreen(
+                        subtitleSettingsProvider = { settingsViewModel.uiVideoPlayerSubtitle },
+                        onSubtitleSettingsChanged = {
+                            settingsViewModel.uiVideoPlayerSubtitle = it
+                            // navController.navigateUp()
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.NETWORK_RETRY_COUNT.name) {
+                    SettingsNetworkRetryCountScreen(
+                        countProvider = { settingsViewModel.networkRetryCount },
+                        onCountChanged = { count ->
+                            settingsViewModel.networkRetryCount = count
+                            navController.navigateUp()
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.NETWORK_RETRY_INTERVAL.name) {
+                    SettingsNetworkRetryIntervalScreen(
+                        intervalProvider = { settingsViewModel.networkRetryInterval },
+                        onIntervalChanged = { interval ->
+                            settingsViewModel.networkRetryInterval = interval
+                            navController.navigateUp()
+                        },
                         onBackPressed = { navController.navigateUp() },
                     )
                 }

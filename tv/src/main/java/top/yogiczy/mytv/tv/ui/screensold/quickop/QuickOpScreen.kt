@@ -38,7 +38,6 @@ import top.yogiczy.mytv.tv.ui.screensold.channel.components.ChannelNumber
 import top.yogiczy.mytv.tv.ui.screensold.components.rememberScreenAutoCloseState
 import top.yogiczy.mytv.tv.ui.screensold.datetime.components.DateTimeDetail
 import top.yogiczy.mytv.tv.ui.screensold.quickop.components.QuickOpBtnList
-import top.yogiczy.mytv.tv.ui.screensold.videoplayer.VideoPlayerDisplayMode
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
@@ -53,8 +52,8 @@ fun QuickOpScreen(
     epgListProvider: () -> EpgList = { EpgList() },
     isInTimeShiftProvider: () -> Boolean = { false },
     currentPlaybackEpgProgrammeProvider: () -> EpgProgramme? = { null },
-    playerDisplayModeProvider: () -> VideoPlayerDisplayMode = { VideoPlayerDisplayMode.ORIGINAL },
     videoPlayerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
     onShowVideoPlayerController: () -> Unit = {},
@@ -89,8 +88,8 @@ fun QuickOpScreen(
             epgListProvider = epgListProvider,
             isInTimeShiftProvider = isInTimeShiftProvider,
             currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
-            playerDisplayModeProvider = playerDisplayModeProvider,
             videoPlayerMetadataProvider = videoPlayerMetadataProvider,
+            onShowIptvSource = onShowIptvSource,
             onShowEpg = onShowEpg,
             onShowChannelLine = onShowChannelLine,
             onShowVideoPlayerController = onShowVideoPlayerController,
@@ -99,10 +98,9 @@ fun QuickOpScreen(
             onShowAudioTracks = onShowAudioTracks,
             onShowSubtitleTracks = onShowSubtitleTracks,
             onShowMoreSettings = { toSettingsScreen(null) },
+            onShowDashboardScreen = toDashboardScreen,
             onClearCache = onClearCache,
-            toDashboardScreen = toDashboardScreen,
             onUserAction = { screenAutoCloseState.active() },
-            onDismissRequest = onClose,
         )
     }
 }
@@ -120,17 +118,17 @@ private fun QuickOpScreenTop(
         modifier = modifier
             .fillMaxWidth()
             .padding(childPadding.paddingValues),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CompositionLocalProvider(
-            LocalTextStyle provides MaterialTheme.typography.titleLarge
-        ) {
-            DashboardScreeIptvSource(
-                currentIptvSourceProvider = { iptvSourceCurrent },
-                toSettingsIptvSourceScreen = toSettingsIptvSourceScreen,
-            )
-        }
+        // CompositionLocalProvider(
+        //     LocalTextStyle provides MaterialTheme.typography.titleLarge
+        // ) {
+        //     DashboardScreeIptvSource(
+        //         //currentIptvSourceProvider = { iptvSourceCurrent },
+        //         toSettingsIptvSourceScreen = toSettingsIptvSourceScreen,
+        //     )
+        // }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             ChannelNumber(channelNumberProvider = channelNumberProvider)
@@ -157,8 +155,8 @@ private fun QuickOpScreenBottom(
     epgListProvider: () -> EpgList = { EpgList() },
     isInTimeShiftProvider: () -> Boolean = { false },
     currentPlaybackEpgProgrammeProvider: () -> EpgProgramme? = { null },
-    playerDisplayModeProvider: () -> VideoPlayerDisplayMode = { VideoPlayerDisplayMode.ORIGINAL },
     videoPlayerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
     onShowVideoPlayerController: () -> Unit = {},
@@ -167,10 +165,9 @@ private fun QuickOpScreenBottom(
     onShowAudioTracks: () -> Unit = {},
     onShowSubtitleTracks: () -> Unit = {},
     onShowMoreSettings: () -> Unit = {},
+    onShowDashboardScreen: () -> Unit = {},
     onClearCache: () -> Unit = {},
-    toDashboardScreen: () -> Unit = {},
     onUserAction: () -> Unit = {},
-    onDismissRequest: () -> Unit = {},
 ) {
     val childPadding = rememberChildPadding()
 
@@ -207,8 +204,8 @@ private fun QuickOpScreenBottom(
             QuickOpBtnList(
                 channelProvider = currentChannelProvider,
                 channelLineIdxProvider = currentChannelLineIdxProvider,
-                playerDisplayModeProvider = playerDisplayModeProvider,
                 playerMetadataProvider = videoPlayerMetadataProvider,
+                onShowIptvSource = onShowIptvSource,
                 onShowEpg = onShowEpg,
                 onShowChannelLine = onShowChannelLine,
                 onShowVideoPlayerController = onShowVideoPlayerController,
@@ -216,11 +213,10 @@ private fun QuickOpScreenBottom(
                 onShowMoreSettings = onShowMoreSettings,
                 onShowVideoTracks = onShowVideoTracks,
                 onShowAudioTracks = onShowAudioTracks,
+                onShowDashboardScreen = onShowDashboardScreen,
                 onShowSubtitleTracks = onShowSubtitleTracks,
                 onClearCache = onClearCache,
-                toDashboardScreen = toDashboardScreen,
                 onUserAction = onUserAction,
-                onDismissRequest = onDismissRequest,
             )
         }
     }
