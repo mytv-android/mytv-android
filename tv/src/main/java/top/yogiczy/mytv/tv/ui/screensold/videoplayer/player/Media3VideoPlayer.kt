@@ -24,6 +24,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.rtmp.RtmpDataSource
 import androidx.media3.exoplayer.DecoderReuseEvaluation
 import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
 import androidx.media3.exoplayer.dash.DashMediaSource
@@ -149,6 +150,15 @@ class Media3VideoPlayer(
         )
     }
 
+    private fun getDefaultMediaSource():  MediaSource? {
+        val uri = Uri.parse(currentChannelLine.playableUrl)
+        val mediaItem = MediaItem.fromUri(uri)
+        val dataSourceFactory = getDataSourceFactory()
+        return  DefaultMediaSourceFactory(context)
+                .setDataSourceFactory(dataSourceFactory)
+                .createMediaSource(mediaItem)
+    }
+
     private fun getMediaSource(contentType: Int? = null): MediaSource? {
         val uri = Uri.parse(currentChannelLine.playableUrl)
         val mediaItem = MediaItem.fromUri(uri)
@@ -168,6 +178,7 @@ class Media3VideoPlayer(
                 contentTypeForce = C.CONTENT_TYPE_OTHER
             }
         }
+        
 
         val dataSourceFactory = getDataSourceFactory()
 
@@ -247,14 +258,25 @@ class Media3VideoPlayer(
 
     private fun prepare(contentType: Int? = null) {
         val uri = Uri.parse(currentChannelLine.playableUrl)
-        val mediaSource = getMediaSource(contentType)
-
-        if (mediaSource != null) {
-            contentTypeAttempts[contentType ?: Util.inferContentType(uri)] = true
-            videoPlayer.setMediaSource(mediaSource)
-            videoPlayer.prepare()
-            videoPlayer.play()
-            triggerPrepared()
+        var mediaSource: MediaSource? = null
+        if(contentType == null){
+            mediaSource = getDefaultMediaSource()
+            if (mediaSource != null) {
+                videoPlayer.setMediaSource(mediaSource)
+                videoPlayer.prepare()
+                videoPlayer.play()
+                triggerPrepared()
+            }
+        }
+        if(mediaSource == null) {
+            mediaSource = getMediaSource(contentType)
+            if (mediaSource != null) {
+                contentTypeAttempts[contentType ?: Util.inferContentType(uri)] = true
+                videoPlayer.setMediaSource(mediaSource)
+                videoPlayer.prepare()
+                videoPlayer.play()
+                triggerPrepared()
+            }
         }
         updatePositionJob?.cancel()
         updatePositionJob = null
