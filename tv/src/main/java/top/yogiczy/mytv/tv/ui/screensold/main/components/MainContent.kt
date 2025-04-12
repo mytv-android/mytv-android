@@ -157,6 +157,15 @@ fun MainContent(
 
         Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
             val channelLine = mainContentState.currentChannelLine
+            val isX5Available = com.tencent.smtt.sdk.WebView.getX5WebViewExtension()
+            if (!isX5Available){
+                settingsViewModel.webViewCore = Configs.WebViewCore.SYSTEM
+                Toast.makeText(
+                    mainContentState.context,
+                    "X5内核不可用，已切换为系统内核",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
             when (settingsViewModel.webViewCore) {
                 Configs.WebViewCore.SYSTEM -> {
                     WebViewScreen(
