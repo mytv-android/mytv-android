@@ -99,7 +99,7 @@ class MyTVApplication : Application(), ImageLoaderFactory {
     private fun preInitX5Core() {
         //预加载x5内核
         val intent = Intent(this, X5CorePreLoadService::class.java)
-        startService(intent)
+        X5CorePreLoadService.enqueueWork(this, intent)
     }
 
 }

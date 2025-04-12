@@ -1,13 +1,14 @@
 package top.yogiczy.mytv.tv
 
-import android.app.IntentService;
+import android.content.Context
 import android.content.Intent;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.core.app.JobIntentService
 import com.tencent.smtt.sdk.QbSdk;
 import top.yogiczy.mytv.core.data.utils.Logger
 
-class X5CorePreLoadService : IntentService(TAG) {
+class X5CorePreLoadService : JobIntentService() {
     private val log = Logger.create("X5CorePreLoadService")
     private val cb = object : QbSdk.PreInitCallback {
         override fun onViewInitFinished(success: Boolean) {
@@ -27,7 +28,7 @@ class X5CorePreLoadService : IntentService(TAG) {
         }
     }
 
-    override fun onHandleIntent(@Nullable intent: Intent?) {
+    override fun onHandleWork(@Nullable intent: Intent) {
         // 在这里添加我们要执行的代码，Intent 中可以保存我们所需的数据，
         // 每一次通过 Intent 发送的命令将被顺序执行
         initX5()
@@ -45,5 +46,14 @@ class X5CorePreLoadService : IntentService(TAG) {
 
     companion object {
         private val TAG = X5CorePreLoadService::class.java.simpleName
+
+        /**
+         * 启动服务的便捷方法
+         */
+        fun enqueueWork(context: Context, intent: Intent) {
+            enqueueWork(context, X5CorePreLoadService::class.java, JOB_ID, intent)
+        }
+
+        private const val JOB_ID = 1001
     }
 }
