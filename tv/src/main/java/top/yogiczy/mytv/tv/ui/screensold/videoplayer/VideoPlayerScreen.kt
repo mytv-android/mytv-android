@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.zIndex
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.text.Cue
 import androidx.media3.ui.SubtitleView
@@ -72,13 +71,8 @@ fun VideoPlayerScreen(
                     AndroidView(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .zIndex(1f)
                             .then(displayModeModifier),
-                        factory = { 
-                            SurfaceView(context).apply {
-                                setZOrderMediaOverlay(true) // 确保 SurfaceView 是媒体覆盖层
-                            } 
-                        },
+                        factory = { SurfaceView(context)},
                         update = { state.setVideoSurfaceView(it) },
                     )
                 }
