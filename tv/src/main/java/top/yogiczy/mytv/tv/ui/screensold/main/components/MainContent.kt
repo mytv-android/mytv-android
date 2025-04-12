@@ -160,7 +160,7 @@ fun MainContent(
 
         Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
             val channelLine = mainContentState.currentChannelLine
-            val isX5Available = com.tencent.smtt.sdk.WebView(LocalContext.current).getX5WebViewExtension()
+            val isX5Available = com.tencent.smtt.sdk.WebView(LocalContext.current).getX5WebViewExtension() != null
             if (!isX5Available){
                 settingsViewModel.webViewCore = Configs.WebViewCore.SYSTEM
                 Toast.makeText(
