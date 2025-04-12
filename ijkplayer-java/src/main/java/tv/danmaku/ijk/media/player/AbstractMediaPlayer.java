@@ -30,9 +30,6 @@ public abstract class AbstractMediaPlayer implements IMediaPlayer {
     private OnInfoListener mOnInfoListener;
     private OnTimedTextListener mOnTimedTextListener;
 
-    public IMediaPlayer.OnSEIRefreshListener mOnSEIRefreshListener;
-    public IMediaPlayer.OnAudioVividMetadataListener onAudioVividMetadataListener;
-
     public final void setOnPreparedListener(OnPreparedListener listener) {
         mOnPreparedListener = listener;
     }
@@ -76,7 +73,6 @@ public abstract class AbstractMediaPlayer implements IMediaPlayer {
         mOnErrorListener = null;
         mOnInfoListener = null;
         mOnTimedTextListener = null;
-        mOnSEIRefreshListener = null;
     }
 
     protected final void notifyOnPrepared() {
