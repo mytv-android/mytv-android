@@ -9,7 +9,7 @@
 [![GitHub](https://img.shields.io/github/license/mytv-android/mytv-android)](https://github.com/mytv-android/mytv-android)
 
 </div>
-    <p>基于天光云影3.3.7，使用Android原生开发的电视直播软件</p>
+    <p>基于天光云影3.3.9，使用Android原生开发的电视直播软件</p>
 
 <!-- <img src="./screenshots/Screenshot_dashboard.png" width="96%"/> -->
 <br/>
