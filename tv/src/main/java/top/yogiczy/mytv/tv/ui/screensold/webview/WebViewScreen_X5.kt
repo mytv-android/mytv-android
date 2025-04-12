@@ -117,17 +117,17 @@ fun WebViewScreen_X5(
                     isFocusable = false
                     isLongClickable = false
                     isFocusableInTouchMode = false
-                    getView().setOnLongClickListener { 
-                        // 返回 true 禁用长按事件
-                        true
-                    }
-                    getView().setOnClickListener { 
-                        // 点击事件处理逻辑（如果需要）
-                    }
-                    getView().setOnTouchListener { _, _ -> 
-                        // 禁用触摸事件
-                        true
-                    }
+                    // getView().setOnLongClickListener { 
+                    //     // 返回 true 禁用长按事件
+                    //     true
+                    // }
+                    // getView().setOnClickListener { 
+                    //     // 点击事件处理逻辑（如果需要）
+                    // }
+                    // getView().setOnTouchListener { _, _ -> 
+                    //     // 禁用触摸事件
+                    //     true
+                    // }
                     addJavascriptInterface(
                         MyWebViewInterface(
                             onVideoResolutionChanged = onVideoResolutionChanged,
