@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import android.widget.Toast;
+
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
@@ -161,7 +164,7 @@ fun MainContent(
             if (!isX5Available){
                 settingsViewModel.webViewCore = Configs.WebViewCore.SYSTEM
                 Toast.makeText(
-                    mainContentState.context,
+                    LocalContext.current,
                     "X5内核不可用，已切换为系统内核",
                     Toast.LENGTH_SHORT
                 ).show()
