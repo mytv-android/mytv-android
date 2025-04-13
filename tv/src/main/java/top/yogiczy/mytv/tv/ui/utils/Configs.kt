@@ -746,7 +746,7 @@ object Configs {
         MEDIA3(0, "Media3"),
 
         /** IJK */
-        IJK(1, "IjkPlayer"),
+        IJK(1, "IjkPlayer");
 
         companion object {
             fun fromValue(value: Int): VideoPlayerCore {
