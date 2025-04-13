@@ -56,18 +56,6 @@
         </activity>
 
         <activity android:name=".CrashHandlerActivity" />
-        <!-- X5权限需求 -->
-        <activity
-            android:name="com.tencent.smtt.sdk.VideoActivity"
-            android:configChanges="screenSize|keyboardHidden"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:alwaysRetainTaskState="true">
-            <intent-filter>
-                <action android:name="com.tencent.smtt.tbs.video.PLAY" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"

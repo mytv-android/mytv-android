@@ -54,7 +54,6 @@ fun SettingsVideoPlayerCoreScreen(
                             when (core) {
                                 Configs.VideoPlayerCore.MEDIA3 -> "除RTSP单播以外基本支持全部功能"
                                 Configs.VideoPlayerCore.IJK -> "部分功能可能无法正常使用，仅支持armeabi-v7a、arm64-v8a"
-                                Configs.VideoPlayerCore.X5 -> "腾讯X5内核，功能受限"
                             }
                         )
                     },

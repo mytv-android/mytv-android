@@ -145,8 +145,7 @@ fun QuickOpBtnList(
                 onSelect = {
                     settingsViewModel.videoPlayerCore = when (settingsViewModel.videoPlayerCore) {
                         Configs.VideoPlayerCore.MEDIA3 -> Configs.VideoPlayerCore.IJK
-                        Configs.VideoPlayerCore.IJK -> Configs.VideoPlayerCore.X5
-                        Configs.VideoPlayerCore.X5 -> Configs.VideoPlayerCore.MEDIA3
+                        Configs.VideoPlayerCore.IJK -> Configs.VideoPlayerCore.MEDIA3
                     }
                 },
             )

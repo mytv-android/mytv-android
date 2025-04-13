@@ -748,9 +748,6 @@ object Configs {
         /** IJK */
         IJK(1, "IjkPlayer"),
 
-        /** X5 */
-        X5(2, "X5Player");
-
         companion object {
             fun fromValue(value: Int): VideoPlayerCore {
                 return entries.firstOrNull { it.value == value } ?: MEDIA3
