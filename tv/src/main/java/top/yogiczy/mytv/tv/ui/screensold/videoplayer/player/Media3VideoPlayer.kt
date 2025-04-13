@@ -159,32 +159,27 @@ class Media3VideoPlayer(
         if (!uri.toString().startsWith("rtmp://")){
             var mimeType = if (uri.toString().startsWith("rtp://") || uri.toString().startsWith("rtsp://")) {
                 MimeTypes.APPLICATION_RTSP
-            } else if (currentChannelLine.manifestType == "mpd") {
-                MimeTypes.APPLICATION_MPD
             } else {
                 null
             }
             if(mimeType == null){
                 mimeType = when(Util.inferContentType(uri)){
                     C.CONTENT_TYPE_HLS -> MimeTypes.APPLICATION_M3U8
-                    C.CONTENT_TYPE_DASH -> MimeTypes.APPLICATION_MPD
                     C.CONTENT_TYPE_SS -> MimeTypes.APPLICATION_SS
                     C.CONTENT_TYPE_RTSP -> MimeTypes.APPLICATION_RTSP
                     else -> null
                 }
             }
-            
-            val mediaItemBuilder = MediaItem.Builder().setUri(uri)
             if (mimeType != null) {
-                mediaItemBuilder.setMimeType(mimeType)
-            }
-            val mediaItem = mediaItemBuilder.build()
-
-            val mediaSource = DefaultMediaSourceFactory(context)
+                val mediaItem = MediaItem.Builder().setUri(uri)
+                                        .setMimeType(mimeType)
+                                        .build()
+                val mediaSource = DefaultMediaSourceFactory(context)
                             .setDataSourceFactory(dataSourceFactory)
                             .createMediaSource(mediaItem)
-            if (mimeType != null) {
-                return mediaSource
+                if (mimeType != null) {
+                    return mediaSource
+                }
             }
         }
         
