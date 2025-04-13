@@ -150,19 +150,44 @@ class Media3VideoPlayer(
         )
     }
 
-    private fun getDefaultMediaSource():  MediaSource? {
-        val uri = Uri.parse(currentChannelLine.playableUrl)
-        val mediaItem = MediaItem.fromUri(uri)
-        val dataSourceFactory = getDataSourceFactory()
-        return  DefaultMediaSourceFactory(context)
-                .setDataSourceFactory(dataSourceFactory)
-                .createMediaSource(mediaItem)
-    }
 
     private fun getMediaSource(contentType: Int? = null): MediaSource? {
         val uri = Uri.parse(currentChannelLine.playableUrl)
         val mediaItem = MediaItem.fromUri(uri)
+        val dataSourceFactory = getDataSourceFactory()
 
+        if (!uri.toString().startsWith("rtmp://")){
+            var mimeType = if (uri.toString().startsWith("rtp://") || uri.toString().startsWith("rtsp://")) {
+                MimeTypes.APPLICATION_RTSP
+            } else if (currentChannelLine.manifestType == "mpd") {
+                MimeTypes.APPLICATION_MPD
+            } else {
+                null
+            }
+            if(mimeType == null){
+                mimeType = when(Util.inferContentType(uri)){
+                    C.CONTENT_TYPE_HLS -> MimeTypes.APPLICATION_M3U8
+                    C.CONTENT_TYPE_DASH -> MimeTypes.APPLICATION_MPD
+                    C.CONTENT_TYPE_SS -> MimeTypes.APPLICATION_SS
+                    C.CONTENT_TYPE_RTSP -> MimeTypes.APPLICATION_RTSP
+                    else -> null
+                }
+            }
+            
+            val mediaItemBuilder = MediaItem.Builder().setUri(uri)
+            if (mimeType != null) {
+                mediaItemBuilder.setMimeType(mimeType)
+            }
+            val mediaItem = mediaItemBuilder.build()
+
+            val mediaSource = DefaultMediaSourceFactory(context)
+                            .setDataSourceFactory(dataSourceFactory)
+                            .createMediaSource(mediaItem)
+            if (mimeType != null) {
+                return mediaSource
+            }
+        }
+        
         var contentTypeForce = contentType
 
         if (contentTypeForce == null){
@@ -180,7 +205,7 @@ class Media3VideoPlayer(
         }
         
 
-        val dataSourceFactory = getDataSourceFactory()
+        
 
         return when (contentTypeForce ?: Util.inferContentType(uri)) {
             C.CONTENT_TYPE_HLS -> {
@@ -258,25 +283,13 @@ class Media3VideoPlayer(
 
     private fun prepare(contentType: Int? = null) {
         val uri = Uri.parse(currentChannelLine.playableUrl)
-        var mediaSource: MediaSource? = null
-        if(contentType == null){
-            mediaSource = getDefaultMediaSource()
-            if (mediaSource != null) {
-                videoPlayer.setMediaSource(mediaSource)
-                videoPlayer.prepare()
-                videoPlayer.play()
-                triggerPrepared()
-            }
-        }
-        if(mediaSource == null) {
-            mediaSource = getMediaSource(contentType)
-            if (mediaSource != null) {
-                contentTypeAttempts[contentType ?: Util.inferContentType(uri)] = true
-                videoPlayer.setMediaSource(mediaSource)
-                videoPlayer.prepare()
-                videoPlayer.play()
-                triggerPrepared()
-            }
+        val mediaSource = getMediaSource(contentType)
+        if (mediaSource != null) {
+            contentTypeAttempts[contentType ?: Util.inferContentType(uri)] = true
+            videoPlayer.setMediaSource(mediaSource)
+            videoPlayer.prepare()
+            videoPlayer.play()
+            triggerPrepared()
         }
         updatePositionJob?.cancel()
         updatePositionJob = null
