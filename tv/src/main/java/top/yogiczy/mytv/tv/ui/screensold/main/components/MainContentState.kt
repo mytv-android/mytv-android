@@ -38,6 +38,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.SettingsViewModel
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.VideoPlayerState
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
+import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.Media3VideoPlayer
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.rememberVideoPlayerState
 import java.net.URI
 import java.text.SimpleDateFormat
@@ -365,7 +366,12 @@ class MainContentState(
         } else {
             log.i("检测到普通视频URL: ${line.url}")
             log.i("hybridType: ${line.hybridType}, 使用视频播放器播放")
-            videoPlayerState.prepare(line)
+            if(line.url.startsWith("rtsp://") && line.url.contains("smil") && (videoPlayerState.instance is Media3VideoPlayer)){
+                settingsViewModel.videoPlayerCore = Configs.VideoPlayerCore.IJK // Media3 1.6.0 不支持rtsp有效负载类型33
+            }else{
+                videoPlayerState.prepare(line)
+            }
+            
         }
     }
 
