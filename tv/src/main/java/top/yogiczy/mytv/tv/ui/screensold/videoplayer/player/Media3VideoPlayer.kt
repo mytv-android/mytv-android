@@ -177,7 +177,7 @@ class Media3VideoPlayer(
                 val mediaSource = DefaultMediaSourceFactory(context)
                             .setDataSourceFactory(dataSourceFactory)
                             .createMediaSource(mediaItem)
-                if (mimeType != null) {
+                if (mediaSource != null) {
                     return mediaSource
                 }
             }
