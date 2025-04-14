@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - beta
       - dev
   pull_request_target:
     branches:
@@ -57,17 +58,13 @@ jobs:
     - name: Build with Gradle (Release)
       if: github.ref == 'refs/heads/main'
       env:
-            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
             # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
-      if: github.ref == 'refs/heads/dev'
+      if: (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       env:
-            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
             # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleDebug --warning-mode=all
@@ -80,15 +77,17 @@ jobs:
         path: tv/build/outputs/apk/release/*.apk
     
     - name: Move Metadata (Dev)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
-      run: mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
-    
-    - name: Move Metadata  (Release)
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      run: |
+        mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+
+    - name: Move Metadata  (Release) and Gen Tag
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+      run: |
+        mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
     - name: Read apk output metadata
-      if: github.event_name == 'push' && github.event_name == 'push'
+      if: github.event_name == 'push'
       id: apk-meta-release
       uses: juliangruber/read-file-action@v1
       with:
@@ -99,7 +98,25 @@ jobs:
       run: |
         echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
         echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+    
+    - name: Gen Tag(Release)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytv" >> $GITHUB_ENV
+    
+    - name: Gen Tag(Beta)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/beta'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （测试版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvbeta" >> $GITHUB_ENV
 
+    - name: Gen Tag(Dev)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvdev" >> $GITHUB_ENV
+        
     - name: Publish Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
@@ -107,19 +124,45 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }} （稳定版）
+        name: ${{ env.release_title }}
         body: ${{ env.changelog }}
         generate_release_notes: true
         make_latest: true
 
     - name: Publish Pre-Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       uses: softprops/action-gh-release@v2
       with:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }} （开发版）
+        name: ${{ env.release_title }}
         body: ${{ env.changelog }}
         generate_release_notes: true
         prerelease: true
+      
+    - name: create gitee release
+      if: github.event_name == 'push' && github.repository == 'mytv-android/mytv-android'
+      id: create_release 
+      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
+      with:
+        gitee_owner: mytv-android
+        gitee_repo: ${{ env.gitee_repo }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
+        gitee_tag_name: V${{ env.info_version_name }}
+        gitee_release_name: ${{ env.release_title }}
+        gitee_release_body: ${{ env.changelog }}
+        gitee_target_commitish: master
+
+    - name: upload file to gitee release
+      if: github.event_name == 'push' && github.repository == 'mytv-android/mytv-android'
+      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
+      with:
+        gitee_owner: mytv-android
+        gitee_repo: ${{ env.gitee_repo }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
+        gitee_release_id: ${{ steps.create_release.outputs.release-id }}
+        gitee_upload_retry_times:  3
+        gitee_files: |
+            tv/build/outputs/apk/release/*original.apk
+
