@@ -91,7 +91,9 @@ fun UpdateScreen(
                         }
                     }
                 }
-                Column(verticalArrangement = Arrangement.Center) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically) 
+                ) {
                     if (updateViewModel.isUpdateAvailable) {
                         if (updateViewModel.isUpdating) {
                             UpdateActionBtn(
