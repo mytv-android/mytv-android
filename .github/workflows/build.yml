@@ -65,6 +65,8 @@ jobs:
     - name: Build with Gradle (Dev)
       if: (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       env:
+            SENTRY_AUTH_TQOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
             # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleDebug --warning-mode=all
