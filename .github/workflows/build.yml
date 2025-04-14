@@ -139,7 +139,7 @@ jobs:
       with:
         gitee_owner: mytv-android
         gitee_repo: V${{ env.gitee_repo }}
-        gitee_token: ${{ secrets.gitee_token }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
         gitee_tag_name: V${{ env.info_version_name }}
         gitee_release_name: ${{ env.release_title }}
         gitee_release_body: ${{ env.changelog }}
@@ -151,7 +151,7 @@ jobs:
       with:
         gitee_owner: mytv-android
         gitee_repo: V${{ env.gitee_repo }}
-        gitee_token: ${{ secrets.gitee_token }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
         gitee_release_id: ${{ steps.create_release.outputs.release-id }}
         gitee_upload_retry_times:  3
         gitee_files: |
