@@ -105,8 +105,14 @@ jobs:
         echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
         echo "gitee_repo=mytv" >> $GITHUB_ENV
     
+    - name: Gen Tag(Beta)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/beta'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （测试版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvbeta" >> $GITHUB_ENV
+
     - name: Gen Tag(Dev)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
       run: |
         echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
         echo "gitee_repo=mytvdev" >> $GITHUB_ENV
