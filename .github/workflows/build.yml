@@ -79,16 +79,23 @@ jobs:
         name: mytv-android.apk
         path: tv/build/outputs/apk/release/*.apk
     
-    - name: Move Metadata (Dev)
+    - name: Move Metadata (Dev) and Gen Tag
       if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
-      run: mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+      run: |
+        mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+        echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvdev" >> $GITHUB_ENV
     
-    - name: Move Metadata  (Release)
+    - name: Move Metadata  (Release) and Gen Tag
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+      run: |
+        mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+        echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytv" >> $GITHUB_ENV
+
 
     - name: Read apk output metadata
-      if: github.event_name == 'push' && github.event_name == 'push'
+      if: github.event_name == 'push'
       id: apk-meta-release
       uses: juliangruber/read-file-action@v1
       with:
@@ -107,7 +114,7 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }} （稳定版）
+        name: ${{ env.release_title }}
         body: ${{ env.changelog }}
         generate_release_notes: true
         make_latest: true
@@ -119,7 +126,33 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*.apk
         tag_name: V${{ env.info_version_name }}
-        name: V${{ env.info_version_name }} （开发版）
+        name: ${{ env.release_title }}
         body: ${{ env.changelog }}
         generate_release_notes: true
         prerelease: true
+      
+    - name: Test create release
+      if: github.event_name == 'push' and github.repo == 'mytv-android/mytv-android'
+      id: create_release 
+      uses: nicennnnnnnlee/action-gitee-release@v1.0
+      with:
+        gitee_owner: mytv-android
+        gitee_repo: V${{ env.gitee_repo }}
+        gitee_token: ${{ secrets.gitee_token }}
+        gitee_tag_name: V${{ env.info_version_name }}
+        gitee_release_name: ${{ env.release_title }}
+        gitee_release_body: ${{ env.changelog }}
+        gitee_target_commitish: master
+
+    - name: Test upload file to exist release
+      if: github.event_name == 'push' and github.repo == 'mytv-android/mytv-android'
+      uses: nicennnnnnnlee/action-gitee-release@v1.0
+      with:
+        gitee_owner: mytv-android
+        gitee_repo: V${{ env.gitee_repo }}
+        gitee_token: ${{ secrets.gitee_token }}
+        gitee_release_id: ${{ steps.create_release.outputs.release-id }}
+        gitee_upload_retry_times:  3
+        gitee_files: |
+            tv/build/outputs/apk/release/*original.apk
+
