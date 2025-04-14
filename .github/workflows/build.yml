@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - beta
       - dev
   pull_request_target:
     branches:
@@ -62,7 +63,7 @@ jobs:
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
-      if: github.ref == 'refs/heads/dev'
+      if: (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       env:
             VERSION_CODE: ${{ github.run_number }}
             # COMMIT_HASH: ${{ env.short_sha }}
@@ -76,7 +77,7 @@ jobs:
         path: tv/build/outputs/apk/release/*.apk
     
     - name: Move Metadata (Dev) and Gen Tag
-      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       run: |
         mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
         echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
@@ -116,7 +117,7 @@ jobs:
         make_latest: true
 
     - name: Publish Pre-Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       uses: softprops/action-gh-release@v2
       with:
         files: |
@@ -128,25 +129,25 @@ jobs:
         prerelease: true
       
     - name: Test create release
-      if: github.event_name == 'push' and github.repo == 'mytv-android/mytv-android'
+      if: github.event_name == 'push' && github.repo == 'mytv-android/mytv-android'
       id: create_release 
-      uses: nicennnnnnnlee/action-gitee-release@v1.0
+      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
       with:
         gitee_owner: mytv-android
         gitee_repo: V${{ env.gitee_repo }}
-        gitee_token: ${{ secrets.gitee_token }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
         gitee_tag_name: V${{ env.info_version_name }}
         gitee_release_name: ${{ env.release_title }}
         gitee_release_body: ${{ env.changelog }}
         gitee_target_commitish: master
 
     - name: Test upload file to exist release
-      if: github.event_name == 'push' and github.repo == 'mytv-android/mytv-android'
-      uses: nicennnnnnnlee/action-gitee-release@v1.0
+      if: github.event_name == 'push' && github.repo == 'mytv-android/mytv-android'
+      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
       with:
         gitee_owner: mytv-android
         gitee_repo: V${{ env.gitee_repo }}
-        gitee_token: ${{ secrets.gitee_token }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
         gitee_release_id: ${{ steps.create_release.outputs.release-id }}
         gitee_upload_retry_times:  3
         gitee_files: |
