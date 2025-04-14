@@ -58,8 +58,6 @@ jobs:
     - name: Build with Gradle (Release)
       if: github.ref == 'refs/heads/main'
       env:
-            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
             # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleRelease
@@ -67,8 +65,6 @@ jobs:
     - name: Build with Gradle (Dev)
       if: (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       env:
-            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
             # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleDebug --warning-mode=all
@@ -109,8 +105,14 @@ jobs:
         echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
         echo "gitee_repo=mytv" >> $GITHUB_ENV
     
+    - name: Gen Tag(Beta)
+      if: github.event_name == 'push' && github.ref == 'refs/heads/beta'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （测试版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvbeta" >> $GITHUB_ENV
+
     - name: Gen Tag(Dev)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
       run: |
         echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
         echo "gitee_repo=mytvdev" >> $GITHUB_ENV
