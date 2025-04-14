@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.sentry.android.gradle)
 }
 
 
@@ -28,7 +27,6 @@ android {
             useSupportLibrary = true
         }
 
-        buildConfigField("String", "SENTRY_DSN", "\"${getProperty("sentry.dsn") ?: System.getenv("SENTRY_DSN")}\"")
     }
 
     buildTypes {
@@ -169,14 +167,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
-}
-
-sentry {
-    org.set("mytv-android")
-    projectName.set("mytv")
-    authToken.set(getProperty("sentry.auth_token") ?: System.getenv("SENTRY_AUTH_TOKEN"))
-    ignoredBuildTypes.set(setOf("debug"))
-    autoUploadProguardMapping = false
 }
 
 fun getProperty(key: String): String? {

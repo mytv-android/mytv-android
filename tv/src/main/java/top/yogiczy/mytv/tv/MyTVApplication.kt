@@ -9,12 +9,6 @@ import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.request.CachePolicy
 import coil.util.DebugLogger
-import io.sentry.Hint
-import io.sentry.Sentry
-import io.sentry.SentryEvent
-import io.sentry.SentryLevel
-import io.sentry.SentryOptions
-import io.sentry.android.core.SentryAndroid
 import top.yogiczy.mytv.core.data.AppData
 import top.yogiczy.mytv.core.data.utils.Globals
 import kotlin.system.exitProcess
@@ -23,7 +17,6 @@ class MyTVApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
 
-        initSentry()
         crashHandle()
         AppData.init(applicationContext)
         UnsafeTrustManager.enableUnsafeTrustManager()
@@ -52,33 +45,9 @@ class MyTVApplication : Application(), ImageLoaderFactory {
             .build()
     }
 
-    private fun initSentry() {
-        SentryAndroid.init(this) { options ->
-            options.environment = BuildConfig.BUILD_TYPE
-            options.dsn = BuildConfig.SENTRY_DSN
-            options.tracesSampleRate = 1.0
-            options.beforeSend =
-                SentryOptions.BeforeSendCallback { event: SentryEvent, _: Hint ->
-                    if (event.level == null) event.level = SentryLevel.FATAL
-
-                    if (BuildConfig.DEBUG) return@BeforeSendCallback null
-                    if (SentryLevel.ERROR != event.level && SentryLevel.FATAL != event.level) return@BeforeSendCallback null
-                    if (event.exceptions?.any { ex -> ex.type?.contains("Http") == true } == true) return@BeforeSendCallback null
-
-                    event
-                }
-        }
-
-        @Suppress("UnstableApiUsage")
-        Sentry.withScope { scope ->
-            Globals.deviceId = scope.options.distinctId ?: ""
-        }
-    }
-
     private fun crashHandle() {
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Sentry.captureException(throwable)
 
             val intent = Intent(this, CrashHandlerActivity::class.java).apply {
                 putExtra("error_message", throwable.message)

@@ -148,39 +148,6 @@ fun AboutScreen(
                 var visible by remember { mutableStateOf(false) }
 
                 ListItem(
-                    modifier = Modifier.handleKeyEvents(onSelect = {
-                        visible = true
-                    }),
-                    headlineContent = { Text("设备ID") },
-                    trailingContent = {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(Globals.deviceId)
-
-                            Icon(
-                                Icons.AutoMirrored.Default.OpenInNew,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        }
-                    },
-                    selected = false,
-                    onClick = {},
-                )
-
-                QrcodePopup(
-                    visibleProvider = { visible },
-                    onDismissRequest = { visible = false },
-                    text = Globals.deviceId,
-                )
-            }
-
-            item {
-                var visible by remember { mutableStateOf(false) }
-
-                ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
                     headlineContent = { Text("向天光云影作者赞赏") },
                     supportingContent = { Text("仅支持微信赞赏码") },

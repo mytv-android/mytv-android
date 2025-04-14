@@ -24,7 +24,6 @@ tinypinyin = "2.0.3.RELEASE"
 tvMaterial = "1.0.0-rc01"
 navigationCompose = "2.8.9"
 android_material = "1.12.0"
-sentry = "5.3.0"
 minSdk = "21"
 targetSdk = "35"
 compileSdk = "35"
@@ -77,4 +76,3 @@ compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-sentry-android-gradle = { id = "io.sentry.android.gradle", version.ref = "sentry" }

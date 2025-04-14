@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Text
-import io.sentry.Sentry
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScaffoldHeaderBtn
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
@@ -75,13 +74,6 @@ fun CrashHandlerScreen(
         onBackPressed = onBackPressed,
     ) {
         LazyColumn {
-            @Suppress("UnstableApiUsage")
-            Sentry.withScope {
-                it.options.distinctId?.let { distinctId ->
-                    item { Text(text = "设备ID: $distinctId") }
-                }
-            }
-
             item {
                 val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 Text(text = "崩溃时间：${timeFormat.format(System.currentTimeMillis())}")

@@ -413,7 +413,6 @@ object HttpServer : Loggable("HttpServer") {
                         versionCode = BuildConfig.VERSION_CODE,
                         versionName = BuildConfig.VERSION_NAME,
                         deviceName = Globals.deviceName,
-                        deviceId = Globals.deviceId,
                     )
                 )
             )
@@ -549,5 +548,4 @@ private data class AppAbout(
     val versionCode: Int,
     val versionName: String,
     val deviceName: String,
-    val deviceId: String,
 )
