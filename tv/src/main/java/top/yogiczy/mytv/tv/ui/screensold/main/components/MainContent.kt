@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import android.widget.Toast;
+
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
@@ -49,9 +52,11 @@ import top.yogiczy.mytv.tv.ui.screensold.videoplayercontroller.VideoPlayerContro
 import top.yogiczy.mytv.tv.ui.screensold.videoplayerdiaplaymode.VideoPlayerDisplayModeScreen
 import top.yogiczy.mytv.tv.ui.screensold.videotracks.VideoTracksScreen
 import top.yogiczy.mytv.tv.ui.screensold.webview.WebViewScreen
+import top.yogiczy.mytv.tv.ui.screensold.webview.WebViewScreen_X5
 import top.yogiczy.mytv.tv.ui.utils.backHandler
 import top.yogiczy.mytv.tv.ui.utils.handleDragGestures
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.ui.utils.Configs
 
 @Composable
 fun MainContent(
@@ -155,24 +160,57 @@ fun MainContent(
 
         Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
             val channelLine = mainContentState.currentChannelLine
-            WebViewScreen(
-                urlProvider = {
-                    Pair(
-                        channelLine.url,
-                        channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+            val isX5Available = com.tencent.smtt.sdk.WebView(LocalContext.current).getX5WebViewExtension() != null
+            if (!isX5Available){
+                settingsViewModel.webViewCore = Configs.WebViewCore.SYSTEM
+                Toast.makeText(
+                    LocalContext.current,
+                    "X5内核不可用，已切换为系统内核",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            when (settingsViewModel.webViewCore) {
+                Configs.WebViewCore.SYSTEM -> {
+                    WebViewScreen(
+                        urlProvider = {
+                            Pair(
+                                channelLine.url,
+                                channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                            )
+                        },
+                        onVideoResolutionChanged = { width, height ->
+                            videoPlayerState.metadata = videoPlayerState.metadata.copy(
+                                video = (videoPlayerState.metadata.video
+                                    ?: VideoPlayer.Metadata.Video()).copy(
+                                    width = width,
+                                    height = height,
+                                ),
+                            )
+                            mainContentState.isTempChannelScreenVisible = false
+                        },
                     )
-                },
-                onVideoResolutionChanged = { width, height ->
-                    videoPlayerState.metadata = videoPlayerState.metadata.copy(
-                        video = (videoPlayerState.metadata.video
-                            ?: VideoPlayer.Metadata.Video()).copy(
-                            width = width,
-                            height = height,
-                        ),
+                }
+                Configs.WebViewCore.X5 -> {
+                    WebViewScreen_X5(
+                        urlProvider = {
+                            Pair(
+                                channelLine.url,
+                                channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                            )
+                        },
+                        onVideoResolutionChanged = { width, height ->
+                            videoPlayerState.metadata = videoPlayerState.metadata.copy(
+                                video = (videoPlayerState.metadata.video
+                                    ?: VideoPlayer.Metadata.Video()).copy(
+                                    width = width,
+                                    height = height,
+                                ),
+                            )
+                            mainContentState.isTempChannelScreenVisible = false
+                        },
                     )
-                    mainContentState.isTempChannelScreenVisible = false
-                },
-            )
+                } 
+            }
         }
     }
 

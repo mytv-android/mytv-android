@@ -23,7 +23,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = "${System.getenv("VERSION_CODE")}".toInt()
-        versionName = "1.0.2.${System.getenv("VERSION_CODE")}"//.${System.getenv("COMMIT_HASH")}"
+        versionName = "1.1.0.${System.getenv("VERSION_CODE")}"//.${System.getenv("COMMIT_HASH")}"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -143,8 +143,8 @@ dependencies {
     implementation(libs.androidx.media3.datasource.rtmp)
     implementation(libs.androidx.media3.exoplayer.smoothstreaming)
 
-    implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.0.0")
-    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.0.0")
+    implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.1.0")
+    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.1.0")
 
     // 二维码
     implementation(libs.qrose)
@@ -161,9 +161,8 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:util"))
     // implementation(project(":allinone"))
-    implementation(project(":gsyvideoplayer-ex_so"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
-
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)

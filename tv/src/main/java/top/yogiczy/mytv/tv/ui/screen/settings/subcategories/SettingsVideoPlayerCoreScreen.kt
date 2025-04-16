@@ -33,7 +33,7 @@ fun SettingsVideoPlayerCoreScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 播放器 / 内核") },
+        header = { Text("设置 / 播放器 / 视频播放器内核") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -52,7 +52,7 @@ fun SettingsVideoPlayerCoreScreen(
                     supportingContent = {
                         Text(
                             when (core) {
-                                Configs.VideoPlayerCore.MEDIA3 -> "支持全部功能"
+                                Configs.VideoPlayerCore.MEDIA3 -> "除RTSP单播以外基本支持全部功能"
                                 Configs.VideoPlayerCore.IJK -> "部分功能可能无法正常使用，仅支持armeabi-v7a、arm64-v8a"
                             }
                         )

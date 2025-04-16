@@ -474,6 +474,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _webViewCore by mutableStateOf(Configs.WebViewCore.SYSTEM)
+    var webViewCore: Configs.WebViewCore
+        get() = _webViewCore
+        set(value) {
+            _webViewCore = value
+            Configs.webViewCore = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _videoPlayerRenderMode by mutableStateOf(Configs.VideoPlayerRenderMode.SURFACE_VIEW)
     var videoPlayerRenderMode: Configs.VideoPlayerRenderMode
         get() = _videoPlayerRenderMode
@@ -519,12 +528,12 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _videoPlayerForceAudioSoftDecode by mutableStateOf(false)
-    var videoPlayerForceAudioSoftDecode: Boolean
-        get() = _videoPlayerForceAudioSoftDecode
+    private var _videoPlayerForceSoftDecode by mutableStateOf(false)
+    var videoPlayerForceSoftDecode: Boolean
+        get() = _videoPlayerForceSoftDecode
         set(value) {
-            _videoPlayerForceAudioSoftDecode = value
-            Configs.videoPlayerForceAudioSoftDecode = value
+            _videoPlayerForceSoftDecode = value
+            Configs.videoPlayerForceSoftDecode = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -747,12 +756,13 @@ class SettingsViewModel : ViewModel() {
         _updateForceRemind = Configs.updateForceRemind
         _updateChannel = Configs.updateChannel
         _videoPlayerCore = Configs.videoPlayerCore
+        _webViewCore = Configs.webViewCore
         _videoPlayerRenderMode = Configs.videoPlayerRenderMode
         _videoPlayerUserAgent = Configs.videoPlayerUserAgent
         _videoPlayerHeaders = Configs.videoPlayerHeaders
         _videoPlayerLoadTimeout = Configs.videoPlayerLoadTimeout
         _videoPlayerDisplayMode = Configs.videoPlayerDisplayMode
-        _videoPlayerForceAudioSoftDecode = Configs.videoPlayerForceAudioSoftDecode
+        _videoPlayerForceSoftDecode = Configs.videoPlayerForceSoftDecode
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem
         _videoPlayerSkipMultipleFramesOnSameVSync = Configs.videoPlayerSkipMultipleFramesOnSameVSync
         _networkRetryCount = Configs.networkRetryCount

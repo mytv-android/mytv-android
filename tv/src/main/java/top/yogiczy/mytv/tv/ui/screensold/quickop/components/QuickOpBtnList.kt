@@ -2,7 +2,6 @@ package top.yogiczy.mytv.tv.ui.screensold.quickop.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +36,7 @@ import androidx.compose.material.icons.filled.ControlCamera
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.VideoLibrary
+import androidx.compose.material.icons.filled.SettingsInputSvideo
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Subtitles
 import androidx.compose.material.icons.filled.Settings
@@ -151,6 +151,19 @@ fun QuickOpBtnList(
             )
         }
 
+        item {
+            QuickOpBtn(
+                title = ForceDecodeLabel(settingsViewModel.videoPlayerForceSoftDecode),
+                imageVector = Icons.Filled.SettingsInputSvideo,
+                onSelect = {
+                    settingsViewModel.videoPlayerForceSoftDecode = when (settingsViewModel.videoPlayerForceSoftDecode) {
+                        true -> false
+                        false -> true
+                    }
+                },
+            )
+        }
+
         if (playerMetadata.videoTracks.isNotEmpty()) {
             item {
                 QuickOpBtn(
@@ -210,6 +223,13 @@ fun QuickOpBtnList(
     }
 }
 
+fun ForceDecodeLabel(forceDecode: Boolean): String {
+    return if (forceDecode) {
+        "强制软解"
+    } else {
+        "自动解码"
+    }
+}
 @Preview
 @Composable
 private fun QuickOpBtnListPreview() {

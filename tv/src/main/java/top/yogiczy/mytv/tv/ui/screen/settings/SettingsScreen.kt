@@ -51,6 +51,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiTimeShowMo
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiVideoPlayerSubtitleSettingsScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUpdateChannelScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerCoreScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsWebViewCoreScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerDisplayModeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerLoadTimeoutScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerRenderModeScreen
@@ -171,6 +172,9 @@ fun SettingsScreen(
                     SettingsVideoPlayerScreen(
                         toVideoPlayerCoreScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.VIDEO_PLAYER_CORE.name)
+                        },
+                        toWebviewCoreScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.WEBVIEW_CORE.name)
                         },
                         toVideoPlayerRenderModeScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.VIDEO_PLAYER_RENDER_MODE.name)
@@ -398,6 +402,17 @@ fun SettingsScreen(
                         coreProvider = { settingsViewModel.videoPlayerCore },
                         onCoreChanged = {
                             settingsViewModel.videoPlayerCore = it
+                            navController.navigateUp()
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.WEBVIEW_CORE.name) {
+                    SettingsWebViewCoreScreen(
+                        coreProvider = { settingsViewModel.webViewCore },
+                        onCoreChanged = {
+                            settingsViewModel.webViewCore = it
                             navController.navigateUp()
                         },
                         onBackPressed = { navController.navigateUp() },

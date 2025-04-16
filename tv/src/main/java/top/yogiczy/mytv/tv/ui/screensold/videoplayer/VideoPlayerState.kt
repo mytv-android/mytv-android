@@ -170,7 +170,8 @@ fun rememberVideoPlayerState(
     val coroutineScope = rememberCoroutineScope()
 
     val videoPlayerCore = settingsVM.videoPlayerCore
-    val state = remember(videoPlayerCore) {
+    val forceSoftDecode = settingsVM.videoPlayerForceSoftDecode 
+    val state = remember(videoPlayerCore, forceSoftDecode) {
         val player = when (videoPlayerCore) {
             Configs.VideoPlayerCore.MEDIA3 -> Media3VideoPlayer(context, coroutineScope)
             Configs.VideoPlayerCore.IJK -> IjkVideoPlayer(context, coroutineScope)
@@ -179,12 +180,12 @@ fun rememberVideoPlayerState(
         VideoPlayerState(player, defaultDisplayModeProvider)
     }
 
-    DisposableEffect(videoPlayerCore) {
+    DisposableEffect(videoPlayerCore, forceSoftDecode) {
         state.initialize()
         onDispose { state.release() }
     }
 
-    DisposableEffect(lifecycleOwner, videoPlayerCore) {
+    DisposableEffect(lifecycleOwner, videoPlayerCore, forceSoftDecode) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) state.play()
             else if (event == Lifecycle.Event.ON_STOP) {
@@ -195,7 +196,6 @@ fun rememberVideoPlayerState(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
-
     return state
 }
 
