@@ -528,12 +528,12 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _videoPlayerForceAudioSoftDecode by mutableStateOf(false)
-    var videoPlayerForceAudioSoftDecode: Boolean
-        get() = _videoPlayerForceAudioSoftDecode
+    private var _videoPlayerForceSoftDecode by mutableStateOf(false)
+    var videoPlayerForceSoftDecode: Boolean
+        get() = _videoPlayerForceSoftDecode
         set(value) {
-            _videoPlayerForceAudioSoftDecode = value
-            Configs.videoPlayerForceAudioSoftDecode = value
+            _videoPlayerForceSoftDecode = value
+            Configs.videoPlayerForceSoftDecode = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -762,7 +762,7 @@ class SettingsViewModel : ViewModel() {
         _videoPlayerHeaders = Configs.videoPlayerHeaders
         _videoPlayerLoadTimeout = Configs.videoPlayerLoadTimeout
         _videoPlayerDisplayMode = Configs.videoPlayerDisplayMode
-        _videoPlayerForceAudioSoftDecode = Configs.videoPlayerForceAudioSoftDecode
+        _videoPlayerForceSoftDecode = Configs.videoPlayerForceSoftDecode
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem
         _videoPlayerSkipMultipleFramesOnSameVSync = Configs.videoPlayerSkipMultipleFramesOnSameVSync
         _networkRetryCount = Configs.networkRetryCount

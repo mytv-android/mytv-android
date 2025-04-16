@@ -200,7 +200,7 @@ object Configs {
         VIDEO_PLAYER_DISPLAY_MODE,
 
         /** 播放器 强制音频软解 */
-        VIDEO_PLAYER_FORCE_AUDIO_SOFT_DECODE,
+        VIDEO_PLAYER_FORCE_SOFT_DECODE,
 
         /** 播放器 停止上一媒体项 */
         VIDEO_PLAYER_STOP_PREVIOUS_MEDIA_ITEM,
@@ -601,10 +601,10 @@ object Configs {
         )
         set(value) = SP.putInt(KEY.VIDEO_PLAYER_DISPLAY_MODE.name, value.value)
 
-    /** 播放器 强制音频软解 */
-    var videoPlayerForceAudioSoftDecode: Boolean
-        get() = SP.getBoolean(KEY.VIDEO_PLAYER_FORCE_AUDIO_SOFT_DECODE.name, false)
-        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_FORCE_AUDIO_SOFT_DECODE.name, value)
+    /** 播放器 强制软解 */
+    var videoPlayerForceSoftDecode: Boolean
+        get() = SP.getBoolean(KEY.VIDEO_PLAYER_FORCE_SOFT_DECODE.name, false)
+        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_FORCE_SOFT_DECODE.name, value)
 
     /** 播放器 停止上一媒体项 */
     var videoPlayerStopPreviousMediaItem: Boolean
@@ -840,7 +840,7 @@ object Configs {
             videoPlayerHeaders = videoPlayerHeaders,
             videoPlayerLoadTimeout = videoPlayerLoadTimeout,
             videoPlayerDisplayMode = videoPlayerDisplayMode,
-            videoPlayerForceAudioSoftDecode = videoPlayerForceAudioSoftDecode,
+            videoPlayerForceSoftDecode = videoPlayerForceSoftDecode,
             videoPlayerStopPreviousMediaItem = videoPlayerStopPreviousMediaItem,
             videoPlayerSkipMultipleFramesOnSameVSync = videoPlayerSkipMultipleFramesOnSameVSync,
             videoPlayerVolumeNormalization = videoPlayerVolumeNormalization,
@@ -920,7 +920,7 @@ object Configs {
         configs.videoPlayerHeaders?.let { videoPlayerHeaders = it }
         configs.videoPlayerLoadTimeout?.let { videoPlayerLoadTimeout = it }
         configs.videoPlayerDisplayMode?.let { videoPlayerDisplayMode = it }
-        configs.videoPlayerForceAudioSoftDecode?.let { videoPlayerForceAudioSoftDecode = it }
+        configs.videoPlayerForceSoftDecode?.let { videoPlayerForceSoftDecode = it }
         configs.videoPlayerStopPreviousMediaItem?.let { videoPlayerStopPreviousMediaItem = it }
         configs.videoPlayerSkipMultipleFramesOnSameVSync?.let { videoPlayerSkipMultipleFramesOnSameVSync = it }
         configs.videoPlayerVolumeNormalization?.let { videoPlayerVolumeNormalization = it }
@@ -998,7 +998,7 @@ object Configs {
         val videoPlayerHeaders: String? = null,
         val videoPlayerLoadTimeout: Long? = null,
         val videoPlayerDisplayMode: VideoPlayerDisplayMode? = null,
-        val videoPlayerForceAudioSoftDecode: Boolean? = null,
+        val videoPlayerForceSoftDecode: Boolean? = null,
         val videoPlayerStopPreviousMediaItem: Boolean? = null,
         val videoPlayerSkipMultipleFramesOnSameVSync: Boolean? = null,
         val videoPlayerVolumeNormalization : Boolean? = null,

@@ -53,13 +53,14 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "强制音频软解",
+                headlineContent = "强制软解",
+                supportingContent = "对于Media3，使音频强制软解\n对于IJK，将禁用MediaCodec解码",
                 trailingContent = {
-                    Switch(settingsViewModel.videoPlayerForceAudioSoftDecode, null)
+                    Switch(settingsViewModel.videoPlayerForceSoftDecode, null)
                 },
                 onSelect = {
-                    settingsViewModel.videoPlayerForceAudioSoftDecode =
-                        !settingsViewModel.videoPlayerForceAudioSoftDecode
+                    settingsViewModel.videoPlayerForceSoftDecode =
+                        !settingsViewModel.videoPlayerForceSoftDecode
                 },
             )
         }
