@@ -21,6 +21,14 @@ jobs:
         fetch-depth: 0
         submodules: 'true'
     
+    - name: Init Empty Changelog
+      run: |
+          {
+            echo "changelog<<EOF"
+            echo "## Changelog"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
     - name: Get changelog
       id: changelog
       run: |
@@ -59,7 +67,6 @@ jobs:
       if: github.ref == 'refs/heads/main'
       env:
             VERSION_CODE: ${{ github.run_number }}
-            # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
@@ -68,7 +75,6 @@ jobs:
             SENTRY_AUTH_TQOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
-            # COMMIT_HASH: ${{ env.short_sha }}
       run: ./gradlew :tv:assembleDebug --warning-mode=all
       
     - name: Upload Artifact 
@@ -83,7 +89,7 @@ jobs:
       run: |
         mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
-    - name: Move Metadata  (Release) and Gen Tag
+    - name: Move Metadata  (Release)
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
         mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
@@ -105,7 +111,7 @@ jobs:
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
         echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
-        echo "gitee_repo=mytv" >> $GITHUB_ENV
+        echo "gitee_repo=mytvstable" >> $GITHUB_ENV
     
     - name: Gen Tag(Beta)
       if: github.event_name == 'push' && github.ref == 'refs/heads/beta'
