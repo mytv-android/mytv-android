@@ -155,9 +155,9 @@ public class IjkMediaCodecInfo {
             rank = RANK_SOFTWARE;
         } else if (name.startsWith("omx.google.")) {
             rank = RANK_SOFTWARE;
-        } else if (name.startswith("omx.android.")){
+        } else if (name.startsWith("omx.android.")){
             rank = RANK_SOFTWARE;
-        } else if (name.startswith("c2.android.")){
+        } else if (name.startsWith("c2.android.")){
             rank = RANK_SOFTWARE;
         } else if (name.startsWith("omx.ffmpeg.")) {
             rank = RANK_SOFTWARE;
