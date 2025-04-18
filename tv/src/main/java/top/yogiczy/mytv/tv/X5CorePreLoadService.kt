@@ -69,21 +69,25 @@ class X5CorePreLoadService : JobIntentService() {
             try {
                 val file = File(apkPath)
                 // 下载 APK 文件
-                log.i("开始下载 Core APK: $downloadUrl")
-                runOnUiThread {
-                    Toast.makeText(this@X5CorePreLoadService, "正在远程下载X5Core", Toast.LENGTH_SHORT).show()
+                if(file.exists()) {
+                    log.i("APK 文件已存在，跳过下载")
+                }else{
+                    log.i("开始下载 Core APK: $downloadUrl")
+                    runOnUiThread {
+                        Toast.makeText(this@X5CorePreLoadService, "正在远程下载X5Core", Toast.LENGTH_SHORT).show()
+                    }
+                    val url = URL(downloadUrl)
+                    val connection = url.openConnection()
+                    connection.connect()
+                    val inputStream = connection.getInputStream()
+                    file.outputStream().use { outputStream ->
+                        inputStream.copyTo(outputStream)
+                    }
+                    runOnUiThread {
+                        Toast.makeText(this@X5CorePreLoadService, "下载X5Core成功！", Toast.LENGTH_SHORT).show()
+                    }
+                    log.i("Core APK 下载完成: $apkPath")
                 }
-                val url = URL(downloadUrl)
-                val connection = url.openConnection()
-                connection.connect()
-                val inputStream = connection.getInputStream()
-                file.outputStream().use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-                runOnUiThread {
-                    Toast.makeText(this@X5CorePreLoadService, "下载X5Core成功！", Toast.LENGTH_SHORT).show()
-                }
-                log.i("Core APK 下载完成: $apkPath")
                 // 加载本地 TBS 内核
                 QbSdk.reset(applicationContext)
                 QbSdk.installLocalTbsCore(applicationContext, code, apkPath)

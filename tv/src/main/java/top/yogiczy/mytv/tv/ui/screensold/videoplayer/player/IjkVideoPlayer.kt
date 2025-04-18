@@ -30,22 +30,7 @@ class IjkVideoPlayer(
 
     private val logger = Logger.create("IjkVideoPlayer")
     private val player by lazy {
-        IjkMediaPlayer().apply {
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_clear", 1)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_timeout", -1)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 2)
-            setOption(
-                IjkMediaPlayer.OPT_CATEGORY_FORMAT,
-                "timeout",
-                Configs.videoPlayerLoadTimeout
-            )
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 1024 * 10)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "nobuffer")
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "crypto,file,http,https,tcp,tls,udp,rtmp,rtsp")
-        }   
+        IjkMediaPlayer()
     }
     private var cacheSurfaceView: SurfaceView? = null
     private var cacheSurfaceTexture: Surface? = null
@@ -61,16 +46,30 @@ class IjkVideoPlayer(
                 setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-all-videos", 1)
                 setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-hevc", 1)
             }
-                
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_clear", 1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_timeout", -1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 2)
+            setOption(
+                IjkMediaPlayer.OPT_CATEGORY_FORMAT,
+                "timeout",
+                Configs.videoPlayerLoadTimeout
+            )
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 1024 * 10)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "nobuffer")
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "crypto,file,http,https,tcp,tls,udp,rtmp,rtsp")
+
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 5)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "fast", 1)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
-            //软解码：1、打开，0、关闭
-            //player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "videotoolbox", 0);
-
+            
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "timeout", 100000L)
             //rtsp设置 https://ffmpeg.org/ffmpeg-protocols.html#rtsp
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_transport", "tcp")
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_flags", "prefer_tcp")
@@ -81,6 +80,10 @@ class IjkVideoPlayer(
 
             //  关闭播放器缓冲，这个必须关闭，否则会出现播放一段时间后，一直卡主，控制台打印 FFP_MSG_BUFFERING_START
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0L)
+
+            //https://www.cnblogs.com/Fitz/p/18537127
+            setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter",0) //丢弃一些“无用”的数据包，例如AVI格式中的零大小数据包
+            setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_frame", 0) //不跳帧，解码所有帧
         }
     }
 

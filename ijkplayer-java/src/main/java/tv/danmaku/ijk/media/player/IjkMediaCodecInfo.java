@@ -37,6 +37,8 @@ public class IjkMediaCodecInfo {
         sKnownCodecList = new TreeMap<String, Integer>(
                 String.CASE_INSENSITIVE_ORDER);
 
+        // Pixel
+        sKnownCodecList.put("c2.exynos.h264.decoder", RANK_TESTED);
         // ----- Nvidia -----
         // Tegra3
         // Nexus 7 (2012)
@@ -98,27 +100,27 @@ public class IjkMediaCodecInfo {
         sKnownCodecList.put("OMX.MARVELL.VIDEO.H264DECODER", RANK_SOFTWARE);
 
         // ----- TODO: need test -----
-        sKnownCodecList.remove("OMX.Action.Video.Decoder");
-        sKnownCodecList.remove("OMX.allwinner.video.decoder.avc");
-        sKnownCodecList.remove("OMX.BRCM.vc4.decoder.avc");
-        sKnownCodecList.remove("OMX.brcm.video.h264.hw.decoder");
-        sKnownCodecList.remove("OMX.brcm.video.h264.decoder");
-        sKnownCodecList.remove("OMX.cosmo.video.decoder.avc");
-        sKnownCodecList.remove("OMX.duos.h264.decoder");
-        sKnownCodecList.remove("OMX.hantro.81x0.video.decoder");
-        sKnownCodecList.remove("OMX.hantro.G1.video.decoder");
-        sKnownCodecList.remove("OMX.hisi.video.decoder");
-        sKnownCodecList.remove("OMX.LG.decoder.video.avc");
-        sKnownCodecList.remove("OMX.MS.AVC.Decoder");
-        sKnownCodecList.remove("OMX.RENESAS.VIDEO.DECODER.H264");
-        sKnownCodecList.remove("OMX.RTK.video.decoder");
-        sKnownCodecList.remove("OMX.sprd.h264.decoder");
-        sKnownCodecList.remove("OMX.ST.VFM.H264Dec");
-        sKnownCodecList.remove("OMX.vpu.video_decoder.avc");
-        sKnownCodecList.remove("OMX.WMT.decoder.avc");
+        // sKnownCodecList.remove("OMX.Action.Video.Decoder");
+        // sKnownCodecList.remove("OMX.allwinner.video.decoder.avc");
+        // sKnownCodecList.remove("OMX.BRCM.vc4.decoder.avc");
+        // sKnownCodecList.remove("OMX.brcm.video.h264.hw.decoder");
+        // sKnownCodecList.remove("OMX.brcm.video.h264.decoder");
+        // sKnownCodecList.remove("OMX.cosmo.video.decoder.avc");
+        // sKnownCodecList.remove("OMX.duos.h264.decoder");
+        // sKnownCodecList.remove("OMX.hantro.81x0.video.decoder");
+        // sKnownCodecList.remove("OMX.hantro.G1.video.decoder");
+        // sKnownCodecList.remove("OMX.hisi.video.decoder");
+        // sKnownCodecList.remove("OMX.LG.decoder.video.avc");
+        // sKnownCodecList.remove("OMX.MS.AVC.Decoder");
+        // sKnownCodecList.remove("OMX.RENESAS.VIDEO.DECODER.H264");
+        // sKnownCodecList.remove("OMX.RTK.video.decoder");
+        // sKnownCodecList.remove("OMX.sprd.h264.decoder");
+        // sKnownCodecList.remove("OMX.ST.VFM.H264Dec");
+        // sKnownCodecList.remove("OMX.vpu.video_decoder.avc");
+        // sKnownCodecList.remove("OMX.WMT.decoder.avc");
 
         // Really ?
-        sKnownCodecList.remove("OMX.bluestacks.hw.decoder");
+        // sKnownCodecList.remove("OMX.bluestacks.hw.decoder");
 
         // ---------------
         // Useless codec
@@ -147,11 +149,15 @@ public class IjkMediaCodecInfo {
 
         name = name.toLowerCase(Locale.US);
         int rank = RANK_NO_SENSE;
-        if (!name.startsWith("omx.")) {
+        if (!name.startsWith("omx.") && !name.startsWith("c2.")) {
             rank = RANK_NON_STANDARD;
         } else if (name.startsWith("omx.pv")) {
             rank = RANK_SOFTWARE;
         } else if (name.startsWith("omx.google.")) {
+            rank = RANK_SOFTWARE;
+        } else if (name.startswith("omx.android.")){
+            rank = RANK_SOFTWARE;
+        } else if (name.startswith("c2.android.")){
             rank = RANK_SOFTWARE;
         } else if (name.startsWith("omx.ffmpeg.")) {
             rank = RANK_SOFTWARE;
@@ -169,7 +175,7 @@ public class IjkMediaCodecInfo {
                 rank = RANK_NO_SENSE;
             else
                 rank = RANK_TESTED;
-        } else {
+        }else {
             Integer knownRank = getKnownCodecList().get(name);
             if (knownRank != null) {
                 rank = knownRank;
@@ -286,6 +292,7 @@ public class IjkMediaCodecInfo {
             return "51";
         case 65536: // CodecProfileLevel.AVCLevel52:
             return "52";
+            
         default:
             return "0";
         }

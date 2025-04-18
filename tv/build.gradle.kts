@@ -58,11 +58,11 @@ android {
         }
     }
 
-    sourceSets {
-        getByName("main") {
-            jniLibs.srcDirs("jniLibs")
-        }
-    }
+    // sourceSets {
+    //     getByName("main") {
+    //         jniLibs.srcDirs("jniLibs")
+    //     }
+    // }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -143,7 +143,7 @@ dependencies {
     implementation(libs.androidx.media3.datasource.rtmp)
     implementation(libs.androidx.media3.exoplayer.smoothstreaming)
 
-    implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.1.0")
+    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.1.0")
     // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.1.0")
 
     // 二维码
@@ -160,7 +160,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:util"))
-    // implementation(project(":allinone"))
+    implementation(project(":ijkplayer-java"))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     androidTestImplementation(platform(libs.androidx.compose.bom))
