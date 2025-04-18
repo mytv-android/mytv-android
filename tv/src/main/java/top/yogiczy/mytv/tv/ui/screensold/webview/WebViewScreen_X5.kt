@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.MotionEvent
+import android.view.KeyEvent // 添此导入
 import android.view.ViewGroup
 import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
@@ -36,6 +37,8 @@ fun WebViewScreen_X5(
     modifier: Modifier = Modifier,
     urlProvider: () -> Pair<String, String> = { Pair("", "") },
     onVideoResolutionChanged: (width: Int, height: Int) -> Unit = { _, _ -> },
+    onSelect:() -> Unit = {},
+    onLongSelect:() -> Unit = {},
 ) {
     val (url, httpUserAgent) = urlProvider()
     var placeholderVisible by remember { mutableStateOf(true) }
@@ -117,17 +120,22 @@ fun WebViewScreen_X5(
                     isFocusable = false
                     isLongClickable = false
                     isFocusableInTouchMode = false
-                    // getView().setOnLongClickListener { 
-                    //     // 返回 true 禁用长按事件
-                    //     true
-                    // }
-                    // getView().setOnClickListener { 
-                    //     // 点击事件处理逻辑（如果需要）
-                    // }
-                    // getView().setOnTouchListener { _, _ -> 
-                    //     // 禁用触摸事件
-                    //     true
-                    // }
+                    getView().setOnLongClickListener { 
+                        onLongSelect()
+                        true
+                    }
+                    getView().setOnClickListener{
+                        onSelect()
+                        true
+                    } 
+                    getView().setOnTouchListener { _, event ->
+                        if (event.action == MotionEvent.ACTION_MOVE) {
+                            onSelect()
+                            return@setOnTouchListener true
+                        }else {
+                            return@setOnTouchListener false
+                        }
+                    }
                     addJavascriptInterface(
                         MyWebViewInterface(
                             onVideoResolutionChanged = onVideoResolutionChanged,
@@ -150,15 +158,6 @@ class MyClient_X5(
     private val onPageFinished: () -> Unit,
 ) : WebViewClient() {
     private val logger = Logger.create("WebViewClient")
-    
-    // override fun shouldInterceptRequest(
-    //     view: WebView?,
-    //     request: WebResourceRequest?
-    // ): WebResourceResponse? {
-    //     if (request?.url.toString().endsWith(".css"))
-    //         return WebResourceResponse("text/css", "UTF-8", null)
-    //     return null
-    // }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         logger.i("WebView页面开始加载: $url")
@@ -192,4 +191,11 @@ class MyWebView_X5(context: Context) : WebView(context) {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         return false
     }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return false
+    }
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        return false
+    }
+
 }

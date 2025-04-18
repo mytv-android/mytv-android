@@ -6,7 +6,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
-import android.widget.Toast;
+import android.widget.Toast
+import android.content.Context
 import android.content.Intent
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
@@ -152,11 +153,13 @@ fun MainContent(
                 },
             ),
     ) {
-        VideoPlayerScreen(
-            state = videoPlayerState,
-            showMetadataProvider = { settingsViewModel.debugShowVideoPlayerMetadata },
-            forceTextureView = false,
-        )
+        Visibility({ mainContentState.currentChannelLine?.hybridType != ChannelLine.HybridType.WebView }) {
+            VideoPlayerScreen(
+                state = videoPlayerState,
+                showMetadataProvider = { settingsViewModel.debugShowVideoPlayerMetadata },
+                forceTextureView = false,
+            )
+        }
 
         Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
             val channelLine = mainContentState.currentChannelLine
@@ -168,7 +171,7 @@ fun MainContent(
                     "X5内核不可用，将进行初始化。已切换为系统内核",
                     Toast.LENGTH_LONG
                 ).show()
-                preInitX5Core()
+                preInitX5Core(LocalContext.current)
             }
             when (settingsViewModel.webViewCore) {
                 Configs.WebViewCore.SYSTEM -> {
@@ -209,6 +212,8 @@ fun MainContent(
                             )
                             mainContentState.isTempChannelScreenVisible = false
                         },
+                        onSelect = { mainContentState.isChannelScreenVisible = true },
+                        onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
                     )
                 } 
             }
@@ -438,6 +443,7 @@ fun MainContent(
             epgListProvider = epgListProvider,
             currentPlaybackEpgProgrammeProvider = { mainContentState.currentPlaybackEpgProgramme },
             videoPlayerMetadataProvider = { videoPlayerState.metadata },
+            videoPlayerIndicatorProvider = { mainContentState.currentChannelLine?.hybridType != ChannelLine.HybridType.WebView },
             onShowIptvSource ={
                 mainContentState.isQuickOpScreenVisible = false
                 mainContentState.isIptvSourceScreenVisible = true
@@ -571,13 +577,12 @@ fun MainContent(
                 EpgProgrammeReserveList(settingsViewModel.epgChannelReserveList - reserve)
         },
     )
-    /**
+}
+/**
      * 初始化X5内核
      */
-    private fun preInitX5Core() {
-        //预加载x5内核
-        val intent = Intent(this, X5CorePreLoadService::class.java)
-        X5CorePreLoadService.enqueueWork(this, intent)
-    }
+private fun preInitX5Core(context: Context) { // Accept context as a parameter
+    // 预加载x5内核
+    val intent = Intent(context, X5CorePreLoadService::class.java)
+    X5CorePreLoadService.enqueueWork(context, intent)
 }
-

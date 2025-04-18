@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.DeleteOutline
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -71,7 +72,7 @@ fun IptvSourceItem(
     lineProvider: () -> IptvSource = { IptvSource() },
     lineIdxProvider: () -> Int = { 0 },
     isSelectedProvider: () -> Boolean = { false },
-    iptvSourceDetailProvider: () -> Map<Int, IptvSourceDetail> = { emptyMap() },
+    iptvSourceDetailProvider: () -> IptvSourceDetail = { IptvSourceDetail.Loading },
     onSelected: () -> Unit = {},
 ) {
     val line = lineProvider()
@@ -120,7 +121,21 @@ fun IptvSourceItem(
             }
         },
         trailingContent = {
-            RadioButton(selected = isSelected, onClick = {})
+            when (iptvSourceDetail) {
+                is IptvSourceDetail.Loading -> CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 3.dp,
+                    color = LocalContentColor.current,
+                    trackColor = MaterialTheme.colorScheme.surface.copy(0.1f),
+                )
+
+                is IptvSourceDetail.Error -> Icon(
+                    Icons.Default.Error,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                )
+                else -> RadioButton(selected = isSelected, onClick = {})
+            }
         },
     )
 }
