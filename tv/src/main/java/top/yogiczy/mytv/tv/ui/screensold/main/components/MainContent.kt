@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 import android.widget.Toast;
-
+import android.content.Intent
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
@@ -57,7 +57,7 @@ import top.yogiczy.mytv.tv.ui.utils.backHandler
 import top.yogiczy.mytv.tv.ui.utils.handleDragGestures
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.Configs
-
+import top.yogiczy.mytv.tv.X5CorePreLoadService
 @Composable
 fun MainContent(
     modifier: Modifier = Modifier,
@@ -571,13 +571,13 @@ fun MainContent(
                 EpgProgrammeReserveList(settingsViewModel.epgChannelReserveList - reserve)
         },
     )
-}
-
-/**
+    /**
      * 初始化X5内核
      */
-private fun preInitX5Core() {
-    //预加载x5内核
-    val intent = Intent(this, X5CorePreLoadService::class.java)
-    X5CorePreLoadService.enqueueWork(this, intent)
+    private fun preInitX5Core() {
+        //预加载x5内核
+        val intent = Intent(this, X5CorePreLoadService::class.java)
+        X5CorePreLoadService.enqueueWork(this, intent)
+    }
 }
+

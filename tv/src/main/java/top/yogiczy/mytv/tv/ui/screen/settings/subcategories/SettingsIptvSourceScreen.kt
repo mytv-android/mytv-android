@@ -405,7 +405,7 @@ private fun SettingsIptvSourceActionItem(
     )
 }
 
-private sealed interface IptvSourceDetail {
+public sealed interface IptvSourceDetail {
     data object None : IptvSourceDetail
     data object Loading : IptvSourceDetail
     data object Error : IptvSourceDetail
