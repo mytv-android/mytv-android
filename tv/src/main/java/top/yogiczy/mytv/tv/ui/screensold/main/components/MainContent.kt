@@ -165,9 +165,10 @@ fun MainContent(
                 settingsViewModel.webViewCore = Configs.WebViewCore.SYSTEM
                 Toast.makeText(
                     LocalContext.current,
-                    "X5内核不可用，已切换为系统内核",
-                    Toast.LENGTH_SHORT
+                    "X5内核不可用，将进行初始化。已切换为系统内核",
+                    Toast.LENGTH_LONG
                 ).show()
+                preInitX5Core()
             }
             when (settingsViewModel.webViewCore) {
                 Configs.WebViewCore.SYSTEM -> {
@@ -570,4 +571,13 @@ fun MainContent(
                 EpgProgrammeReserveList(settingsViewModel.epgChannelReserveList - reserve)
         },
     )
+}
+
+/**
+     * 初始化X5内核
+     */
+private fun preInitX5Core() {
+    //预加载x5内核
+    val intent = Intent(this, X5CorePreLoadService::class.java)
+    X5CorePreLoadService.enqueueWork(this, intent)
 }
