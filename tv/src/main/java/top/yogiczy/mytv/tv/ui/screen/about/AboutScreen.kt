@@ -100,7 +100,7 @@ fun AboutScreen(
                     visibleProvider = { visible },
                     onDismissRequest = { visible = false },
                     text = Constants.APP_REPO,
-                    description = "扫码前往代码仓库",
+                    description = "",
                 )
             }
 
@@ -109,7 +109,7 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("天光云影交流群 Telegram") },
+                    headlineContent = { Text("沟通交流") },
                     trailingContent = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -149,8 +149,8 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("向天光云影作者赞赏") },
-                    supportingContent = { Text("仅支持微信赞赏码") },
+                    headlineContent = { Text("电视直播") },
+                    supportingContent = { Text("tv") },
                     trailingContent = {
                         Icon(
                             Icons.AutoMirrored.Default.OpenInNew,

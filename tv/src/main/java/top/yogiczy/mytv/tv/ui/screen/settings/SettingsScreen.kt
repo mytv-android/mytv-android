@@ -1,5 +1,6 @@
 package top.yogiczy.mytv.tv.ui.screen.settings
 
+import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsNetworkRetryIntervalScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,7 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSourceList
@@ -231,7 +231,7 @@ fun SettingsScreen(
                 composable(SettingsSubCategories.IPTV_SOURCE.name) {
                     SettingsIptvSourceScreen(
                         currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
-                        iptvSourceListProvider = { IptvSourceList(Constants.IPTV_SOURCE_LIST + settingsViewModel.iptvSourceList) },
+                        iptvSourceListProvider = { settingsViewModel.iptvSourceList },
                         onSetCurrent = {
                             settingsViewModel.iptvSourceCurrent = it
                             settingsViewModel.iptvChannelGroupHiddenList = emptySet()

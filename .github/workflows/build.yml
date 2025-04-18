@@ -1,14 +1,16 @@
 name: Kotlin CI
-
 on:
-  push:
-    branches:
-      - main
-      - beta
-      - dev
-  pull_request_target:
-    branches:
-      - dev
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: '选择要构建的分支 (main, beta, dev)'
+        required: true
+        default: 'main'
+        type: choice
+        options:
+          - main
+          - beta
+          - dev
 
 jobs:
   build:
@@ -55,8 +57,15 @@ jobs:
 
     - name: Add jks file
       run: |
-          echo ${{ secrets.SIGN_KEY }} > ./encoded_key
-          base64 -d -i encoded_key > keystore.jks
+        set -e
+        echo "${{ secrets.SIGN_KEY }}" > ./encoded_key
+        if base64 -d -i encoded_key > keystore.jks; then
+          echo "Successfully decoded and created keystore.jks"
+        else
+          echo "Failed to decode keystore.jks"
+          exit 1
+        fi
+        rm encoded_key
       
     - name : Add SHORT_SHA Environment Variable
       id   : short-sha
@@ -64,13 +73,13 @@ jobs:
       run  : echo "short_sha=`git rev-parse --short HEAD`" >> $GITHUB_ENV
 
     - name: Build with Gradle (Release)
-      if: github.ref == 'refs/heads/main'
+      if: inputs.branch == 'main'
       env:
             VERSION_CODE: ${{ github.run_number }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
-      if: (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      if: (inputs.branch == 'beta' || inputs.branch == 'dev')
       env:
             SENTRY_AUTH_TQOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -78,55 +87,52 @@ jobs:
       run: ./gradlew :tv:assembleDebug --warning-mode=all
       
     - name: Upload Artifact 
-      if: github.event_name == 'push'
+      if: github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v4
       with:
         name: mytv-android.apk
         path: tv/build/outputs/apk/release/*.apk
     
     - name: Move Metadata (Dev)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      if: github.event_name == 'workflow_dispatch' && (inputs.branch == 'beta' || inputs.branch == 'dev')
       run: |
         mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
     - name: Move Metadata  (Release)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'workflow_dispatch' && inputs.branch == 'main'
       run: |
         mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
     - name: Read apk output metadata
-      if: github.event_name == 'push'
+      if: github.event_name == 'workflow_dispatch'
       id: apk-meta-release
       uses: juliangruber/read-file-action@v1
       with:
         path: tv/build/outputs/apk/release/output-metadata.json
 
     - name: Parse apk infos
-      if: github.event_name == 'push'
+      if: github.event_name == 'workflow_dispatch'
       run: |
         echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
         echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
     
     - name: Gen Tag(Release)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'workflow_dispatch' && inputs.branch == 'main'
       run: |
         echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
-        echo "gitee_repo=mytvstable" >> $GITHUB_ENV
     
     - name: Gen Tag(Beta)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/beta'
+      if: github.event_name == 'workflow_dispatch' && inputs.branch == 'beta'
       run: |
         echo "release_title=V${{ env.info_version_name }} （测试版）" >> $GITHUB_ENV
-        echo "gitee_repo=mytvbeta" >> $GITHUB_ENV
 
     - name: Gen Tag(Dev)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+      if: github.event_name == 'workflow_dispatch' && inputs.branch == 'dev'
       run: |
         echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
-        echo "gitee_repo=mytvdev" >> $GITHUB_ENV
         
     - name: Publish Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'workflow_dispatch' && inputs.branch == 'main'
       uses: softprops/action-gh-release@v2
       with:
         files: |
@@ -138,7 +144,7 @@ jobs:
         make_latest: true
 
     - name: Publish Pre-Release
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      if: github.event_name == 'workflow_dispatch' && (inputs.branch == 'beta' || inputs.branch == 'dev')
       uses: softprops/action-gh-release@v2
       with:
         files: |
@@ -147,30 +153,4 @@ jobs:
         name: ${{ env.release_title }}
         body: ${{ env.changelog }}
         generate_release_notes: true
-        prerelease: true
-      
-    - name: create gitee release
-      if: github.event_name == 'push' && github.repository == 'mytv-android/mytv-android'
-      id: create_release 
-      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
-      with:
-        gitee_owner: mytv-android
-        gitee_repo: ${{ env.gitee_repo }}
-        gitee_token: ${{ secrets.GITEE_TOKEN }}
-        gitee_tag_name: V${{ env.info_version_name }}
-        gitee_release_name: ${{ env.release_title }}
-        gitee_release_body: ${{ env.changelog }}
-        gitee_target_commitish: master
-
-    - name: upload file to gitee release
-      if: github.event_name == 'push' && github.repository == 'mytv-android/mytv-android'
-      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
-      with:
-        gitee_owner: mytv-android
-        gitee_repo: ${{ env.gitee_repo }}
-        gitee_token: ${{ secrets.GITEE_TOKEN }}
-        gitee_release_id: ${{ steps.create_release.outputs.release-id }}
-        gitee_upload_retry_times:  3
-        gitee_files: |
-            tv/build/outputs/apk/release/*original.apk
-
+        prerelease: true    
