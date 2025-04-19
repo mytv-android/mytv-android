@@ -177,6 +177,12 @@ public class IjkMediaCodecInfo {
                 rank = RANK_NO_SENSE;
             else
                 rank = RANK_TESTED;
+        } else if(
+            name.startsWith("c2.exynos.") ||
+            name.startsWith("omx.hisi.") ||
+            name.startsWith("omx.qcom.") 
+        ){
+            rank = RANK_ACCEPTABLE;
         }else {
             Integer knownRank = getKnownCodecList().get(name);
             if (knownRank != null) {
