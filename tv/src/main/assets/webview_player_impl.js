@@ -70,6 +70,8 @@ function __initializetMain() {
     if (video && video.src) {
         console.info(video.src);
         if (video.paused) video.play();
+        video.volume = 1;
+        video.muted = false;
         if (video.videoWidth * video.videoHeight !== 0) addVideoPlayerMask(video);
     }
  }

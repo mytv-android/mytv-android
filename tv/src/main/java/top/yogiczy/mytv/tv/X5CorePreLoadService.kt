@@ -74,7 +74,7 @@ class X5CorePreLoadService : JobIntentService() {
                 }else{
                     log.i("开始下载 Core APK: $downloadUrl")
                     runOnUiThread {
-                        Toast.makeText(this@X5CorePreLoadService, "正在远程下载X5Core", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@X5CorePreLoadService, "正在远程下载X5Core，下载完成前请不要关闭应用", Toast.LENGTH_LONG).show()
                     }
                     val url = URL(downloadUrl)
                     val connection = url.openConnection()
