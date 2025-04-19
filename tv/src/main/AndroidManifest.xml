@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />  <!-- X5权限需求 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- X5权限需求 -->
     <uses-permission android:name="android.permission.GET_TASKS"/><!-- X5权限需求 -->
