@@ -48,15 +48,18 @@ function addVideoPlayerMask(video) {
     removeAllDivElements();
     video.style = 'width: 100%; height: 100%;object-fit: contain;'
     video.autoplay = true
-    document.body.style = 'width: 100vw; height: 100vh; margin: 0; min-width: 0; background: #000;'
+    document.body.style = 'width: 100vw; height: 100vh; margin: 0; min-width: 0; background: #000; padding: 0;'
     Android.changeVideoResolution(1920, 1080);
 }
 
 function enableVideo(video) {
-    video.autoplay = true
-    video.volume = 1;
-    video.muted = false;
-    clearInterval(enableVideo);
+    if (video.muted || video.volume != 1 || video.autoplay === false) {
+        video.muted = false;
+        video.autoplay = true;
+        video.volume = 1;
+    }else{
+        clearInterval(enableVideo);
+    }
 }
 
 function __initializetMain() {
@@ -78,7 +81,7 @@ function __initializetMain() {
         video.volume = 1;
         video.muted = false;
         if (video.videoWidth * video.videoHeight !== 0) addVideoPlayerMask(video);
-        setInterval(_enavleVideo, 2000, video); //2秒后再看一下
+        setInterval(enableVideo, 100, video); //2秒后再看一下
     }
  }
 

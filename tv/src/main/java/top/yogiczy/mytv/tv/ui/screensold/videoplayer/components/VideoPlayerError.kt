@@ -75,7 +75,7 @@ private fun getErrorCodeDesc(error: String): String? {
         "MEDIA3_ERROR_DECODER_INIT_FAILED" -> "视频解码器初始化失败，请检查视频源。"
         "MEDIA3_ERROR_DECODER_QUERY_FAILED" -> "视频解码器查询失败，请检查视频源。"
         "MEDIA3_ERROR_DECODING_FAILED" -> "视频解码失败，请检查视频源。"
-        "MEDIA3_ERROR_DECODING_FORMAT_EXCEEDS_CAPABILITIES" -> "视频解码格式超出能力范围，请检查视频源。"
+        "MEDIA3_ERROR_DECODING_FORMAT_EXCEEDS_CAPABILITIES" -> "视频解码格式超出能力范围，请更换设备。"
         "MEDIA3_ERROR_DECODING_FORMAT_UNSUPPORTED" -> "不支持的视频解码格式，请检查视频源。"
         "MEDIA3_ERROR_DECODING_RESOURCES_RECLAIMED" -> "视频解码资源被回收，请检查视频源。"
         "MEDIA3_ERROR_AUDIO_TRACK_INIT_FAILED" -> "音频轨道初始化失败，请检查视频源。"
@@ -91,7 +91,7 @@ private fun getErrorCodeDesc(error: String): String? {
         "MEDIA3_ERROR_DRM_SYSTEM_ERROR" -> "DRM系统错误，请检查视频源。"
         "MEDIA3_ERROR_DRM_DEVICE_REVOKED" -> "DRM设备被吊销，请检查视频源。"
         "MEDIA3_ERROR_DRM_LICENSE_EXPIRED" -> "DRM授权已过期，请检查视频源。"
-        else -> null
+        else -> error
     }
 }
 
