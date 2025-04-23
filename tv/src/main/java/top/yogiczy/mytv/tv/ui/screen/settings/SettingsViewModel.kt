@@ -510,12 +510,21 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _videoPlayerLoadTimeout by mutableLongStateOf(0)
+    private var _videoPlayerLoadTimeout by mutableLongStateOf(1000)
     var videoPlayerLoadTimeout: Long
         get() = _videoPlayerLoadTimeout
         set(value) {
             _videoPlayerLoadTimeout = value
             Configs.videoPlayerLoadTimeout = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _videoPlayerBufferTime by mutableLongStateOf(0)
+    var videoPlayerBufferTime: Long
+        get() = _videoPlayerBufferTime
+        set(value) {
+            _videoPlayerBufferTime = value
+            Configs.videoPlayerBufferTime = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -761,6 +770,7 @@ class SettingsViewModel : ViewModel() {
         _videoPlayerUserAgent = Configs.videoPlayerUserAgent
         _videoPlayerHeaders = Configs.videoPlayerHeaders
         _videoPlayerLoadTimeout = Configs.videoPlayerLoadTimeout
+        _videoPlayerBufferTime = Configs.videoPlayerBufferTime
         _videoPlayerDisplayMode = Configs.videoPlayerDisplayMode
         _videoPlayerForceSoftDecode = Configs.videoPlayerForceSoftDecode
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem

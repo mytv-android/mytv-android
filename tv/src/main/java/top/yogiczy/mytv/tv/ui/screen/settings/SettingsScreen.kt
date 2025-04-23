@@ -54,6 +54,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerC
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsWebViewCoreScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerDisplayModeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerLoadTimeoutScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerBufferTimeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerRenderModeScreen
 import top.yogiczy.mytv.tv.ui.utils.navigateSingleTop
 
@@ -184,6 +185,9 @@ fun SettingsScreen(
                         },
                         toVideoPlayerLoadTimeoutScreen = {
                             navController.navigateSingleTop(SettingsSubCategories.VIDEO_PLAYER_LOAD_TIMEOUT.name)
+                        },
+                        toVideoPlayerBufferTimeScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.VIDEO_PLAYER_BUFFER_TIME.name)
                         },
                         onBackPressed = { navController.navigateUp() },
                     )
@@ -452,6 +456,17 @@ fun SettingsScreen(
                     )
                 }
 
+                composable(SettingsSubCategories.VIDEO_PLAYER_BUFFER_TIME.name) {
+                    SettingsVideoPlayerBufferTimeScreen(
+                        bufferTimeProvider = { settingsViewModel.videoPlayerBufferTime },
+                        onBufferTimeChanged = {
+                            settingsViewModel.videoPlayerBufferTime = it
+                            navController.navigateUp()
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+                
                 composable(SettingsSubCategories.UPDATE_CHANNEL.name) {
                     SettingsUpdateChannelScreen(
                         updateChannelProvider = { settingsViewModel.updateChannel },

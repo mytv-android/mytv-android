@@ -196,6 +196,9 @@ object Configs {
         /** 播放器 加载超时 */
         VIDEO_PLAYER_LOAD_TIMEOUT,
 
+        /** 播放器 缓存加载时间 */
+        VIDEO_PLAYER_BUFFER_TIME,
+
         /** 播放器 显示模式 */
         VIDEO_PLAYER_DISPLAY_MODE,
 
@@ -594,6 +597,11 @@ object Configs {
         get() = SP.getLong(KEY.VIDEO_PLAYER_LOAD_TIMEOUT.name, Constants.VIDEO_PLAYER_LOAD_TIMEOUT)
         set(value) = SP.putLong(KEY.VIDEO_PLAYER_LOAD_TIMEOUT.name, value)
 
+    /** 播放器 缓存加载时间 */
+    var videoPlayerBufferTime: Long
+        get() = SP.getLong(KEY.VIDEO_PLAYER_BUFFER_TIME.name, Constants.VIDEO_PLAYER_BUFFER_TIME)
+        set(value) = SP.putLong(KEY.VIDEO_PLAYER_BUFFER_TIME.name, value)
+
     /** 播放器 显示模式 */
     var videoPlayerDisplayMode: VideoPlayerDisplayMode
         get() = VideoPlayerDisplayMode.fromValue(
@@ -839,6 +847,7 @@ object Configs {
             videoPlayerUserAgent = videoPlayerUserAgent,
             videoPlayerHeaders = videoPlayerHeaders,
             videoPlayerLoadTimeout = videoPlayerLoadTimeout,
+            videoPlayerBufferTime = videoPlayerBufferTime,
             videoPlayerDisplayMode = videoPlayerDisplayMode,
             videoPlayerForceSoftDecode = videoPlayerForceSoftDecode,
             videoPlayerStopPreviousMediaItem = videoPlayerStopPreviousMediaItem,
@@ -919,6 +928,7 @@ object Configs {
         configs.videoPlayerUserAgent?.let { videoPlayerUserAgent = it }
         configs.videoPlayerHeaders?.let { videoPlayerHeaders = it }
         configs.videoPlayerLoadTimeout?.let { videoPlayerLoadTimeout = it }
+        configs.videoPlayerBufferTime?.let { videoPlayerBufferTime = it }
         configs.videoPlayerDisplayMode?.let { videoPlayerDisplayMode = it }
         configs.videoPlayerForceSoftDecode?.let { videoPlayerForceSoftDecode = it }
         configs.videoPlayerStopPreviousMediaItem?.let { videoPlayerStopPreviousMediaItem = it }
@@ -997,6 +1007,7 @@ object Configs {
         val videoPlayerUserAgent: String? = null,
         val videoPlayerHeaders: String? = null,
         val videoPlayerLoadTimeout: Long? = null,
+        val videoPlayerBufferTime: Long? = null,
         val videoPlayerDisplayMode: VideoPlayerDisplayMode? = null,
         val videoPlayerForceSoftDecode: Boolean? = null,
         val videoPlayerStopPreviousMediaItem: Boolean? = null,

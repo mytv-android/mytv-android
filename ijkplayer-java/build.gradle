@@ -12,11 +12,11 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
-    // sourceSets {
-    //     main {
-    //         jniLibs.srcDirs 'jniLibs'
-    //     }
-    // }
+    sourceSets {
+        main {
+            jniLibs.srcDirs 'jniLibs'
+        }
+    }
 
     buildTypes {
         release {
@@ -35,6 +35,6 @@ android {
 }
 
 dependencies {
-    implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.1.0")
+    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.1.0")
 
 }

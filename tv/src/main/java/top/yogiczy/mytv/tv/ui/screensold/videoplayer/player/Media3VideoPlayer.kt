@@ -24,6 +24,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.rtmp.RtmpDataSource
 import androidx.media3.exoplayer.DecoderReuseEvaluation
 import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -99,9 +100,19 @@ class Media3VideoPlayer(
 
         // MediaCodecVideoRenderer.skipMultipleFramesOnSameVsync =
         //     Configs.videoPlayerSkipMultipleFramesOnSameVSync
+        val loadControl = DefaultLoadControl.Builder()
+            .setBufferDurationsMs(
+                Configs.videoPlayerBufferTime.toInt(), // 最小缓冲时间（毫秒） minBufferMs
+                Configs.videoPlayerBufferTime.toInt() * 5, // maxBufferMs
+                Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackMs
+                Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackAfterRebufferMs
+            )
+            .build()
+
         return ExoPlayer.Builder(context)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
+            .setLoadControl(loadControl)
             .build()
             .apply { playWhenReady = true }
     }

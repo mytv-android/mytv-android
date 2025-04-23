@@ -111,6 +111,11 @@ object Constants {
     const val VIDEO_PLAYER_LOAD_TIMEOUT = 1000L * 15 // 15秒
 
     /**
+     * 播放器加载缓存时间
+     */
+    const val VIDEO_PLAYER_BUFFER_TIME = 0L
+
+    /**
      * 日志历史最大保留条数
      */
     const val LOG_HISTORY_MAX_SIZE = 100

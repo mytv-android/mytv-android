@@ -25,6 +25,7 @@ fun SettingsVideoPlayerScreen(
     toVideoPlayerRenderModeScreen: () -> Unit = {},
     toVideoPlayerDisplayModeScreen: () -> Unit = {},
     toVideoPlayerLoadTimeoutScreen: () -> Unit = {},
+    toVideoPlayerBufferTimeScreen: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     SettingsCategoryScreen(
@@ -115,6 +116,16 @@ fun SettingsVideoPlayerScreen(
                 supportingContent = "影响超时换源、断线重连",
                 trailingContent = settingsViewModel.videoPlayerLoadTimeout.humanizeMs(),
                 onSelect = toVideoPlayerLoadTimeoutScreen,
+                link = true,
+            )
+        }
+
+        item {
+            SettingsListItem(
+                headlineContent = "缓存加载时间",
+                supportingContent = "设置播放前的最小缓存加载时间。当设置的缓存时间不为0时，可能会导致IJK播放卡死",
+                trailingContent = settingsViewModel.videoPlayerBufferTime.humanizeMs(),
+                onSelect = toVideoPlayerBufferTimeScreen,
                 link = true,
             )
         }

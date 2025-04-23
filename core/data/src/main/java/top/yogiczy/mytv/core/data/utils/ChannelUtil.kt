@@ -3,6 +3,8 @@ package top.yogiczy.mytv.core.data.utils
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLineList
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 object ChannelUtil {
@@ -324,5 +326,33 @@ object ChannelUtil {
 
     fun urlToCanPlayback(url: String): String {
         return url.replace("pltv", "tvod", ignoreCase = true)
+    }
+
+    fun replacePlaybackFormat(playbackFormat: String, starttime: Long, nowtime:Long, endtime:Long,): String {
+        var regex = Regex("\\$?\\{\\(?([a-zA-Z]+)\\)?:?([^}]+)}") // 匹配 {key:格式} 的正则表达式
+        val defaultDateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()) // 默认时间格式
+
+        return regex.replace(playbackFormat) { matchResult ->
+            val key = matchResult.groupValues[1] // 提取 key，例如 utc 或 end
+            val format = matchResult.groupValues[2] // 提取格式字符串
+            val time = when (key) {
+                "utc" -> starttime // 使用开始时间
+                "start" -> starttime // 使用开始时间
+                "utcend" -> endtime // 使用结束时间
+                "end" -> endtime // 使用结束时间
+                "now" -> nowtime // 使用当前时间
+                "timestamp" -> nowTime // 使用当前时间戳
+                "lutc" -> nowTime // 使用当前时间戳
+                "b" -> starttime // 使用开始时间
+                "e" -> endtime // 使用结束时间
+                else -> return@replace "" // 如果 key 不匹配，返回空字符串
+            }
+            try {
+                val customDateFormat = SimpleDateFormat(format, Locale.getDefault())
+                customDateFormat.format(time) // 使用自定义格式替换占位符
+            } catch (e: IllegalArgumentException) {
+                defaultDateFormat.format(time) // 如果格式无效，使用默认格式
+            }
+        }
     }
 }

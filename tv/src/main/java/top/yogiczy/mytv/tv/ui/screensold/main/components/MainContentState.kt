@@ -340,19 +340,54 @@ class MainContentState(
 
         var url = currentChannelLine.url
         if (_currentPlaybackEpgProgramme != null) {
-            val timeFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
-            val query = listOf(
-                "playseek=",
-                timeFormat.format(_currentPlaybackEpgProgramme!!.startAt),
-                "-",
-                timeFormat.format(_currentPlaybackEpgProgramme!!.endAt),
-            ).joinToString("")
-            url = if (URI(url).query.isNullOrBlank()) "$url?$query" else "$url&$query"
-            if (Configs.iptvPLTVToTVOD)
-            {
-            url = ChannelUtil.urlToCanPlayback(url)
+            if(currentChannelLine.playbackType != null){
+                var playbackFormat = currentChannelLine.playbackFormat
+                val timeFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
+                val tfY = SimpleDateFormat("yyyy", Locale.getDefault())
+                val tfM = SimpleDateFormat("MM", Locale.getDefault())
+                val tfD = SimpleDateFormat("dd", Locale.getDefault())
+                val tfH = SimpleDateFormat("HH", Locale.getDefault())
+                val tfm = SimpleDateFormat("mm", Locale.getDefault())
+                val tfS = SimpleDateFormat("ss", Locale.getDefault())
+                val nowTime = System.currentTimeMillis()
+                playbackFormat.apply{
+                    replace("{utc}", timeFormat.format(_currentPlaybackEpgProgramme!!.startAt))
+                    replace("${start}", timeFormat.format(_currentPlaybackEpgProgramme!!.startAt))
+                    replace("{lutc}", timeFormat.format(nowTime))
+                    replace("${now}", tfY.format(nowTime))
+                    replace("${timestamp}", timeFormat.format(nowTime))
+                    replace("{utcend}", timeFormat.format(_currentPlaybackEpgProgramme!!.endAt))
+                    replace("${end}", timeFormat.format(_currentPlaybackEpgProgramme!!.endAt))
+                    replace("{Y}", tfY.format(currentPlaybackEpgProgramme!!.startAt))
+                    replace("{m}", tfM.format(currentPlaybackEpgProgramme!!.startAt))
+                    replace("{d}", tfD.format(currentPlaybackEpgProgramme!!.startAt))
+                    replace("{H}", tfH.format(currentPlaybackEpgProgramme!!.startAt))
+                    replace("{M}", tfm.format(currentPlaybackEpgProgramme!!.startAt))
+                    replace("{S}", tfS.format(currentPlaybackEpgProgramme!!.startAt))
+                }
+                playbackFormat = ChannelUtil.replacePlaybackFormat(playbackFormat, currentPlaybackEpgProgramme!!.startAt, nowTime, currentPlaybackEpgProgramme!!.endAt)
+                url = when (currentChannelLine.playbackType) {
+                    0 -> playbackFormat
+                    1 -> "$url$playbackFormat"
+                    // 2 -> 
+                    // 3 -> 
+                    // 4 -> 
+                    else -> url
+                }
+            }else{
+                val timeFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
+                val query = listOf(
+                    "playseek=",
+                    timeFormat.format(_currentPlaybackEpgProgramme!!.startAt),
+                    "-",
+                    timeFormat.format(_currentPlaybackEpgProgramme!!.endAt),
+                ).joinToString("")
+                url = if (URI(url).query.isNullOrBlank()) "$url?$query" else "$url&$query"
+                if (Configs.iptvPLTVToTVOD)
+                {
+                url = ChannelUtil.urlToCanPlayback(url)
+                }
             }
-            
         }
         val line = currentChannelLine.copy(url = url)
 
@@ -411,7 +446,8 @@ class MainContentState(
         lineIdx: Int? = _currentChannelLineIdx,
     ): Boolean {
         val currentLineIdx = getLineIdx(channel.lineList, lineIdx)
-        return ChannelUtil.urlSupportPlayback(channel.lineList[currentLineIdx].url)
+        return channel.lineList[currentLineIdx].playbackType != null || \
+        ChannelUtil.urlSupportPlayback(channel.lineList[currentLineIdx].url)
     }
 }
 
