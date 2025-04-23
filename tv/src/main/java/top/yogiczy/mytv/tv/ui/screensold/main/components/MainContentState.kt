@@ -341,7 +341,7 @@ class MainContentState(
         var url = currentChannelLine.url
         if (_currentPlaybackEpgProgramme != null) {
             if(currentChannelLine.playbackType != null){
-                var playbackFormat = currentChannelLine.playbackFormat
+                var playbackFormat = currentChannelLine.playbackFormat ?: ""
                 val timeFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
                 val tfY = SimpleDateFormat("yyyy", Locale.getDefault())
                 val tfM = SimpleDateFormat("MM", Locale.getDefault())
@@ -351,22 +351,24 @@ class MainContentState(
                 val tfS = SimpleDateFormat("ss", Locale.getDefault())
                 val nowTime = System.currentTimeMillis()
                 playbackFormat.apply{
-                    replace("{utc}", timeFormat.format(_currentPlaybackEpgProgramme!!.startAt))
-                    replace("${start}", timeFormat.format(_currentPlaybackEpgProgramme!!.startAt))
-                    replace("{lutc}", timeFormat.format(nowTime))
-                    replace("${now}", tfY.format(nowTime))
-                    replace("${timestamp}", timeFormat.format(nowTime))
-                    replace("{utcend}", timeFormat.format(_currentPlaybackEpgProgramme!!.endAt))
-                    replace("${end}", timeFormat.format(_currentPlaybackEpgProgramme!!.endAt))
-                    replace("{Y}", tfY.format(currentPlaybackEpgProgramme!!.startAt))
-                    replace("{m}", tfM.format(currentPlaybackEpgProgramme!!.startAt))
-                    replace("{d}", tfD.format(currentPlaybackEpgProgramme!!.startAt))
-                    replace("{H}", tfH.format(currentPlaybackEpgProgramme!!.startAt))
-                    replace("{M}", tfm.format(currentPlaybackEpgProgramme!!.startAt))
-                    replace("{S}", tfS.format(currentPlaybackEpgProgramme!!.startAt))
+                        _currentPlaybackEpgProgramme?.let { epgProgramme ->
+                            replace("{utc}", timeFormat.format(epgProgramme.startAt))
+                            replace("\${start}", timeFormat.format(epgProgramme.startAt))
+                            replace("{lutc}", timeFormat.format(nowTime))
+                            replace("\${now}", tfY.format(nowTime))
+                            replace("\${timestamp}", timeFormat.format(nowTime))
+                            replace("{utcend}", timeFormat.format(epgProgramme.endAt))
+                            replace("\${end}", timeFormat.format(epgProgramme.endAt))
+                            replace("{Y}", tfY.format(epgProgramme.startAt))
+                            replace("{m}", tfM.format(epgProgramme.startAt))
+                            replace("{d}", tfD.format(epgProgramme.startAt))
+                            replace("{H}", tfH.format(epgProgramme.startAt))
+                            replace("{M}", tfm.format(epgProgramme.startAt))
+                            replace("{S}", tfS.format(epgProgramme.startAt))
+                        }
                 }
-                playbackFormat = ChannelUtil.replacePlaybackFormat(playbackFormat, currentPlaybackEpgProgramme!!.startAt, nowTime, currentPlaybackEpgProgramme!!.endAt)
-                url = when (currentChannelLine.playbackType) {
+                playbackFormat = ChannelUtil.replacePlaybackFormat(playbackFormat, _currentPlaybackEpgProgramme!!.startAt, nowTime, _currentPlaybackEpgProgramme!!.endAt)?:""
+                url = when (currentChannelLine.playbackType ?: 10) {
                     0 -> playbackFormat
                     1 -> "$url$playbackFormat"
                     // 2 -> 
@@ -446,7 +448,7 @@ class MainContentState(
         lineIdx: Int? = _currentChannelLineIdx,
     ): Boolean {
         val currentLineIdx = getLineIdx(channel.lineList, lineIdx)
-        return channel.lineList[currentLineIdx].playbackType != null || \
+        return channel.lineList[currentLineIdx].playbackType != null || 
         ChannelUtil.urlSupportPlayback(channel.lineList[currentLineIdx].url)
     }
 }

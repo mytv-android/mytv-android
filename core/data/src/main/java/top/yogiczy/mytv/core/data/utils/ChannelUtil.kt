@@ -328,7 +328,8 @@ object ChannelUtil {
         return url.replace("pltv", "tvod", ignoreCase = true)
     }
 
-    fun replacePlaybackFormat(playbackFormat: String, starttime: Long, nowtime:Long, endtime:Long,): String {
+    fun replacePlaybackFormat(playbackFormat: String?, starttime: Long?, nowtime:Long?, endtime:Long?): String? {
+        if (playbackFormat.isNullOrEmpty()) return null // 如果格式为空，直接返回 null
         var regex = Regex("\\$?\\{\\(?([a-zA-Z]+)\\)?:?([^}]+)}") // 匹配 {key:格式} 的正则表达式
         val defaultDateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()) // 默认时间格式
 
@@ -341,8 +342,8 @@ object ChannelUtil {
                 "utcend" -> endtime // 使用结束时间
                 "end" -> endtime // 使用结束时间
                 "now" -> nowtime // 使用当前时间
-                "timestamp" -> nowTime // 使用当前时间戳
-                "lutc" -> nowTime // 使用当前时间戳
+                "timestamp" -> nowtime // 使用当前时间戳
+                "lutc" -> nowtime // 使用当前时间戳
                 "b" -> starttime // 使用开始时间
                 "e" -> endtime // 使用结束时间
                 else -> return@replace "" // 如果 key 不匹配，返回空字符串
