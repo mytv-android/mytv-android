@@ -68,7 +68,7 @@ fun ChannelInfo(
                     Tag("时移", colors = tagColors)
                 }
 
-                if (currentPlaybackEpgProgramme != null) {
+                if (line.playbackType != null || currentPlaybackEpgProgramme != null) {
                     Tag("回放", colors = tagColors)
                 }
 

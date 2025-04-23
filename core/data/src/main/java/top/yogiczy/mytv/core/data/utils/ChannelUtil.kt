@@ -330,7 +330,7 @@ object ChannelUtil {
 
     fun replacePlaybackFormat(playbackFormat: String?, starttime: Long?, nowtime:Long?, endtime:Long?): String? {
         if (playbackFormat.isNullOrEmpty()) return null // 如果格式为空，直接返回 null
-        var regex = Regex("\\$?\\{\\(?([a-zA-Z]+)\\)?:?([^}]+)}") // 匹配 {key:格式} 的正则表达式
+        var regex = Regex("\\$?\\{\\(?([a-zA-Z]+)\\)?:?([^}]+)\\}") // 匹配 {key:格式} 的正则表达式
         val defaultDateFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()) // 默认时间格式
 
         return regex.replace(playbackFormat) { matchResult ->
