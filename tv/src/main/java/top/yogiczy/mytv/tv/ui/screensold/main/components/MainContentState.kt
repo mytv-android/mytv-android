@@ -100,6 +100,13 @@ class MainContentState(
         set(value) {
             _isQuickOpScreenVisible = value
         }
+    
+    private var _isInPlaybackMOde by mutableStateOf(false)
+    var isInPlaybackMode
+        get() = _isInPlaybackMOde
+        set(value) {
+            _isInPlaybackMOde = value
+        }
 
     private var _isEpgScreenVisible by mutableStateOf(false)
     var isEpgScreenVisible
@@ -337,7 +344,8 @@ class MainContentState(
         _currentChannelLineIdx = getLineIdx(_currentChannel.lineList, lineIdx)
 
         _currentPlaybackEpgProgramme = playbackEpgProgramme
-
+        currentChannelLine.playbackUrl = null
+        isInPlaybackMode = false
         var url = currentChannelLine.url
         if (_currentPlaybackEpgProgramme != null) {
             if(currentChannelLine.playbackType != null){
@@ -390,7 +398,10 @@ class MainContentState(
                 url = ChannelUtil.urlToCanPlayback(url)
                 }
             }
+            currentChannelLine.playbackUrl = url
+            isInPlaybackMode = true
         }
+        
         val line = currentChannelLine.copy(url = url)
 
         log.d("播放${_currentChannel.name}（${_currentChannelLineIdx + 1}/${_currentChannel.lineList.size}）: $line")

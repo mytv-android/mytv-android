@@ -18,6 +18,7 @@ data class ChannelLine(
     val licenseKey: String? = null,
     val playbackType: Int? = null,
     val playbackFormat: String? = null,
+    var playbackUrl: String? = null,
 ) {
 
     val playableUrl: String
