@@ -350,7 +350,7 @@ class MainContentState(
         if (_currentPlaybackEpgProgramme != null) {
             if(currentChannelLine.playbackType != null){
                 var playbackFormat = currentChannelLine.playbackFormat ?: ""
-                val timeFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
+                val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
                 val tfY = SimpleDateFormat("yyyy", Locale.getDefault())
                 val tfM = SimpleDateFormat("MM", Locale.getDefault())
                 val tfD = SimpleDateFormat("dd", Locale.getDefault())

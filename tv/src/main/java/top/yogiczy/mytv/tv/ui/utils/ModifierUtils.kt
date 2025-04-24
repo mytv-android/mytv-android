@@ -87,6 +87,10 @@ fun Modifier.handleKeyEvents(
                     keyDownMap.remove(it.nativeKeyEvent.keyCode)
                     onKeyTap[it.nativeKeyEvent.keyCode]?.invoke()
 
+                    if (it.nativeKeyEvent.keyCode == KeyEvent.KEYCODE_MENU) {
+                        return@onPreviewKeyEvent true // Consume the event to prevent losing focus
+                    }
+
                     onKeyTap[it.nativeKeyEvent.keyCode] != null
                 }
 
