@@ -45,6 +45,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
+
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.util.utils.toHeaders
 import top.yogiczy.mytv.tv.ui.utils.Configs
@@ -103,7 +105,7 @@ class Media3VideoPlayer(
         val loadControl = DefaultLoadControl.Builder()
             .setBufferDurationsMs(
                 Configs.videoPlayerBufferTime.toInt(), // 最小缓冲时间（毫秒） minBufferMs
-                Configs.videoPlayerBufferTime.toInt() * 5, // maxBufferMs
+                max(Configs.videoPlayerBufferTime.toInt() * 5, 60), // maxBufferMs
                 Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackMs
                 Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackAfterRebufferMs
             )
