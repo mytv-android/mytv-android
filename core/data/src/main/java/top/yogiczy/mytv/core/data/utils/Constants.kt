@@ -23,7 +23,7 @@ object Constants {
     /**
      * 交流群 telegram
      */
-    const val GROUP_TELEGRAM = "https://t.me/mytv_android"
+    const val GROUP_TELEGRAM = "https://t.me/mytv_android_channel"
 
     /**
      * 播放源

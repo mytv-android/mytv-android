@@ -138,7 +138,7 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("天光云影交流群 Telegram") },
+                    headlineContent = { Text("讨论交流 Telegram") },
                     trailingContent = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
