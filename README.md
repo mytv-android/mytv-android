@@ -37,7 +37,7 @@
 
 ### 自定义设置
 
-- 访问以下网址：`http://<设备IP>:10481`
+- 访问以下网址：`http://<设备IP>:10591`
 
 ## 下载
 
@@ -75,17 +75,10 @@
 
 ## 信息获取
 
-交流群（此群一般不作为反馈bug，提供建议之处，相关内容请发布至issue）
+交流（此群一般不作为反馈bug，提供建议之处，相关内容请发布至issue）和测试版信息发布，都请关注此频道以获取最新改进，以及更新投票计划。
 
 <div align="center">
-    <img src="./img/Group_QRCode.jpg" width="48%"/>
-</div>
-
-
-关于测试版，请关注频道以获取最新改进，以及更新投票计划。
-
-<div align="center">
-    <img src="./img/QRCode.jpg" width="48%"/>
+    <img src="./img/QRCode.png" width="48%"/>
 </div>
 
 
