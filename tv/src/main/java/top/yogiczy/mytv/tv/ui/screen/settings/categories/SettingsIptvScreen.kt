@@ -49,12 +49,14 @@ fun SettingsIptvScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Tag(
-                            if (currentIptvSource.isLocal) "本地" else "远程",
-                            colors = TagDefaults.colors(
-                                containerColor = LocalContentColor.current.copy(0.1f)
-                            ),
-                        )
+                        if (!currentIptvSource.name.isNullOrEmpty()) {
+                            Tag(
+                                if (currentIptvSource.isLocal) "本地" else "远程",
+                                colors = TagDefaults.colors(
+                                    containerColor = LocalContentColor.current.copy(0.1f)
+                                ),
+                            )
+                        }
                         Text(currentIptvSource.name)
                     }
                 },
