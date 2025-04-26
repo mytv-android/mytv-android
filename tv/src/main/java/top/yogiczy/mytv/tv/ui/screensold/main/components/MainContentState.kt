@@ -412,6 +412,7 @@ class MainContentState(
             videoPlayerState.metadata = VideoPlayer.Metadata()
             videoPlayerState.stop()
         } else {
+            currentChannelLine.playbackUrl = null
             log.i("检测到普通视频URL: ${line.url}")
             log.i("hybridType: ${line.hybridType}, 使用视频播放器播放")
             if(line.url.startsWith("rtsp://") && line.url.contains("smil") && (videoPlayerState.instance is Media3VideoPlayer)){

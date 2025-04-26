@@ -62,6 +62,17 @@ function enableVideo(video) {
     }
 }
 
+function cleanAllStyle() {
+    const styles = document.querySelectorAll('style,link[rel="stylesheet"]');
+    styles.forEach(style => {
+        style.remove();
+    });
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(element => {
+        element.removeAttribute('style');
+    });
+}
+
 function __initializetMain() {
     let video = document.querySelector('video');
     video = video ? video : getVideoParentShadowRoots();
@@ -84,5 +95,5 @@ function __initializetMain() {
         setInterval(enableVideo, 100, video); //2秒后再看一下
     }
  }
-
+// cleanAllStyle();
 const my_pollingIntervalId = setInterval(__initializetMain, 100);

@@ -165,10 +165,9 @@ fun MainContent(
                 forceTextureView = false,
             )
         }
-
-        Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
-            mainContentState.currentChannelLine.let {
-                key(mainContentState.isInPlaybackMode) {
+        key(mainContentState.isInPlaybackMode) {
+            Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
+                mainContentState.currentChannelLine.let {
                     log.i("当前频道$it, 播放链接: ${it.playableUrl}")
                     val isX5Available = com.tencent.smtt.sdk.QbSdk.canLoadX5(LocalContext.current)
                     if (settingsViewModel.webViewCore == Configs.WebViewCore.X5 && !isX5Available){
