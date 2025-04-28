@@ -326,14 +326,15 @@ class MainContentState(
 
     fun changeCurrentChannel(
         channel: Channel,
-        lineIdx: Int? = null,
+        lineIdx: Int? = null, 
         playbackEpgProgramme: EpgProgramme? = null,
     ) {
         settingsViewModel.iptvChannelLastPlay = channel
+        val realLineIdx = getLineIdx(channel.lineList, lineIdx)
 
-        if (channel == _currentChannel && lineIdx == _currentChannelLineIdx && playbackEpgProgramme == _currentPlaybackEpgProgramme) return
-
-        if (channel == _currentChannel && lineIdx != _currentChannelLineIdx) {
+        if (channel == _currentChannel && realLineIdx == _currentChannelLineIdx && playbackEpgProgramme == _currentPlaybackEpgProgramme) return
+        
+        if (channel == _currentChannel && realLineIdx != _currentChannelLineIdx) {
             settingsViewModel.iptvChannelLinePlayableUrlList -= currentChannelLine.url
             settingsViewModel.iptvChannelLinePlayableHostList -= currentChannelLine.url.urlHost()
         }
@@ -341,8 +342,7 @@ class MainContentState(
         _isTempChannelScreenVisible = true
 
         _currentChannel = channel
-        _currentChannelLineIdx = getLineIdx(_currentChannel.lineList, lineIdx)
-
+        _currentChannelLineIdx = realLineIdx
         _currentPlaybackEpgProgramme = playbackEpgProgramme
         currentChannelLine.playbackUrl = null
         isInPlaybackMode = false
@@ -393,9 +393,8 @@ class MainContentState(
                     timeFormat.format(_currentPlaybackEpgProgramme!!.endAt),
                 ).joinToString("")
                 url = if (URI(url).query.isNullOrBlank()) "$url?$query" else "$url&$query"
-                if (Configs.iptvPLTVToTVOD)
-                {
-                url = ChannelUtil.urlToCanPlayback(url)
+                if (Configs.iptvPLTVToTVOD){
+                    url = ChannelUtil.urlToCanPlayback(url)
                 }
             }
             currentChannelLine.playbackUrl = url

@@ -270,7 +270,8 @@ object ChannelUtil {
             ?.map { ChannelLine(url = it.url, 
                                 playbackType = it.playbackType, 
                                 playbackFormat = it.playbackFormat, 
-                                httpUserAgent = it.httpUserAgent, 
+                                httpUserAgent = it.httpUserAgent,
+                                playbackUrl = null,
                                 hybridType = ChannelLine.HybridType.WebView) }
             ?: emptyList())
     }

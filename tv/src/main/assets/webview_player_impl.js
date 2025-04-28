@@ -95,5 +95,5 @@ function __initializetMain() {
         setInterval(enableVideo, 100, video); //2秒后再看一下
     }
  }
-// cleanAllStyle();
+cleanAllStyle();
 const my_pollingIntervalId = setInterval(__initializetMain, 100);

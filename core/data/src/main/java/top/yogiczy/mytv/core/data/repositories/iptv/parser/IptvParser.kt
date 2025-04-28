@@ -79,6 +79,7 @@ interface IptvParser {
                                             licenseKey = it.licenseKey,
                                             playbackType = it.playbackType,
                                             playbackFormat = it.playbackFormat,
+                                            playbackUrl = null,
                                         )
                                     }
                             ),
