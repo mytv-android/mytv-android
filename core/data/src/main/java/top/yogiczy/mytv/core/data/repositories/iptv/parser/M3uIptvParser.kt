@@ -123,7 +123,9 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#EXTVLCOPT:http-user-agent")) {
                         addedChannels =
                             addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }                      
-                    } else {
+                    } else if (line.startsWith("#") || line.startsWith("//")) {
+                        return@forEach
+                    } else{
                         // 记录URL行
                         logger.i("解析URL行: $line")
                         val trimmedUrl = line.trim()
