@@ -105,7 +105,7 @@ class Media3VideoPlayer(
         val loadControl = DefaultLoadControl.Builder()
             .setBufferDurationsMs(
                 Configs.videoPlayerBufferTime.toInt(), // 最小缓冲时间（毫秒） minBufferMs
-                max(Configs.videoPlayerBufferTime.toInt() * 5, 60), // maxBufferMs
+                max(Configs.videoPlayerBufferTime.toInt() * 5, 60 * 1000), // maxBufferMs
                 Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackMs
                 Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackAfterRebufferMs
             )
