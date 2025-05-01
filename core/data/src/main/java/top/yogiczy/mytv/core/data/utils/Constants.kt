@@ -18,7 +18,7 @@ object Constants {
      * 应用 代码仓库
      */
     const val ORIGIN_APP_REPO = "https://github.com/yaoxieyoulei/mytv-android"
-    const val APP_REPO = "hhttps://github.com/mytv-android/mytv-android"
+    const val APP_REPO = "https://github.com/mytv-android/mytv-android"
 
     /**
      * 交流群 telegram
