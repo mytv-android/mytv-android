@@ -43,7 +43,7 @@ class IjkVideoPlayer(
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzemaxduration", 100L)
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "analyzeduration", 1)
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "probesize", 1024 * 10)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "nobuffer")
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "fflags", "fastseek")
         }
     }
     private var cacheSurfaceView: SurfaceView? = null
@@ -63,7 +63,7 @@ class IjkVideoPlayer(
             }
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "crypto,file,http,https,tcp,tls,udp,rtmp,rtsp")
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 50)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 5)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "fast", 1)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1)
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)

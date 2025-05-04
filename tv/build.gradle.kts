@@ -58,12 +58,6 @@ android {
         }
     }
 
-    // sourceSets {
-    //     getByName("main") {
-    //         jniLibs.srcDirs("jniLibs")
-    //     }
-    // }
-
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
@@ -133,9 +127,6 @@ dependencies {
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.media3.datasource.rtmp)
     implementation(libs.androidx.media3.exoplayer.smoothstreaming)
-
-    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-java:v10.1.0")
-    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.1.0")
 
     // 二维码
     implementation(libs.qrose)
