@@ -83,7 +83,7 @@ class Media3VideoPlayer(
         val renderersFactory =
             DefaultRenderersFactory(context)
                 .setExtensionRendererMode(
-                    if (softDecode ?: Configs.videoPlayerForceSoftDecode)
+                    if (Configs.videoPlayerForceSoftDecode || softDecode ?: false)
                         DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
                     else DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
                 )
