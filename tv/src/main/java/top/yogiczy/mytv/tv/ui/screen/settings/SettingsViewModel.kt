@@ -126,7 +126,11 @@ class SettingsViewModel : ViewModel() {
 
     private var _iptvSourceList by mutableStateOf(IptvSourceList())
     var iptvSourceList: IptvSourceList
-        get() = _iptvSourceList
+        get() = if (_iptvSourceList.isEmpty()) {
+            Constants.IPTV_SOURCE_LIST
+        } else {
+            _iptvSourceList
+        }
         set(value) {
             _iptvSourceList = value
             Configs.iptvSourceList = value
