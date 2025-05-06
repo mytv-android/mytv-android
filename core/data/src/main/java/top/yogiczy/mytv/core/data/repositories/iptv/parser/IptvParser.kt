@@ -49,6 +49,8 @@ interface IptvParser {
         val manifestType: String? = null,
         val licenseType: String? = null,
         val licenseKey: String? = null,
+        val playbackType: Int? = null,
+        val playbackFormat: String? = null,
     ) {
         companion object {
             private fun List<ChannelItem>.toChannelList(): ChannelList {
@@ -75,6 +77,9 @@ interface IptvParser {
                                             manifestType = it.manifestType,
                                             licenseType = it.licenseType,
                                             licenseKey = it.licenseKey,
+                                            playbackType = it.playbackType,
+                                            playbackFormat = it.playbackFormat,
+                                            playbackUrl = null,
                                         )
                                     }
                             ),

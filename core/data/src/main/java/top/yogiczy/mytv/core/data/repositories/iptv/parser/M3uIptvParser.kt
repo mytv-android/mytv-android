@@ -19,12 +19,33 @@ class M3uIptvParser : IptvParser {
         withContext(Dispatchers.Default) {
             val lines = data.split("\r\n", "\n")
             val channelList = mutableListOf<IptvParser.ChannelItem>()
-
+            var globalPlaybackType: Int? = null
+            var globalPlaybackFormat: String? = null
             var addedChannels: List<IptvParser.ChannelItem> = listOf()
             lines.forEach { line ->
                 if (line.isBlank()) return@forEach
-
-                if (line.startsWith("#EXTINF")) {
+                if (line.startsWith("#EXTM3U")) {
+                    // 解析扩展信息
+                    val playbackTypeString =
+                        Regex("catchup=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                            ?.ifBlank { null } ?: null
+                    if (playbackTypeString != null) {
+                        logger.i("检测到全局回放类型: $globalPlaybackType")
+                        globalPlaybackType = when (playbackTypeString.lowercase()) {
+                            "disabled" -> null
+                            "default" -> 0
+                            "append" -> 1
+                            // "shift" -> 2
+                            // "flussonic" -> 3
+                            // "xtream codes" -> 4
+                            else -> null
+                        }
+                        if (globalPlaybackType != null) {
+                            globalPlaybackFormat = Regex("catchup-source=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                            ?.ifBlank { null } ?: null
+                        }
+                    } 
+                } else if (line.startsWith("#EXTINF")) {
                     val name = line.split(",").last().trim()
                     val epgName =
                         Regex("tvg-name=\"(.*?)\"").find(line)?.groupValues?.get(1)?.trim()
@@ -40,9 +61,34 @@ class M3uIptvParser : IptvParser {
                         Regex("http-referrer=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
                     val httpOrigin =
                         Regex("http-origin=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
-
+                    var playbackType: Int? = null
+                    var playbackFormat: String? = null
+                    if(globalPlaybackType != null){
+                        playbackType = globalPlaybackType
+                        playbackFormat = globalPlaybackFormat
+                    } else {
+                        val playbackTypeString =
+                            Regex("catchup=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                                ?.ifBlank { null } ?: null
+                        if (playbackTypeString != null) {
+                            logger.i("检测到回放类型: $playbackType")
+                            playbackType = when (playbackTypeString.lowercase()) {
+                                "disabled" -> null
+                                "default" -> 0
+                                "append" -> 1
+                                // "shift" -> 2
+                                // "flussonic" -> 3
+                                // "xtream codes" -> 4
+                                else -> null
+                            }
+                            if (playbackType != null) {
+                                playbackFormat = Regex("catchup-source=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                                ?.ifBlank { null } ?: null
+                            }
+                        } 
+                    }
                     // 记录解析结果
-                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer, httpOrigin=$httpOrigin")
+                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer, httpOrigin=$httpOrigin, playbackType=$playbackType, playbackFormat=$playbackFormat")
 
                     addedChannels = groupNames.map { groupName ->
                         IptvParser.ChannelItem(
@@ -54,6 +100,8 @@ class M3uIptvParser : IptvParser {
                             httpUserAgent = httpUserAgent,
                             httpReferrer = httpReferrer,
                             httpOrigin = httpOrigin,
+                            playbackType = playbackType,
+                            playbackFormat = playbackFormat,
                         )
                     }
                 } else {
@@ -75,7 +123,9 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#EXTVLCOPT:http-user-agent")) {
                         addedChannels =
                             addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }                      
-                    } else {
+                    } else if (line.startsWith("#") || line.startsWith("//")) {
+                        return@forEach
+                    } else{
                         // 记录URL行
                         logger.i("解析URL行: $line")
                         val trimmedUrl = line.trim()

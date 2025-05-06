@@ -35,4 +35,6 @@ android {
 }
 
 dependencies {
+    // implementation("com.github.CarGuo.GSYVideoPlayer:gsyvideoplayer-ex_so:v10.1.0")
+
 }

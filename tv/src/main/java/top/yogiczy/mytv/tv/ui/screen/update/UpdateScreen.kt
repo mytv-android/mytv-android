@@ -60,8 +60,6 @@ fun UpdateScreen(
     }
 
     AppScreen(modifier = modifier,
-        header = { Text("关于 / 检查更新") },
-        canBack = true,
         onBackPressed = onBackPressed,
     ) {
         Box(
@@ -113,13 +111,13 @@ fun UpdateScreen(
                         }
 
                         UpdateActionBtn(
-                            title = "忽略",
+                            title = "忽略并返回",
                             onSelected = onBackPressed,
                         )
                     }
                     else {
                         UpdateActionBtn(
-                            title = "当前为最新版本",
+                            title = "当前为最新版本（点击以返回）",
                             onSelected = onBackPressed,
                         )
                     }

@@ -53,6 +53,7 @@ fun QuickOpScreen(
     isInTimeShiftProvider: () -> Boolean = { false },
     currentPlaybackEpgProgrammeProvider: () -> EpgProgramme? = { null },
     videoPlayerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    videoPlayerIndicatorProvider:()-> Boolean = { true },
     onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
@@ -89,6 +90,7 @@ fun QuickOpScreen(
             isInTimeShiftProvider = isInTimeShiftProvider,
             currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
             videoPlayerMetadataProvider = videoPlayerMetadataProvider,
+            videoPlayerIndicatorProvider = videoPlayerIndicatorProvider,
             onShowIptvSource = onShowIptvSource,
             onShowEpg = onShowEpg,
             onShowChannelLine = onShowChannelLine,
@@ -121,15 +123,6 @@ private fun QuickOpScreenTop(
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // CompositionLocalProvider(
-        //     LocalTextStyle provides MaterialTheme.typography.titleLarge
-        // ) {
-        //     DashboardScreeIptvSource(
-        //         //currentIptvSourceProvider = { iptvSourceCurrent },
-        //         toSettingsIptvSourceScreen = toSettingsIptvSourceScreen,
-        //     )
-        // }
-
         Row(verticalAlignment = Alignment.CenterVertically) {
             ChannelNumber(channelNumberProvider = channelNumberProvider)
 
@@ -156,6 +149,7 @@ private fun QuickOpScreenBottom(
     isInTimeShiftProvider: () -> Boolean = { false },
     currentPlaybackEpgProgrammeProvider: () -> EpgProgramme? = { null },
     videoPlayerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    videoPlayerIndicatorProvider:()-> Boolean = { true },
     onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
@@ -205,6 +199,7 @@ private fun QuickOpScreenBottom(
                 channelProvider = currentChannelProvider,
                 channelLineIdxProvider = currentChannelLineIdxProvider,
                 playerMetadataProvider = videoPlayerMetadataProvider,
+                videoPlayerIndicatorProvider = videoPlayerIndicatorProvider,
                 onShowIptvSource = onShowIptvSource,
                 onShowEpg = onShowEpg,
                 onShowChannelLine = onShowChannelLine,

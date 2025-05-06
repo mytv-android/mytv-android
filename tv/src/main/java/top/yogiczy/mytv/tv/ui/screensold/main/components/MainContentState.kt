@@ -100,6 +100,13 @@ class MainContentState(
         set(value) {
             _isQuickOpScreenVisible = value
         }
+    
+    private var _isInPlaybackMOde by mutableStateOf(false)
+    var isInPlaybackMode
+        get() = _isInPlaybackMOde
+        set(value) {
+            _isInPlaybackMOde = value
+        }
 
     private var _isEpgScreenVisible by mutableStateOf(false)
     var isEpgScreenVisible
@@ -319,14 +326,15 @@ class MainContentState(
 
     fun changeCurrentChannel(
         channel: Channel,
-        lineIdx: Int? = null,
+        lineIdx: Int? = null, 
         playbackEpgProgramme: EpgProgramme? = null,
     ) {
         settingsViewModel.iptvChannelLastPlay = channel
+        val realLineIdx = getLineIdx(channel.lineList, lineIdx)
 
-        if (channel == _currentChannel && lineIdx == _currentChannelLineIdx && playbackEpgProgramme == _currentPlaybackEpgProgramme) return
-
-        if (channel == _currentChannel && lineIdx != _currentChannelLineIdx) {
+        if (channel == _currentChannel && realLineIdx == _currentChannelLineIdx && playbackEpgProgramme == _currentPlaybackEpgProgramme) return
+        
+        if (channel == _currentChannel && realLineIdx != _currentChannelLineIdx) {
             settingsViewModel.iptvChannelLinePlayableUrlList -= currentChannelLine.url
             settingsViewModel.iptvChannelLinePlayableHostList -= currentChannelLine.url.urlHost()
         }
@@ -334,26 +342,65 @@ class MainContentState(
         _isTempChannelScreenVisible = true
 
         _currentChannel = channel
-        _currentChannelLineIdx = getLineIdx(_currentChannel.lineList, lineIdx)
-
+        _currentChannelLineIdx = realLineIdx
         _currentPlaybackEpgProgramme = playbackEpgProgramme
-
+        currentChannelLine.playbackUrl = null
+        isInPlaybackMode = false
         var url = currentChannelLine.url
         if (_currentPlaybackEpgProgramme != null) {
-            val timeFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
-            val query = listOf(
-                "playseek=",
-                timeFormat.format(_currentPlaybackEpgProgramme!!.startAt),
-                "-",
-                timeFormat.format(_currentPlaybackEpgProgramme!!.endAt),
-            ).joinToString("")
-            url = if (URI(url).query.isNullOrBlank()) "$url?$query" else "$url&$query"
-            if (Configs.iptvPLTVToTVOD)
-            {
-            url = ChannelUtil.urlToCanPlayback(url)
+            if(currentChannelLine.playbackType != null){
+                var playbackFormat = currentChannelLine.playbackFormat ?: ""
+                val timeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+                val tfY = SimpleDateFormat("yyyy", Locale.getDefault())
+                val tfM = SimpleDateFormat("MM", Locale.getDefault())
+                val tfD = SimpleDateFormat("dd", Locale.getDefault())
+                val tfH = SimpleDateFormat("HH", Locale.getDefault())
+                val tfm = SimpleDateFormat("mm", Locale.getDefault())
+                val tfS = SimpleDateFormat("ss", Locale.getDefault())
+                val nowTime = System.currentTimeMillis()
+                playbackFormat.apply{
+                        _currentPlaybackEpgProgramme?.let { epgProgramme ->
+                            replace("{utc}", timeFormat.format(epgProgramme.startAt))
+                            replace("\${start}", timeFormat.format(epgProgramme.startAt))
+                            replace("{lutc}", timeFormat.format(nowTime))
+                            replace("\${now}", tfY.format(nowTime))
+                            replace("\${timestamp}", timeFormat.format(nowTime))
+                            replace("{utcend}", timeFormat.format(epgProgramme.endAt))
+                            replace("\${end}", timeFormat.format(epgProgramme.endAt))
+                            replace("{Y}", tfY.format(epgProgramme.startAt))
+                            replace("{m}", tfM.format(epgProgramme.startAt))
+                            replace("{d}", tfD.format(epgProgramme.startAt))
+                            replace("{H}", tfH.format(epgProgramme.startAt))
+                            replace("{M}", tfm.format(epgProgramme.startAt))
+                            replace("{S}", tfS.format(epgProgramme.startAt))
+                        }
+                }
+                playbackFormat = ChannelUtil.replacePlaybackFormat(playbackFormat, _currentPlaybackEpgProgramme!!.startAt, nowTime, _currentPlaybackEpgProgramme!!.endAt)?:""
+                url = when (currentChannelLine.playbackType ?: 10) {
+                    0 -> playbackFormat
+                    1 -> "$url$playbackFormat"
+                    // 2 -> 
+                    // 3 -> 
+                    // 4 -> 
+                    else -> url
+                }
+            }else{
+                val timeFormat = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
+                val query = listOf(
+                    "playseek=",
+                    timeFormat.format(_currentPlaybackEpgProgramme!!.startAt),
+                    "-",
+                    timeFormat.format(_currentPlaybackEpgProgramme!!.endAt),
+                ).joinToString("")
+                url = if (URI(url).query.isNullOrBlank()) "$url?$query" else "$url&$query"
+                if (Configs.iptvPLTVToTVOD){
+                    url = ChannelUtil.urlToCanPlayback(url)
+                }
             }
-            
+            currentChannelLine.playbackUrl = url
+            isInPlaybackMode = true
         }
+        
         val line = currentChannelLine.copy(url = url)
 
         log.d("播放${_currentChannel.name}（${_currentChannelLineIdx + 1}/${_currentChannel.lineList.size}）: $line")
@@ -364,6 +411,7 @@ class MainContentState(
             videoPlayerState.metadata = VideoPlayer.Metadata()
             videoPlayerState.stop()
         } else {
+            currentChannelLine.playbackUrl = null
             log.i("检测到普通视频URL: ${line.url}")
             log.i("hybridType: ${line.hybridType}, 使用视频播放器播放")
             if(line.url.startsWith("rtsp://") && line.url.contains("smil") && (videoPlayerState.instance is Media3VideoPlayer)){
@@ -411,7 +459,8 @@ class MainContentState(
         lineIdx: Int? = _currentChannelLineIdx,
     ): Boolean {
         val currentLineIdx = getLineIdx(channel.lineList, lineIdx)
-        return ChannelUtil.urlSupportPlayback(channel.lineList[currentLineIdx].url)
+        return channel.lineList[currentLineIdx].playbackType != null || 
+        ChannelUtil.urlSupportPlayback(channel.lineList[currentLineIdx].url)
     }
 }
 

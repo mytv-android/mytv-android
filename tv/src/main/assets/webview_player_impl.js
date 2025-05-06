@@ -47,11 +47,30 @@ function addVideoPlayerMask(video) {
     document.body.appendChild(video);
     removeAllDivElements();
     video.style = 'width: 100%; height: 100%;object-fit: contain;'
-    video.muted = false;
-    video.volume = 1
     video.autoplay = true
-    document.body.style = 'width: 100vw; height: 100vh; margin: 0; min-width: 0; background: #000;'
+    document.body.style = 'width: 100vw; height: 100vh; margin: 0; min-width: 0; background: #000; padding: 0;'
     Android.changeVideoResolution(1920, 1080);
+}
+
+function enableVideo(video) {
+    if (video.muted || video.volume != 1 || video.autoplay === false) {
+        video.muted = false;
+        video.autoplay = true;
+        video.volume = 1;
+    }else{
+        clearInterval(enableVideo);
+    }
+}
+
+function cleanAllStyle() {
+    const styles = document.querySelectorAll('style,link[rel="stylesheet"]');
+    styles.forEach(style => {
+        style.remove();
+    });
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(element => {
+        element.removeAttribute('style');
+    });
 }
 
 function __initializetMain() {
@@ -70,8 +89,11 @@ function __initializetMain() {
     if (video && video.src) {
         console.info(video.src);
         if (video.paused) video.play();
+        video.volume = 1;
+        video.muted = false;
         if (video.videoWidth * video.videoHeight !== 0) addVideoPlayerMask(video);
+        setInterval(enableVideo, 100, video); //2秒后再看一下
     }
  }
-
+cleanAllStyle();
 const my_pollingIntervalId = setInterval(__initializetMain, 100);

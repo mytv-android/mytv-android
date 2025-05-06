@@ -76,14 +76,7 @@ jobs:
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
       run: ./gradlew :tv:assembleDebug --warning-mode=all
-      
-    - name: Upload Artifact 
-      if: github.event_name == 'push'
-      uses: actions/upload-artifact@v4
-      with:
-        name: mytv-android.apk
-        path: tv/build/outputs/apk/release/*.apk
-    
+
     - name: Move Metadata (Dev)
       if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
       run: |

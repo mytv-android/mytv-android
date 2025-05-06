@@ -24,6 +24,7 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.rtmp.RtmpDataSource
 import androidx.media3.exoplayer.DecoderReuseEvaluation
 import androidx.media3.exoplayer.DefaultRenderersFactory
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -44,6 +45,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
+
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.util.utils.toHeaders
 import top.yogiczy.mytv.tv.ui.utils.Configs
@@ -80,7 +83,7 @@ class Media3VideoPlayer(
         val renderersFactory =
             DefaultRenderersFactory(context)
                 .setExtensionRendererMode(
-                    if (softDecode ?: Configs.videoPlayerForceAudioSoftDecode)
+                    if (Configs.videoPlayerForceSoftDecode || softDecode ?: false)
                         DefaultRenderersFactory.EXTENSION_RENDERER_MODE_PREFER
                     else DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
                 )
@@ -99,9 +102,19 @@ class Media3VideoPlayer(
 
         // MediaCodecVideoRenderer.skipMultipleFramesOnSameVsync =
         //     Configs.videoPlayerSkipMultipleFramesOnSameVSync
+        val loadControl = DefaultLoadControl.Builder()
+            .setBufferDurationsMs(
+                Configs.videoPlayerBufferTime.toInt(), // 最小缓冲时间（毫秒） minBufferMs
+                max(Configs.videoPlayerBufferTime.toInt() * 5, 60 * 1000), // maxBufferMs
+                Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackMs
+                Configs.videoPlayerBufferTime.toInt(), // bufferForPlaybackAfterRebufferMs
+            )
+            .build()
+
         return ExoPlayer.Builder(context)
             .setRenderersFactory(renderersFactory)
             .setTrackSelector(trackSelector)
+            .setLoadControl(loadControl)
             .build()
             .apply { playWhenReady = true }
     }

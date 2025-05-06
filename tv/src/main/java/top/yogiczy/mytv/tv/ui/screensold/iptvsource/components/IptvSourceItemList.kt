@@ -16,17 +16,20 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource
 import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.IptvSourceDetail
 @Composable
 fun IptvSourceItemList(
     modifier: Modifier = Modifier,
     iptvSourceListProvider: () -> IptvSourceList = { IptvSourceList() },
     currentIptvSourceProvider: () -> IptvSource = { IptvSource() },
+    iptvSourceDetailsProvider: () -> Map<Int, IptvSourceDetail> = { emptyMap() },
     onSelected: (IptvSource) -> Unit = {},
     onUserAction: () -> Unit = {},
 ) {
     val iptvSourceList = IptvSourceList(iptvSourceListProvider())
 
     val listState = rememberLazyListState(max(0, iptvSourceList.indexOf(currentIptvSourceProvider())))
+    
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }
@@ -45,6 +48,9 @@ fun IptvSourceItemList(
                 lineProvider = { iptvSource },
                 lineIdxProvider = { index },
                 isSelectedProvider = { iptvSource == currentIptvSourceProvider() },
+                iptvSourceDetailProvider = {
+                    iptvSourceDetailsProvider()[iptvSource.hashCode()] ?: IptvSourceDetail.None
+                },
                 onSelected = { onSelected(iptvSource) },
             )
         }

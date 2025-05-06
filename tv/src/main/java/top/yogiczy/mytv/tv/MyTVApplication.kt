@@ -12,6 +12,7 @@ import coil.util.DebugLogger
 import top.yogiczy.mytv.core.data.AppData
 import top.yogiczy.mytv.core.data.utils.Globals
 import kotlin.system.exitProcess
+import com.tencent.smtt.sdk.QbSdk
 
 class MyTVApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
@@ -20,6 +21,7 @@ class MyTVApplication : Application(), ImageLoaderFactory {
         crashHandle()
         AppData.init(applicationContext)
         UnsafeTrustManager.enableUnsafeTrustManager()
+        
     }
 
     override fun newImageLoader(): ImageLoader {

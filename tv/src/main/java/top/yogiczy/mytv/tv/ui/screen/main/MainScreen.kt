@@ -192,7 +192,7 @@ fun MainScreen(
             composable(Screens.Live()) {
                 val doubleBackPressedExitState = rememberDoubleBackPressedExitState()
 
-                key(settingsViewModel.videoPlayerCore) {
+                key(settingsViewModel.videoPlayerCore, settingsViewModel.videoPlayerForceSoftDecode) {
                     top.yogiczy.mytv.tv.ui.screensold.main.components.MainContent(
                         filteredChannelGroupListProvider = filteredChannelGroupListProvider,
                         favoriteChannelListProvider = favoriteChannelListProvider,

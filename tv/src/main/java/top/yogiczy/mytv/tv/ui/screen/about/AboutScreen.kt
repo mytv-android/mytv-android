@@ -74,10 +74,9 @@ fun AboutScreen(
 
             item {
                 var visible by remember { mutableStateOf(false) }
-
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("代码仓库") },
+                    headlineContent = { Text("本项目代码仓库") },
                     trailingContent = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -109,7 +108,7 @@ fun AboutScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("天光云影交流群 Telegram") },
+                    headlineContent = { Text("讨论交流 Telegram") },
                     trailingContent = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -143,7 +142,36 @@ fun AboutScreen(
                     onClick = {},
                 )
             }
+            item {
+                var visible by remember { mutableStateOf(false) }
+                ListItem(
+                    modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
+                    headlineContent = { Text("天光云影仓库") },
+                    trailingContent = {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(Constants.ORIGIN_APP_REPO)
 
+                            Icon(
+                                Icons.AutoMirrored.Default.OpenInNew,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        }
+                    },
+                    selected = false,
+                    onClick = {},
+                )
+
+                QrcodePopup(
+                    visibleProvider = { visible },
+                    onDismissRequest = { visible = false },
+                    text = Constants.ORIGIN_APP_REPO,
+                    description = "本项目的诞生离不开天光云影项目，扫码以前往",
+                )
+            }
             item {
                 var visible by remember { mutableStateOf(false) }
 

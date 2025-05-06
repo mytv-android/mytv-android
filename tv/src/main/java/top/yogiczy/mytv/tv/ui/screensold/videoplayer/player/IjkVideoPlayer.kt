@@ -30,11 +30,11 @@ class IjkVideoPlayer(
 
     private val logger = Logger.create("IjkVideoPlayer")
     private val player by lazy {
-        IjkMediaPlayer().apply {
+        IjkMediaPlayer().apply{
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_clear", 1)
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "dns_cache_timeout", 0)
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "http-detect-range-support", 0)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 2)
             setOption(
                 IjkMediaPlayer.OPT_CATEGORY_FORMAT,
                 "timeout",
@@ -51,13 +51,37 @@ class IjkVideoPlayer(
     private var updateJob: Job? = null
 
     private fun setOption() {
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-all-videos", 1)
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-hevc", 1)
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0)
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 5)
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1)
-        player.setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
+        player.apply {
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "allowed_extensions", "ALL")
+            if (Configs.videoPlayerForceSoftDecode)
+                setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 0)
+            else{
+                setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec", 1)
+                setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-all-videos", 1)
+                setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-hevc", 1)
+                setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "mediacodec-handle-resolution-change", 1)
+            }
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "protocol_whitelist", "crypto,file,http,https,tcp,tls,udp,rtmp,rtsp")
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "opensles", 0)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "framedrop", 5)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "fast", 1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "start-on-prepared", 1)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "enable-accurate-seek", 1)
+            
+            // rtsp设置 https://ffmpeg.org/ffmpeg-protocols.html#rtsp
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_transport", "tcp")
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "rtsp_flags", "prefer_tcp")
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "buffer_size", 1316)
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "infbuf", 1)  // 无限读
+            setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "flush_packets", 1L)
+
+            //  关闭播放器缓冲，这个必须关闭，否则会出现播放一段时间后，一直卡住，控制台打印 FFP_MSG_BUFFERING_START
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", Configs.videoPlayerBufferTime.toLong())
+
+            //https://www.cnblogs.com/Fitz/p/18537127
+            // setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_loop_filter",0) //丢弃一些“无用”的数据包，例如AVI格式中的零大小数据包
+            // setOption(IjkMediaPlayer.OPT_CATEGORY_CODEC, "skip_frame", 0) //不跳帧，解码所有帧
+        }
     }
 
     override fun prepare(line: ChannelLine) {
@@ -197,6 +221,7 @@ class IjkVideoPlayer(
                     IjkMediaMeta.AV_CH_LAYOUT_4POINT1,
                     IjkMediaMeta.AV_CH_LAYOUT_5POINT0 -> 5
 
+                    // IjkMediaMeta.AV_CH_LAYOUT_3POINT1POINT2,
                     IjkMediaMeta.AV_CH_LAYOUT_HEXAGONAL,
                     IjkMediaMeta.AV_CH_LAYOUT_5POINT1,
                     IjkMediaMeta.AV_CH_LAYOUT_6POINT0 -> 6
@@ -207,8 +232,22 @@ class IjkVideoPlayer(
                     IjkMediaMeta.AV_CH_LAYOUT_7POINT1,
                     IjkMediaMeta.AV_CH_LAYOUT_7POINT1_WIDE,
                     IjkMediaMeta.AV_CH_LAYOUT_7POINT1_WIDE_BACK,
+                    // IjkMediaMeta.AV_CH_LAYOUT_7POINT1_TOP_BACK,
+                    // IjkMediaMeta.AV_CH_LAYOUT_CUBE,
+                    // IjkMediaMeta.AV_CH_LAYOUT_5POINT1POINT2_BACK,
                     IjkMediaMeta.AV_CH_LAYOUT_OCTAGONAL -> 8
 
+                    // IjkMediaMeta.AV_CH_LAYOUT_9POINT0 -> 9
+
+                    // IjkMediaMeta.AV_CH_LAYOUT_5POINT1POINT4_BACK,
+                    // IjkMediaMeta.AV_CH_LAYOUT_7POINT1POINT2 -> 10
+
+                    // IjkMediaMeta.AV_CH_LAYOUT_7POINT1POINT4_BACK,
+                    // IjkMediaMeta.AV_CH_LAYOUT_10POINT2 -> 12
+
+                    // IjkMediaMeta.AV_CH_LAYOUT_HEXADECAGONAL -> 16
+
+                    // IjkMediaMeta.AV_CH_LAYOUT_22POINT2 -> 24
                     else -> 0
                 },
                 channelsLabel = when (info.mMeta.mAudioStream?.mChannelLayout) {
@@ -218,21 +257,31 @@ class IjkVideoPlayer(
                     IjkMediaMeta.AV_CH_LAYOUT_2_1 -> "立体声"
                     IjkMediaMeta.AV_CH_LAYOUT_SURROUND -> "环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_3POINT1 -> "3.1 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_3POINT1POINT2 -> "3.1.2 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_4POINT0 -> "4.0 四声道"
                     IjkMediaMeta.AV_CH_LAYOUT_4POINT1 -> "4.1 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_2_2 -> "四声道"
                     IjkMediaMeta.AV_CH_LAYOUT_QUAD -> "四声道"
+                    // IjkMediaMeta.AV_CH_LAYOUT_CUBE -> "立方声"
                     IjkMediaMeta.AV_CH_LAYOUT_5POINT0 -> "5.0 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_5POINT1 -> "5.1 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_5POINT1POINT2_BACK -> "5.1.2 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_6POINT0 -> "6.0 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_6POINT1 -> "6.1 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_7POINT0 -> "7.0 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_7POINT1 -> "7.1 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_7POINT1POINT2 -> "7.1.2 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_7POINT1POINT4_BACK -> "后置 7.1.4 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_7POINT1_WIDE -> "宽域 7.1 环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_7POINT1_WIDE_BACK -> "后置 7.1 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_7POINT1_TOP_BACK -> "上置 7.1 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_HEXADECAGONAL -> "十六角环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_HEXAGONAL -> "六角环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_OCTAGONAL -> "八角环绕声"
                     IjkMediaMeta.AV_CH_LAYOUT_STEREO_DOWNMIX -> "立体声下混音"
+                    // IjkMediaMeta.AV_CH_LAYOUT_9POINT0 -> "9.0 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_10POINT2 -> "10.2 环绕声"
+                    // IjkMediaMeta.AV_CH_LAYOUT_22POINT2 -> "22.2 环绕声"
                     else -> null
                 },
                 sampleRate = info.mMeta.mAudioStream?.mSampleRate,

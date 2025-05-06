@@ -2,7 +2,6 @@ package top.yogiczy.mytv.tv.ui.screensold.quickop.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +36,7 @@ import androidx.compose.material.icons.filled.ControlCamera
 import androidx.compose.material.icons.filled.SmartDisplay
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.VideoLibrary
+import androidx.compose.material.icons.filled.SettingsInputSvideo
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Subtitles
 import androidx.compose.material.icons.filled.Settings
@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.ClearAll
 import androidx.tv.material3.Icon
 import androidx.compose.ui.unit.dp
 import top.yogiczy.mytv.tv.ui.material.LazyRow
+import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import androidx.compose.ui.focus.focusRequester
 
@@ -54,6 +55,7 @@ fun QuickOpBtnList(
     channelProvider: () -> Channel = { Channel.EMPTY },
     channelLineIdxProvider: () -> Int = { 0 },
     playerMetadataProvider: () -> VideoPlayer.Metadata = { VideoPlayer.Metadata() },
+    videoPlayerIndicatorProvider:() -> Boolean = { true },
     onShowIptvSource: () -> Unit = {},
     onShowEpg: () -> Unit = {},
     onShowChannelLine: () -> Unit = {},
@@ -121,63 +123,77 @@ fun QuickOpBtnList(
                 onSelect = onShowChannelLine,
             )
         }
-
-        item {
-            QuickOpBtn(
-                title = "播放控制",
-                imageVector = Icons.Filled.ControlCamera,
-                onSelect = onShowVideoPlayerController,
-            )
-        }
-
-        item {
-            QuickOpBtn(
-                title = settingsViewModel.videoPlayerDisplayMode.label,
-                imageVector = Icons.Filled.AspectRatio,
-                onSelect = onShowVideoPlayerDisplayMode,
-            )
-        }
-
-        item {
-            QuickOpBtn(
-                title = "播放器："+settingsViewModel.videoPlayerCore.label,
-                imageVector = Icons.Filled.SmartDisplay,
-                onSelect = {
-                    settingsViewModel.videoPlayerCore = when (settingsViewModel.videoPlayerCore) {
-                        Configs.VideoPlayerCore.MEDIA3 -> Configs.VideoPlayerCore.IJK
-                        Configs.VideoPlayerCore.IJK -> Configs.VideoPlayerCore.MEDIA3
-                    }
-                },
-            )
-        }
-
-        if (playerMetadata.videoTracks.isNotEmpty()) {
+        if(videoPlayerIndicatorProvider()){
             item {
                 QuickOpBtn(
-                    title = playerMetadataProvider().video?.shortLabel ?: "视轨",
-                    imageVector = Icons.Filled.VideoLibrary,
-                    onSelect = onShowVideoTracks,
+                    title = "播放控制",
+                    imageVector = Icons.Filled.ControlCamera,
+                    onSelect = onShowVideoPlayerController,
                 )
             }
-        }
 
-        if (playerMetadata.audioTracks.isNotEmpty()) {
             item {
                 QuickOpBtn(
-                    title = playerMetadataProvider().audio?.shortLabel ?: "音轨",
-                    imageVector = Icons.Filled.MusicNote,
-                    onSelect = onShowAudioTracks,
+                    title = settingsViewModel.videoPlayerDisplayMode.label,
+                    imageVector = Icons.Filled.AspectRatio,
+                    onSelect = onShowVideoPlayerDisplayMode,
                 )
             }
-        }
-
-        if (playerMetadata.subtitleTracks.isNotEmpty()) {
+        
             item {
                 QuickOpBtn(
-                    title = playerMetadataProvider().subtitle?.shortLabel ?: "字幕",
-                    imageVector = Icons.Filled.Subtitles,
-                    onSelect = onShowSubtitleTracks,
+                    title = "播放器："+settingsViewModel.videoPlayerCore.label,
+                    imageVector = Icons.Filled.SmartDisplay,
+                    onSelect = {
+                        settingsViewModel.videoPlayerCore = when (settingsViewModel.videoPlayerCore) {
+                            Configs.VideoPlayerCore.MEDIA3 -> Configs.VideoPlayerCore.IJK
+                            Configs.VideoPlayerCore.IJK -> Configs.VideoPlayerCore.MEDIA3
+                        }
+                    },
                 )
+            }
+
+            item {
+                QuickOpBtn(
+                    title = ForceDecodeLabel(settingsViewModel.videoPlayerForceSoftDecode),
+                    imageVector = Icons.Filled.SettingsInputSvideo,
+                    onSelect = {
+                        settingsViewModel.videoPlayerForceSoftDecode = when (settingsViewModel.videoPlayerForceSoftDecode) {
+                            true -> false
+                            false -> true
+                        }
+                    },
+                )
+            }
+
+            if (playerMetadata.videoTracks.isNotEmpty()) {
+                item {
+                    QuickOpBtn(
+                        title = playerMetadataProvider().video?.shortLabel ?: "视轨",
+                        imageVector = Icons.Filled.VideoLibrary,
+                        onSelect = onShowVideoTracks,
+                    )
+                }
+            }
+
+            if (playerMetadata.audioTracks.isNotEmpty()) {
+                item {
+                    QuickOpBtn(
+                        title = playerMetadataProvider().audio?.shortLabel ?: "音轨",
+                        imageVector = Icons.Filled.MusicNote,
+                        onSelect = onShowAudioTracks,
+                    )
+                }
+            }
+
+            if (playerMetadata.subtitleTracks.isNotEmpty()) {
+                item {
+                    QuickOpBtn(
+                        title = playerMetadataProvider().subtitle?.shortLabel ?: "字幕",
+                        imageVector = Icons.Filled.Subtitles,
+                        onSelect = onShowSubtitleTracks,
+                    )
+                }
             }
         }
 
@@ -210,6 +226,13 @@ fun QuickOpBtnList(
     }
 }
 
+fun ForceDecodeLabel(forceDecode: Boolean): String {
+    return if (forceDecode) {
+        "强制软解"
+    } else {
+        "自动解码"
+    }
+}
 @Preview
 @Composable
 private fun QuickOpBtnListPreview() {

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.DeleteOutline
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -64,19 +65,20 @@ import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
-
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.IptvSourceDetail
 @Composable
 fun IptvSourceItem(
     modifier: Modifier = Modifier,
     lineProvider: () -> IptvSource = { IptvSource() },
     lineIdxProvider: () -> Int = { 0 },
     isSelectedProvider: () -> Boolean = { false },
+    iptvSourceDetailProvider: () -> IptvSourceDetail = { IptvSourceDetail.Loading },
     onSelected: () -> Unit = {},
 ) {
     val line = lineProvider()
     val lineIdx = lineIdxProvider()
     val isSelected = isSelectedProvider()
-
+    val iptvSourceDetail = iptvSourceDetailProvider()
     ListItem(
         modifier = modifier
             .ifElse(isSelected, Modifier.focusOnLaunched())
@@ -106,35 +108,37 @@ fun IptvSourceItem(
                 }
             }
         },
-        supportingContent = { Text(line.url, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        supportingContent = { 
+            Text(line.url, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            if (iptvSourceDetail is IptvSourceDetail.Ready) {
+                Text(
+                    listOf(
+                        "共${iptvSourceDetail.channelGroupCount}个分组",
+                        "${iptvSourceDetail.channelCount}个频道",
+                        "${iptvSourceDetail.lineCount}条源"
+                    ).joinToString("，")
+                )
+            }
+        },
         trailingContent = {
-            RadioButton(selected = isSelected, onClick = {})
+            when (iptvSourceDetail) {
+                is IptvSourceDetail.Loading -> CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 3.dp,
+                    color = LocalContentColor.current,
+                    trackColor = MaterialTheme.colorScheme.surface.copy(0.1f),
+                )
+
+                is IptvSourceDetail.Error -> Icon(
+                    Icons.Default.Error,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.error,
+                )
+                else -> RadioButton(selected = isSelected, onClick = {})
+            }
         },
     )
 }
-
-            // item {
-            //     SettingsIptvSourceActionItem(
-            //         title = "设为当前",
-            //         imageVector = Icons.Outlined.Add,
-            //         onSelected = onSetCurrent,
-            //         disabled = currentIptvSource == iptvSource,
-            //         modifier = Modifier.focusOnLaunched(),
-            //     )
-            // }
-
-
-private sealed interface IptvSourceDetail {
-    data object None : IptvSourceDetail
-    data object Loading : IptvSourceDetail
-    data object Error : IptvSourceDetail
-    data class Ready(
-        val channelGroupCount: Int,
-        val channelCount: Int,
-        val lineCount: Int,
-    ) : IptvSourceDetail
-}
-
 @Preview
 @Composable
 private fun IptvSourceItemPreview() {

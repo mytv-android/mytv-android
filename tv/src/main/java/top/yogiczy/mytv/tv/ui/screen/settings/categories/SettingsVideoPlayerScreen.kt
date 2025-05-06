@@ -21,9 +21,11 @@ fun SettingsVideoPlayerScreen(
     modifier: Modifier = Modifier,
     settingsViewModel: SettingsViewModel = settingsVM,
     toVideoPlayerCoreScreen: () -> Unit = {},
+    toWebviewCoreScreen: () -> Unit = {},
     toVideoPlayerRenderModeScreen: () -> Unit = {},
     toVideoPlayerDisplayModeScreen: () -> Unit = {},
     toVideoPlayerLoadTimeoutScreen: () -> Unit = {},
+    toVideoPlayerBufferTimeScreen: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     SettingsCategoryScreen(
@@ -34,7 +36,7 @@ fun SettingsVideoPlayerScreen(
         item {
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "内核",
+                headlineContent = "视频播放器内核",
                 trailingContent = settingsViewModel.videoPlayerCore.label,
                 onSelect = toVideoPlayerCoreScreen,
                 link = true,
@@ -52,13 +54,14 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "强制音频软解",
+                headlineContent = "强制软解",
+                supportingContent = "对于Media3，使音频强制软解\n对于IJK，将禁用MediaCodec解码（使用ffmpeg）",
                 trailingContent = {
-                    Switch(settingsViewModel.videoPlayerForceAudioSoftDecode, null)
+                    Switch(settingsViewModel.videoPlayerForceSoftDecode, null)
                 },
                 onSelect = {
-                    settingsViewModel.videoPlayerForceAudioSoftDecode =
-                        !settingsViewModel.videoPlayerForceAudioSoftDecode
+                    settingsViewModel.videoPlayerForceSoftDecode =
+                        !settingsViewModel.videoPlayerForceSoftDecode
                 },
             )
         }
@@ -100,10 +103,29 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
+                headlineContent = "WebView内核",
+                trailingContent = settingsViewModel.webViewCore.label,
+                onSelect = toWebviewCoreScreen,
+                link = true,
+            )
+        }
+
+        item {
+            SettingsListItem(
                 headlineContent = "加载超时",
                 supportingContent = "影响超时换源、断线重连",
                 trailingContent = settingsViewModel.videoPlayerLoadTimeout.humanizeMs(),
                 onSelect = toVideoPlayerLoadTimeoutScreen,
+                link = true,
+            )
+        }
+
+        item {
+            SettingsListItem(
+                headlineContent = "缓存加载时间",
+                supportingContent = "设置播放前的最小缓存加载时间。当设置的缓存时间不为0时，可能会导致IJK播放卡死",
+                trailingContent = settingsViewModel.videoPlayerBufferTime.humanizeMs(),
+                onSelect = toVideoPlayerBufferTimeScreen,
                 link = true,
             )
         }

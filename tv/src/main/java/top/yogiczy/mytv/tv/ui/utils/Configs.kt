@@ -180,7 +180,10 @@ object Configs {
         /** ==================== 播放器 ==================== */
         /** 播放器 内核 */
         VIDEO_PLAYER_CORE,
-
+        
+        /** WebView 内核 */
+        WEBVIEW_CORE,
+        
         /** 播放器 渲染方式 */
         VIDEO_PLAYER_RENDER_MODE,
 
@@ -193,11 +196,14 @@ object Configs {
         /** 播放器 加载超时 */
         VIDEO_PLAYER_LOAD_TIMEOUT,
 
+        /** 播放器 缓存加载时间 */
+        VIDEO_PLAYER_BUFFER_TIME,
+
         /** 播放器 显示模式 */
         VIDEO_PLAYER_DISPLAY_MODE,
 
         /** 播放器 强制音频软解 */
-        VIDEO_PLAYER_FORCE_AUDIO_SOFT_DECODE,
+        VIDEO_PLAYER_FORCE_SOFT_DECODE,
 
         /** 播放器 停止上一媒体项 */
         VIDEO_PLAYER_STOP_PREVIOUS_MEDIA_ITEM,
@@ -560,6 +566,13 @@ object Configs {
         )
         set(value) = SP.putInt(KEY.VIDEO_PLAYER_CORE.name, value.value)
 
+    /** WebView 内核 */
+    var webViewCore: WebViewCore
+        get() = WebViewCore.fromValue(
+            SP.getInt(KEY.WEBVIEW_CORE.name, WebViewCore.SYSTEM.value)
+        )
+        set(value) = SP.putInt(KEY.WEBVIEW_CORE.name, value.value)
+
     /** 播放器 渲染方式 */
     var videoPlayerRenderMode: VideoPlayerRenderMode
         get() = VideoPlayerRenderMode.fromValue(
@@ -584,6 +597,11 @@ object Configs {
         get() = SP.getLong(KEY.VIDEO_PLAYER_LOAD_TIMEOUT.name, Constants.VIDEO_PLAYER_LOAD_TIMEOUT)
         set(value) = SP.putLong(KEY.VIDEO_PLAYER_LOAD_TIMEOUT.name, value)
 
+    /** 播放器 缓存加载时间 */
+    var videoPlayerBufferTime: Long
+        get() = SP.getLong(KEY.VIDEO_PLAYER_BUFFER_TIME.name, Constants.VIDEO_PLAYER_BUFFER_TIME)
+        set(value) = SP.putLong(KEY.VIDEO_PLAYER_BUFFER_TIME.name, value)
+
     /** 播放器 显示模式 */
     var videoPlayerDisplayMode: VideoPlayerDisplayMode
         get() = VideoPlayerDisplayMode.fromValue(
@@ -591,10 +609,10 @@ object Configs {
         )
         set(value) = SP.putInt(KEY.VIDEO_PLAYER_DISPLAY_MODE.name, value.value)
 
-    /** 播放器 强制音频软解 */
-    var videoPlayerForceAudioSoftDecode: Boolean
-        get() = SP.getBoolean(KEY.VIDEO_PLAYER_FORCE_AUDIO_SOFT_DECODE.name, false)
-        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_FORCE_AUDIO_SOFT_DECODE.name, value)
+    /** 播放器 强制软解 */
+    var videoPlayerForceSoftDecode: Boolean
+        get() = SP.getBoolean(KEY.VIDEO_PLAYER_FORCE_SOFT_DECODE.name, false)
+        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_FORCE_SOFT_DECODE.name, value)
 
     /** 播放器 停止上一媒体项 */
     var videoPlayerStopPreviousMediaItem: Boolean
@@ -745,6 +763,20 @@ object Configs {
         }
     }
 
+    enum class WebViewCore(val value: Int, val label: String) {
+        /** 系统内核 */
+        SYSTEM(0, "Android"),
+
+        /** X5内核 */
+        X5(1, "TBS X5");
+
+        companion object {
+            fun fromValue(value: Int): WebViewCore {
+                return entries.firstOrNull { it.value == value } ?: SYSTEM
+            }
+        }
+    }
+
     enum class VideoPlayerRenderMode(val value: Int, val label: String) {
         /** SurfaceView */
         SURFACE_VIEW(0, "SurfaceView"),
@@ -810,12 +842,14 @@ object Configs {
             updateForceRemind = updateForceRemind,
             updateChannel = updateChannel,
             videoPlayerCore = videoPlayerCore,
+            webViewCore = webViewCore,
             videoPlayerRenderMode = videoPlayerRenderMode,
             videoPlayerUserAgent = videoPlayerUserAgent,
             videoPlayerHeaders = videoPlayerHeaders,
             videoPlayerLoadTimeout = videoPlayerLoadTimeout,
+            videoPlayerBufferTime = videoPlayerBufferTime,
             videoPlayerDisplayMode = videoPlayerDisplayMode,
-            videoPlayerForceAudioSoftDecode = videoPlayerForceAudioSoftDecode,
+            videoPlayerForceSoftDecode = videoPlayerForceSoftDecode,
             videoPlayerStopPreviousMediaItem = videoPlayerStopPreviousMediaItem,
             videoPlayerSkipMultipleFramesOnSameVSync = videoPlayerSkipMultipleFramesOnSameVSync,
             videoPlayerVolumeNormalization = videoPlayerVolumeNormalization,
@@ -889,12 +923,14 @@ object Configs {
         configs.updateForceRemind?.let { updateForceRemind = it }
         configs.updateChannel?.let { updateChannel = it }
         configs.videoPlayerCore?.let { videoPlayerCore = it }
+        configs.webViewCore?.let { webViewCore = it }
         configs.videoPlayerRenderMode?.let { videoPlayerRenderMode = it }
         configs.videoPlayerUserAgent?.let { videoPlayerUserAgent = it }
         configs.videoPlayerHeaders?.let { videoPlayerHeaders = it }
         configs.videoPlayerLoadTimeout?.let { videoPlayerLoadTimeout = it }
+        configs.videoPlayerBufferTime?.let { videoPlayerBufferTime = it }
         configs.videoPlayerDisplayMode?.let { videoPlayerDisplayMode = it }
-        configs.videoPlayerForceAudioSoftDecode?.let { videoPlayerForceAudioSoftDecode = it }
+        configs.videoPlayerForceSoftDecode?.let { videoPlayerForceSoftDecode = it }
         configs.videoPlayerStopPreviousMediaItem?.let { videoPlayerStopPreviousMediaItem = it }
         configs.videoPlayerSkipMultipleFramesOnSameVSync?.let { videoPlayerSkipMultipleFramesOnSameVSync = it }
         configs.videoPlayerVolumeNormalization?.let { videoPlayerVolumeNormalization = it }
@@ -966,12 +1002,14 @@ object Configs {
         val updateForceRemind: Boolean? = null,
         val updateChannel: String? = null,
         val videoPlayerCore: VideoPlayerCore? = null,
+        val webViewCore: WebViewCore? = null,
         val videoPlayerRenderMode: VideoPlayerRenderMode? = null,
         val videoPlayerUserAgent: String? = null,
         val videoPlayerHeaders: String? = null,
         val videoPlayerLoadTimeout: Long? = null,
+        val videoPlayerBufferTime: Long? = null,
         val videoPlayerDisplayMode: VideoPlayerDisplayMode? = null,
-        val videoPlayerForceAudioSoftDecode: Boolean? = null,
+        val videoPlayerForceSoftDecode: Boolean? = null,
         val videoPlayerStopPreviousMediaItem: Boolean? = null,
         val videoPlayerSkipMultipleFramesOnSameVSync: Boolean? = null,
         val videoPlayerVolumeNormalization : Boolean? = null,

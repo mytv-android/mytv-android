@@ -17,12 +17,13 @@ object Constants {
     /**
      * 应用 代码仓库
      */
-    const val APP_REPO = "hhttps://github.com/mytv-android/mytv-android"
+    const val ORIGIN_APP_REPO = "https://github.com/yaoxieyoulei/mytv-android"
+    const val APP_REPO = "https://github.com/mytv-android/mytv-android"
 
     /**
      * 交流群 telegram
      */
-    const val GROUP_TELEGRAM = "https://t.me/mytv_android"
+    const val GROUP_TELEGRAM = "https://t.me/mytv_android_channel"
 
     /**
      * 播放源
@@ -108,6 +109,11 @@ object Constants {
      * 播放器加载超时
      */
     const val VIDEO_PLAYER_LOAD_TIMEOUT = 1000L * 15 // 15秒
+
+    /**
+     * 播放器加载缓存时间
+     */
+    const val VIDEO_PLAYER_BUFFER_TIME = 0L
 
     /**
      * 日志历史最大保留条数

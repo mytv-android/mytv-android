@@ -45,7 +45,6 @@ public class IjkMediaFormat implements IMediaFormat {
 
     // Codec
     public static final String CODEC_NAME_H264 = "h264";
-    public static final String CODEC_NAME_HEVC = "hevc";
 
     public final IjkMediaMeta.IjkStreamMeta mMediaFormat;
 
@@ -168,11 +167,6 @@ public class IjkMediaFormat implements IMediaFormat {
                     case IjkMediaMeta.FF_PROFILE_H264_CAVLC_444:
                         profile = "CAVLC 4:4:4";
                         break;
-                    case IjkMediaMeta.FF_PROFILE_HEVC_MAIN:
-                        profile = "Main";
-                    case IjkMediaMeta.FF_PROFILE_HEVC_MAIN_10:
-                        profile = "Main 10";
-                        break;
                     default:
                         return null;
                 }
@@ -186,27 +180,13 @@ public class IjkMediaFormat implements IMediaFormat {
                     if (level < 10)
                         return sb.toString();
 
-                    // sb.append(" Profile Level ");
-                    sb.append(" Level ");
+                    sb.append(" Profile Level ");
                     sb.append((level / 10) % 10);
                     if ((level % 10) != 0) {
                         sb.append(".");
                         sb.append(level % 10);
                     }
                 }
-
-                if (!TextUtils.isEmpty(codecName) && codecName.equalsIgnoreCase(CODEC_NAME_HEVC)) {
-                    int level = mediaFormat.getInteger(IjkMediaMeta.IJKM_KEY_CODEC_LEVEL);
-                    if (level < 10)
-                        return sb.toString();
-
-                    // sb.append(" Profile Level ");
-                    sb.append(" Level ");
-                    sb.append((level / 30) % 10);  // 计算HEVC的主要级别
-                    sb.append(".");
-                    sb.append((level / 3) % 10);   // 计算HEVC的次要级别
-                }
-
 
                 return sb.toString();
             }
@@ -269,12 +249,6 @@ public class IjkMediaFormat implements IMediaFormat {
                         return "mono";
                     } else if (channelLayout == IjkMediaMeta.AV_CH_LAYOUT_STEREO) {
                         return "stereo";
-                    } else if (channelLayout == IjkMediaMeta.AV_CH_LAYOUT_SURROUND) {
-                        return "surround";
-                    } else if (channelLayout == IjkMediaMeta.AV_CH_LAYOUT_5POINT1) {
-                        return "5.1";
-                    } else if (channelLayout == IjkMediaMeta.AV_CH_AV3A_LAYOUT_5POINT1POINT4) {
-                        return "5.1.4";
                     } else {
                         return String.format(Locale.US, "%x", channelLayout);
                     }

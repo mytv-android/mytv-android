@@ -72,6 +72,11 @@ public class IjkMediaMeta {
     public static final long AV_CH_SURROUND_DIRECT_LEFT = 0x0000000200000000L;
     public static final long AV_CH_SURROUND_DIRECT_RIGHT = 0x0000000400000000L;
     public static final long AV_CH_LOW_FREQUENCY_2 = 0x0000000800000000L;
+    public static final long AV_CH_TOP_SIDE_LEFT     =     (1L << 36  );
+    public static final long AV_CH_TOP_SIDE_RIGHT    =     (1L << 37  );
+    public static final long AV_CH_BOTTOM_FRONT_CENTER  =  (1L << 38  );
+    public static final long AV_CH_BOTTOM_FRONT_LEFT    =  (1L << 39  );
+    public static final long AV_CH_BOTTOM_FRONT_RIGHT  =   (1L << 40  );
 
     public static final long AV_CH_LAYOUT_MONO = (AV_CH_FRONT_CENTER);
     public static final long AV_CH_LAYOUT_STEREO = (AV_CH_FRONT_LEFT | AV_CH_FRONT_RIGHT);
@@ -88,7 +93,6 @@ public class IjkMediaMeta {
     public static final long AV_CH_LAYOUT_5POINT0 = (AV_CH_LAYOUT_SURROUND
             | AV_CH_SIDE_LEFT | AV_CH_SIDE_RIGHT);
     public static final long AV_CH_LAYOUT_5POINT1 = (AV_CH_LAYOUT_5POINT0 | AV_CH_LOW_FREQUENCY);
-    public static final long AV_CH_AV3A_LAYOUT_5POINT1POINT4 = (AV_CH_LAYOUT_5POINT1 | AV_CH_TOP_FRONT_LEFT | AV_CH_TOP_FRONT_RIGHT | AV_CH_TOP_BACK_LEFT | AV_CH_TOP_BACK_RIGHT);
     public static final long AV_CH_LAYOUT_5POINT0_BACK = (AV_CH_LAYOUT_SURROUND
             | AV_CH_BACK_LEFT | AV_CH_BACK_RIGHT);
     public static final long AV_CH_LAYOUT_5POINT1_BACK = (AV_CH_LAYOUT_5POINT0_BACK | AV_CH_LOW_FREQUENCY);
@@ -96,6 +100,7 @@ public class IjkMediaMeta {
     public static final long AV_CH_LAYOUT_6POINT0_FRONT = (AV_CH_LAYOUT_2_2
             | AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER);
     public static final long AV_CH_LAYOUT_HEXAGONAL = (AV_CH_LAYOUT_5POINT0_BACK | AV_CH_BACK_CENTER);
+    public static final long AV_CH_LAYOUT_3POINT1POINT2  = (AV_CH_LAYOUT_3POINT1|AV_CH_TOP_FRONT_LEFT|AV_CH_TOP_FRONT_RIGHT);
     public static final long AV_CH_LAYOUT_6POINT1 = (AV_CH_LAYOUT_5POINT1 | AV_CH_BACK_CENTER);
     public static final long AV_CH_LAYOUT_6POINT1_BACK = (AV_CH_LAYOUT_5POINT1_BACK | AV_CH_BACK_CENTER);
     public static final long AV_CH_LAYOUT_6POINT1_FRONT = (AV_CH_LAYOUT_6POINT0_FRONT | AV_CH_LOW_FREQUENCY);
@@ -109,10 +114,21 @@ public class IjkMediaMeta {
             | AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER);
     public static final long AV_CH_LAYOUT_7POINT1_WIDE_BACK = (AV_CH_LAYOUT_5POINT1_BACK
             | AV_CH_FRONT_LEFT_OF_CENTER | AV_CH_FRONT_RIGHT_OF_CENTER);
+    public static final long AV_CH_LAYOUT_5POINT1POINT2_BACK = (AV_CH_LAYOUT_5POINT1_BACK|AV_CH_TOP_FRONT_LEFT|AV_CH_TOP_FRONT_RIGHT);
     public static final long AV_CH_LAYOUT_OCTAGONAL = (AV_CH_LAYOUT_5POINT0
             | AV_CH_BACK_LEFT | AV_CH_BACK_CENTER | AV_CH_BACK_RIGHT);
     public static final long AV_CH_LAYOUT_STEREO_DOWNMIX = (AV_CH_STEREO_LEFT | AV_CH_STEREO_RIGHT);
+    public static final long AV_CH_LAYOUT_CUBE          =    (AV_CH_LAYOUT_QUAD|AV_CH_TOP_FRONT_LEFT|AV_CH_TOP_FRONT_RIGHT|AV_CH_TOP_BACK_LEFT|AV_CH_TOP_BACK_RIGHT);
+    public static final long AV_CH_LAYOUT_5POINT1POINT4_BACK = (AV_CH_LAYOUT_5POINT1POINT2_BACK|AV_CH_TOP_BACK_LEFT|AV_CH_TOP_BACK_RIGHT);
+    public static final long AV_CH_LAYOUT_7POINT1POINT2   =  (AV_CH_LAYOUT_7POINT1|AV_CH_TOP_FRONT_LEFT|AV_CH_TOP_FRONT_RIGHT);
+    public static final long AV_CH_LAYOUT_7POINT1POINT4_BACK = (AV_CH_LAYOUT_7POINT1POINT2|AV_CH_TOP_BACK_LEFT|AV_CH_TOP_BACK_RIGHT);
+    public static final long AV_CH_LAYOUT_HEXADECAGONAL  =   (AV_CH_LAYOUT_OCTAGONAL|AV_CH_WIDE_LEFT|AV_CH_WIDE_RIGHT|AV_CH_TOP_BACK_LEFT|AV_CH_TOP_BACK_RIGHT|AV_CH_TOP_BACK_CENTER|AV_CH_TOP_FRONT_CENTER|AV_CH_TOP_FRONT_LEFT|AV_CH_TOP_FRONT_RIGHT);
+    public static final long AV_CH_LAYOUT_22POINT2     =     (AV_CH_LAYOUT_7POINT1POINT4_BACK|AV_CH_FRONT_LEFT_OF_CENTER|AV_CH_FRONT_RIGHT_OF_CENTER|AV_CH_BACK_CENTER|AV_CH_LOW_FREQUENCY_2|AV_CH_TOP_FRONT_CENTER|AV_CH_TOP_CENTER|AV_CH_TOP_SIDE_LEFT|AV_CH_TOP_SIDE_RIGHT|AV_CH_TOP_BACK_CENTER|AV_CH_BOTTOM_FRONT_CENTER|AV_CH_BOTTOM_FRONT_LEFT|AV_CH_BOTTOM_FRONT_RIGHT);
+    public static final long AV_CH_LAYOUT_10POINT2 = (AV_CH_LAYOUT_7POINT1 | AV_CH_TOP_FRONT_LEFT | AV_CH_TOP_FRONT_RIGHT | AV_CH_TOP_BACK_LEFT | AV_CH_TOP_BACK_RIGHT);
+    public static final long AV_CH_LAYOUT_9POINT0 = (AV_CH_LAYOUT_OCTAGONAL | AV_CH_TOP_CENTER);
+    public static final long AV_CH_LAYOUT_7POINT1_TOP_BACK = AV_CH_LAYOUT_5POINT1POINT2_BACK;
 
+    
     public static final int FF_PROFILE_H264_CONSTRAINED = (1<<9);  // 8+1; constraint_set1_flag
     public static final int FF_PROFILE_H264_INTRA = (1<<11);       // 8+3; constraint_set3_flag
 
@@ -129,11 +145,6 @@ public class IjkMediaMeta {
     public static final int FF_PROFILE_H264_HIGH_444_PREDICTIVE = 244;
     public static final int FF_PROFILE_H264_HIGH_444_INTRA = (244|FF_PROFILE_H264_INTRA);
     public static final int FF_PROFILE_H264_CAVLC_444 = 44;
-
-    // 补充HEVC的定义
-    public static final int FF_PROFILE_HEVC_MAIN = 1;
-    public static final int FF_PROFILE_HEVC_MAIN_10 = 2;
-
 
     public Bundle mMediaMeta;
 
@@ -394,16 +405,10 @@ public class IjkMediaMeta {
             if (mChannelLayout <= 0) {
                 return "N/A";
             } else {
-                if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_MONO) {
+                if (mChannelLayout == AV_CH_LAYOUT_MONO) {
                     return "mono";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_STEREO) {
+                } else if (mChannelLayout == AV_CH_LAYOUT_STEREO) {
                     return "stereo";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_SURROUND) {
-                    return "surround";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_LAYOUT_5POINT1) {
-                    return "5.1";
-                } else if (mChannelLayout == IjkMediaMeta.AV_CH_AV3A_LAYOUT_5POINT1POINT4) {
-                    return "5.1.4";
                 } else {
                     return String.format(Locale.US, "%x", mChannelLayout);
                 }

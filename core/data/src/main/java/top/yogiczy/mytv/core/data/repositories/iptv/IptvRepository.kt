@@ -56,22 +56,24 @@ class IptvRepository(private val source: IptvSource) :
 
             val context = org.mozilla.javascript.Context.enter()
             context.optimizationLevel = -1
-            val result = runCatching {
-                val scope = context.initStandardObjects()
-                context.evaluateString(
-                    scope, """
+            val scriptString = """
                     (function() {
                         var channelList = ${Globals.json.encodeToString(channelList)};
                         ${source.transformJs}
                         return JSON.stringify(main(channelList));
                     })();
-                    """.trimIndent(), "JavaScript", 1, null
+                    """.trimIndent()
+            val result = runCatching {
+                val scope = context.initStandardObjects()
+                context.evaluateString(
+                    scope, scriptString, "JavaScript", 1, null
                 ) as String
             }
             org.mozilla.javascript.Context.exit()
 
             if (result.isFailure) {
                 log.e("转换播放源（${source.name}）错误: ${result.exceptionOrNull()}")
+                // log.e("转换脚本: ${scriptString}")
             }
 
             if (result.isSuccess) Globals.json.decodeFromString(result.getOrNull()!!)

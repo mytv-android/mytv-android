@@ -126,7 +126,11 @@ class SettingsViewModel : ViewModel() {
 
     private var _iptvSourceList by mutableStateOf(IptvSourceList())
     var iptvSourceList: IptvSourceList
-        get() = _iptvSourceList
+        get() = if (_iptvSourceList.isEmpty()) {
+            Constants.IPTV_SOURCE_LIST
+        } else {
+            _iptvSourceList
+        }
         set(value) {
             _iptvSourceList = value
             Configs.iptvSourceList = value
@@ -474,6 +478,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _webViewCore by mutableStateOf(Configs.WebViewCore.SYSTEM)
+    var webViewCore: Configs.WebViewCore
+        get() = _webViewCore
+        set(value) {
+            _webViewCore = value
+            Configs.webViewCore = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _videoPlayerRenderMode by mutableStateOf(Configs.VideoPlayerRenderMode.SURFACE_VIEW)
     var videoPlayerRenderMode: Configs.VideoPlayerRenderMode
         get() = _videoPlayerRenderMode
@@ -501,12 +514,21 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _videoPlayerLoadTimeout by mutableLongStateOf(0)
+    private var _videoPlayerLoadTimeout by mutableLongStateOf(1000)
     var videoPlayerLoadTimeout: Long
         get() = _videoPlayerLoadTimeout
         set(value) {
             _videoPlayerLoadTimeout = value
             Configs.videoPlayerLoadTimeout = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _videoPlayerBufferTime by mutableLongStateOf(0)
+    var videoPlayerBufferTime: Long
+        get() = _videoPlayerBufferTime
+        set(value) {
+            _videoPlayerBufferTime = value
+            Configs.videoPlayerBufferTime = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -519,12 +541,12 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _videoPlayerForceAudioSoftDecode by mutableStateOf(false)
-    var videoPlayerForceAudioSoftDecode: Boolean
-        get() = _videoPlayerForceAudioSoftDecode
+    private var _videoPlayerForceSoftDecode by mutableStateOf(false)
+    var videoPlayerForceSoftDecode: Boolean
+        get() = _videoPlayerForceSoftDecode
         set(value) {
-            _videoPlayerForceAudioSoftDecode = value
-            Configs.videoPlayerForceAudioSoftDecode = value
+            _videoPlayerForceSoftDecode = value
+            Configs.videoPlayerForceSoftDecode = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -747,12 +769,14 @@ class SettingsViewModel : ViewModel() {
         _updateForceRemind = Configs.updateForceRemind
         _updateChannel = Configs.updateChannel
         _videoPlayerCore = Configs.videoPlayerCore
+        _webViewCore = Configs.webViewCore
         _videoPlayerRenderMode = Configs.videoPlayerRenderMode
         _videoPlayerUserAgent = Configs.videoPlayerUserAgent
         _videoPlayerHeaders = Configs.videoPlayerHeaders
         _videoPlayerLoadTimeout = Configs.videoPlayerLoadTimeout
+        _videoPlayerBufferTime = Configs.videoPlayerBufferTime
         _videoPlayerDisplayMode = Configs.videoPlayerDisplayMode
-        _videoPlayerForceAudioSoftDecode = Configs.videoPlayerForceAudioSoftDecode
+        _videoPlayerForceSoftDecode = Configs.videoPlayerForceSoftDecode
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem
         _videoPlayerSkipMultipleFramesOnSameVSync = Configs.videoPlayerSkipMultipleFramesOnSameVSync
         _networkRetryCount = Configs.networkRetryCount

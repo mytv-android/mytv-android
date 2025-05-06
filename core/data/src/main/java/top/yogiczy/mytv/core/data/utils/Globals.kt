@@ -16,6 +16,7 @@ object Globals {
     lateinit var resources: Resources
 
     lateinit var deviceName: String
+    var deviceId: String = "Unknown"
 
     val json = Json {
         encodeDefaults = true

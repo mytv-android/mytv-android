@@ -2,10 +2,19 @@ package top.yogiczy.mytv.tv.ui.screensold.main.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import android.widget.Toast
+import android.content.Context
+import android.content.Intent
+import androidx.compose.runtime.remember
+
 import top.yogiczy.mytv.core.data.utils.Constants
+import top.yogiczy.mytv.core.data.utils.Logger
+
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList.Companion.channelList
@@ -49,10 +58,12 @@ import top.yogiczy.mytv.tv.ui.screensold.videoplayercontroller.VideoPlayerContro
 import top.yogiczy.mytv.tv.ui.screensold.videoplayerdiaplaymode.VideoPlayerDisplayModeScreen
 import top.yogiczy.mytv.tv.ui.screensold.videotracks.VideoTracksScreen
 import top.yogiczy.mytv.tv.ui.screensold.webview.WebViewScreen
+import top.yogiczy.mytv.tv.ui.screensold.webview.WebViewScreen_X5
 import top.yogiczy.mytv.tv.ui.utils.backHandler
 import top.yogiczy.mytv.tv.ui.utils.handleDragGestures
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
-
+import top.yogiczy.mytv.tv.ui.utils.Configs
+import top.yogiczy.mytv.tv.X5CorePreLoadService
 @Composable
 fun MainContent(
     modifier: Modifier = Modifier,
@@ -67,7 +78,7 @@ fun MainContent(
     onBackPressed: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-
+    val log = remember { Logger.create("MainContent")}
     val videoPlayerState =
         rememberVideoPlayerState(defaultDisplayModeProvider = { settingsViewModel.videoPlayerDisplayMode })
     val mainContentState = rememberMainContentState(
@@ -147,32 +158,73 @@ fun MainContent(
                 },
             ),
     ) {
-        VideoPlayerScreen(
-            state = videoPlayerState,
-            showMetadataProvider = { settingsViewModel.debugShowVideoPlayerMetadata },
-            forceTextureView = false,
-        )
-
-        Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
-            val channelLine = mainContentState.currentChannelLine
-            WebViewScreen(
-                urlProvider = {
-                    Pair(
-                        channelLine.url,
-                        channelLine.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
-                    )
-                },
-                onVideoResolutionChanged = { width, height ->
-                    videoPlayerState.metadata = videoPlayerState.metadata.copy(
-                        video = (videoPlayerState.metadata.video
-                            ?: VideoPlayer.Metadata.Video()).copy(
-                            width = width,
-                            height = height,
-                        ),
-                    )
-                    mainContentState.isTempChannelScreenVisible = false
-                },
+        Visibility({ mainContentState.currentChannelLine?.hybridType != ChannelLine.HybridType.WebView }) {
+            VideoPlayerScreen(
+                state = videoPlayerState,
+                showMetadataProvider = { settingsViewModel.debugShowVideoPlayerMetadata },
+                forceTextureView = false,
             )
+        }
+        key(mainContentState.isInPlaybackMode) {
+            Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
+                mainContentState.currentChannelLine.let {
+                    log.i("当前频道$it, 播放链接: ${it.playableUrl}")
+                    val isX5Available = com.tencent.smtt.sdk.QbSdk.canLoadX5(LocalContext.current)
+                    if (settingsViewModel.webViewCore == Configs.WebViewCore.X5 && !isX5Available){
+                        settingsViewModel.webViewCore = Configs.WebViewCore.SYSTEM
+                        Toast.makeText(
+                            LocalContext.current,
+                            "X5内核不可用，将进行初始化。已切换为系统内核",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        preInitX5Core(LocalContext.current)
+                    }
+                    when (settingsViewModel.webViewCore) {
+                        Configs.WebViewCore.SYSTEM -> {
+                            WebViewScreen(
+                                urlProvider = {
+                                    Pair(
+                                        it.playbackUrl ?: it.url,
+                                        it.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                                    )
+                                },
+                                onVideoResolutionChanged = { width, height ->
+                                    videoPlayerState.metadata = videoPlayerState.metadata.copy(
+                                        video = (videoPlayerState.metadata.video
+                                            ?: VideoPlayer.Metadata.Video()).copy(
+                                            width = width,
+                                            height = height,
+                                        ),
+                                    )
+                                    mainContentState.isTempChannelScreenVisible = false
+                                },
+                            )
+                        }
+                        Configs.WebViewCore.X5 -> {
+                            WebViewScreen_X5(
+                                urlProvider = {
+                                    Pair(
+                                        it.playbackUrl ?: it.url,
+                                        it.httpUserAgent ?: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
+                                    )
+                                },
+                                onVideoResolutionChanged = { width, height ->
+                                    videoPlayerState.metadata = videoPlayerState.metadata.copy(
+                                        video = (videoPlayerState.metadata.video
+                                            ?: VideoPlayer.Metadata.Video()).copy(
+                                            width = width,
+                                            height = height,
+                                        ),
+                                    )
+                                    mainContentState.isTempChannelScreenVisible = false
+                                },
+                                onSelect = { mainContentState.isChannelScreenVisible = true },
+                                onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
+                            )
+                        } 
+                    }
+                }
+            }
         }
     }
 
@@ -262,7 +314,7 @@ fun MainContent(
     ) {
         IptvSourceScreen(
             currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
-            iptvSourceListProvider = {IptvSourceList(Constants.IPTV_SOURCE_LIST + settingsViewModel.iptvSourceList)},
+            iptvSourceListProvider = {settingsViewModel.iptvSourceList},
             onIptvSourceChanged = {
                 mainContentState.isIptvSourceScreenVisible = false
                 settingsViewModel.iptvSourceCurrent = it
@@ -399,6 +451,7 @@ fun MainContent(
             epgListProvider = epgListProvider,
             currentPlaybackEpgProgrammeProvider = { mainContentState.currentPlaybackEpgProgramme },
             videoPlayerMetadataProvider = { videoPlayerState.metadata },
+            videoPlayerIndicatorProvider = { mainContentState.currentChannelLine?.hybridType != ChannelLine.HybridType.WebView },
             onShowIptvSource ={
                 mainContentState.isQuickOpScreenVisible = false
                 mainContentState.isIptvSourceScreenVisible = true
@@ -532,4 +585,12 @@ fun MainContent(
                 EpgProgrammeReserveList(settingsViewModel.epgChannelReserveList - reserve)
         },
     )
+}
+/**
+     * 初始化X5内核
+     */
+private fun preInitX5Core(context: Context) { // Accept context as a parameter
+    // 预加载x5内核
+    val intent = Intent(context, X5CorePreLoadService::class.java)
+    X5CorePreLoadService.enqueueWork(context, intent)
 }
