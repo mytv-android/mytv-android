@@ -24,8 +24,8 @@ class LocalFileSyncRepository(
             file.writeText(Globals.json.encodeToString(data))
             true
         } catch (ex: Exception) {
-            log.e("推送云端失败", ex)
-            throw Exception("推送云端失败", ex)
+            log.e("推送失败", ex)
+            throw Exception("推送失败", ex)
         }
     }
 
@@ -34,8 +34,8 @@ class LocalFileSyncRepository(
             val text = file.readText()
             Globals.json.decodeFromString<CloudSyncData>(text)
         } catch (ex: Exception) {
-            log.e("拉取云端失败", ex)
-            throw Exception("拉取云端失败", ex)
+            log.e("拉取失败", ex)
+            throw Exception("拉取失败", ex)
         }
     }
 }

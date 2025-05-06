@@ -660,7 +660,7 @@ class SettingsViewModel : ViewModel() {
             Configs.cloudSyncNetworkUrl = value
         }
 
-    private var _cloudSyncLocalFilePath by mutableStateOf("")
+    private var _cloudSyncLocalFilePath by mutableStateOf(Constants.DEFAULT_LOCAL_SYNC_FILE_PATH)
     var cloudSyncLocalFilePath: String
         get() = _cloudSyncLocalFilePath
         set(value) {

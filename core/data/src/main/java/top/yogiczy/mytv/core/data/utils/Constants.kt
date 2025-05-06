@@ -134,4 +134,6 @@ object Constants {
      * 界面 时间显示前后范围
      */
     const val UI_TIME_SCREEN_SHOW_DURATION = 1000L * 30 // 前后30秒
+
+    const val DEFAULT_LOCAL_SYNC_FILE_PATH =  "file:///storage/emulated/0/Download/"
 }

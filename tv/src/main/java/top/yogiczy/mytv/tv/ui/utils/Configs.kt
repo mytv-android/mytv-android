@@ -679,7 +679,7 @@ object Configs {
 
     /** 云同步 本地文件 */
     var cloudSyncLocalFilePath: String
-        get() = SP.getString(KEY.CLOUD_SYNC_LOCAL_FILE.name, "")
+        get() = SP.getString(KEY.CLOUD_SYNC_LOCAL_FILE.name, Constants.DEFAULT_LOCAL_SYNC_FILE_PATH)
         set(value) = SP.putString(KEY.CLOUD_SYNC_LOCAL_FILE.name, value)
 
     /** 云同步 webdav url */
