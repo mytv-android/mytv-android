@@ -314,7 +314,7 @@ fun MainContent(
     ) {
         IptvSourceScreen(
             currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
-            iptvSourceListProvider = {IptvSourceList(settingsViewModel.iptvSourceList)},
+            iptvSourceListProvider = {settingsViewModel.iptvSourceList},
             onIptvSourceChanged = {
                 mainContentState.isIptvSourceScreenVisible = false
                 settingsViewModel.iptvSourceCurrent = it

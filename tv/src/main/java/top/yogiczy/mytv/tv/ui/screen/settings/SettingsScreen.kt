@@ -239,7 +239,7 @@ fun SettingsScreen(
                 composable(SettingsSubCategories.IPTV_SOURCE.name) {
                     SettingsIptvSourceScreen(
                         currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
-                        iptvSourceListProvider = { IptvSourceList(settingsViewModel.iptvSourceList) },
+                        iptvSourceListProvider = { settingsViewModel.iptvSourceList },
                         onSetCurrent = {
                             settingsViewModel.iptvSourceCurrent = it
                             settingsViewModel.iptvChannelGroupHiddenList = emptySet()
