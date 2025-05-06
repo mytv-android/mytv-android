@@ -34,11 +34,13 @@ function removeVideoPlayerControl() {
 }
 
 function removeAllDivElements() {
+    
     [...document.body.children].forEach((element) => {
-        if (element.tagName.toLowerCase() == 'div' || element.tagName.toLowerCase() == 'section') {
+        const tagName = element.tagName.toLowerCase()
+        if (tagName != 'script' && tagName != 'video'){
             console.info(element.innerHTML);
-            element.remove()
-        }
+            element.remove();
+        } 
     })
 }
 
