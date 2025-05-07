@@ -195,7 +195,7 @@ enum class SettingsCategories(
     val title: String,
 ) {
     APP(Icons.Outlined.Devices, "通用"),
-    IPTV(Icons.Outlined.LiveTv, "播放源"),
+    IPTV(Icons.Outlined.LiveTv, "订阅源"),
     EPG(Icons.AutoMirrored.Outlined.LibraryBooks, "节目单"),
     UI(Icons.Outlined.DisplaySettings, "界面"),
     THEME(Icons.Outlined.ColorLens, "主题"),

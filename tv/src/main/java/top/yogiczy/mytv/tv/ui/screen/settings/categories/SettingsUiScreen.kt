@@ -181,7 +181,7 @@ fun SettingsUiScreen(
 
             SettingsListItem(
                 headlineContent = "启用收藏",
-                supportingContent = "是否显示播放源频道收藏列表",
+                supportingContent = "是否显示订阅源频道收藏列表",
                 trailingContent = {
                     Switch(favoriteEnable, null)
                 },

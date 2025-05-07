@@ -84,7 +84,7 @@ class MainViewModel : ViewModel() {
     }
 
     private suspend fun refreshChannel() {
-        _uiState.value = MainUiState.Loading("加载播放源")
+        _uiState.value = MainUiState.Loading("加载订阅源")
 
         flow {
             emit(
@@ -97,7 +97,7 @@ class MainViewModel : ViewModel() {
                 if (e !is HttpException) return@retryWhen false
 
                 _uiState.value =
-                    MainUiState.Loading("加载播放源(${attempt + 1}/${Constants.NETWORK_RETRY_COUNT})...")
+                    MainUiState.Loading("加载订阅源(${attempt + 1}/${Constants.NETWORK_RETRY_COUNT})...")
                 delay(Constants.NETWORK_RETRY_INTERVAL)
                 true
             }

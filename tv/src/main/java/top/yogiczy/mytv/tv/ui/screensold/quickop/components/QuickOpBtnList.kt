@@ -95,7 +95,7 @@ fun QuickOpBtnList(
                     .focusOnLaunched()
                     .focusRequester(runtime.firstItemFocusRequester)
                     .handleKeyEvents(onLeft = { runtime.scrollToLast()}),
-                title = "播放源",
+                title = "订阅源",
                 imageVector = Icons.Filled.LiveTv,
                 onSelect = onShowIptvSource,
             )

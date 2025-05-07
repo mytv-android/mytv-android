@@ -168,7 +168,7 @@ fun DashboardScreeIptvSource(
 private fun DashboardScreenScreen() {
     MyTvTheme {
         DashboardScreen(
-            currentIptvSourceProvider = { IptvSource(name = "默认播放源1") },
+            currentIptvSourceProvider = { IptvSource(name = "默认订阅源1") },
             channelFavoriteListProvider = { ChannelFavoriteList.EXAMPLE },
             epgListProvider = { EpgList.example(ChannelList.EXAMPLE) },
         )
