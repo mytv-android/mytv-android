@@ -31,8 +31,12 @@ object Constants {
     val IPTV_SOURCE_LIST = IptvSourceList(
         listOf(
             IptvSource(
-                name = "默认直播源 iptv-api",
+                name = "默认订阅源 iptv-api",
                 url = "https://gitee.com/mytv-android/iptv-api/raw/master/output/result.m3u",
+            ),
+            IptvSource(
+                name = "WebView订阅源",
+                url = "https://gitee.com/mytv-android/iptv-api/raw/master/output/webview.m3u",
             )
         )
     )
