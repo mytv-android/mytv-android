@@ -10,6 +10,8 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.CookieManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -143,14 +145,16 @@ class MyClient(
 ) : WebViewClient() {
     private val logger = Logger.create("WebViewClient")
     
-    // override fun shouldInterceptRequest(
-    //     view: WebView?,
-    //     request: WebResourceRequest?
-    // ): WebResourceResponse? {
-    //     if (request?.url.toString().endsWith(".css"))
-    //         return WebResourceResponse("text/css", "UTF-8", null)
-    //     return null
-    // }
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest?
+    ): WebResourceResponse? {
+        val url = request?.url.toString() ?: ""
+        if (!url.contains("yangshipin.cn") && !url.contains("cztv.com") && url.endsWith(".css")) {
+            return WebResourceResponse("text/css", "UTF-8", null) // 返回空响应以阻止加载
+        }
+        return super.shouldInterceptRequest(view, request)
+    }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         logger.i("WebView页面开始加载: $url")

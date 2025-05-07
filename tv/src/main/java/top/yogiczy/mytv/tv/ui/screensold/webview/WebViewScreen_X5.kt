@@ -11,6 +11,8 @@ import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
 import com.tencent.smtt.sdk.CookieManager
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -158,6 +160,17 @@ class MyClient_X5(
     private val onPageFinished: () -> Unit,
 ) : WebViewClient() {
     private val logger = Logger.create("WebViewClient")
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest?
+    ): WebResourceResponse? {
+        val url = request?.url.toString() ?: ""
+        if (!url.contains("yangshipin.cn") && !url.contains("cztv.com") && url.endsWith(".css")) {
+            return WebResourceResponse("text/css", "UTF-8", null) // 返回空响应以阻止加载
+        }
+        return super.shouldInterceptRequest(view, request)
+    }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         logger.i("WebView页面开始加载: $url")
