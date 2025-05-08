@@ -159,7 +159,7 @@ class MainViewModel : ViewModel() {
     private suspend fun hybridChannel(channelGroupList: ChannelGroupList) =
         withContext(Dispatchers.Default) {
             if (Configs.iptvHybridMode != Configs.IptvHybridMode.DISABLE) {
-                _uiState.value = MainUiState.Loading("网页源")
+                _uiState.value = MainUiState.Loading("匹配可用的网页源")
             }
 
             return@withContext when (Configs.iptvHybridMode) {

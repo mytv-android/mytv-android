@@ -164,7 +164,8 @@ fun SettingsIptvScreen(
             val hybridMode = settingsViewModel.iptvHybridMode
 
             SettingsListItem(
-                headlineContent = "网页源",
+                headlineContent = "自动添加网页源",
+                supportingContent = "为订阅源中的频道自动添加对应的网页源线路",
                 trailingContent = { Text(hybridMode.label) },
                 onSelect = toIptvHybridModeScreen,
                 link = true,
