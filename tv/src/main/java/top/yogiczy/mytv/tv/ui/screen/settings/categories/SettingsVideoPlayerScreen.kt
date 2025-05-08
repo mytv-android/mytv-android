@@ -122,8 +122,8 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "缓存加载时间",
-                supportingContent = "设置播放前的最小缓存加载时间。当设置的缓存时间不为0时，可能会导致IJK播放卡死",
+                headlineContent = "播放缓冲",
+                supportingContent = "对于Media3，为播放前的最小缓存加载时间（秒）。对于Ijk，为播放前的最小缓存加载帧（数值x20）。",
                 trailingContent = settingsViewModel.videoPlayerBufferTime.humanizeMs(),
                 onSelect = toVideoPlayerBufferTimeScreen,
                 link = true,

@@ -38,7 +38,7 @@ fun SettingsVideoPlayerBufferTimeScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 播放器 / 缓存加载时间") },
+        header = { Text("设置 / 播放器 / 播放缓冲") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -55,7 +55,7 @@ fun SettingsVideoPlayerBufferTimeScreen(
                         .handleKeyEvents(onSelect = { onBufferTimeChanged(delay) }),
                     headlineContent = {
                         Text(
-                            delay.humanizeMs(),
+                            delay.humanizeTime(),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                         )
@@ -79,6 +79,9 @@ fun SettingsVideoPlayerBufferTimeScreen(
     }
 }
 
+fun Long.humanizeTime(): String {
+    return "${this / 1000}"
+}
 
 @Preview(device = "id:Android TV (720p)")
 @Composable
