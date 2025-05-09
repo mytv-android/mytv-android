@@ -44,7 +44,7 @@ fun SettingsVideoPlayerBufferTimeScreen(
     ) {
         LazyVerticalGrid(
             modifier = Modifier,
-            columns = GridCells.Fixed(6),
+            columns = GridCells.Fixed(5),
             contentPadding = childPadding.copy(top = 10.dp).paddingValues,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),

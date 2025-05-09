@@ -315,7 +315,7 @@ object Configs {
     /** 订阅源列表 */
     var iptvSourceList: IptvSourceList
         get() = Globals.json.decodeFromString(
-            SP.getString(KEY.IPTV_SOURCE_LIST.name, Globals.json.encodeToString(IptvSourceList()))
+            SP.getString(KEY.IPTV_SOURCE_LIST.name, Globals.json.encodeToString(Constants.IPTV_SOURCE_LIST))
         )
         set(value) = SP.putString(KEY.IPTV_SOURCE_LIST.name, Globals.json.encodeToString(value))
 

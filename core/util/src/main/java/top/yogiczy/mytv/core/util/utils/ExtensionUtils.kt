@@ -17,7 +17,7 @@ fun Long.humanizeMs(): String {
 }
 
 fun Long.humanizeBufferNum(): String {
-    return "${this.humanizeMs()}|${this * 0.03}f"
+    return "${this.humanizeMs()} | ${(this * 0.03).toLong()}f"
 }
 
 fun Long.humanizeBytes(): String {
