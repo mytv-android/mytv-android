@@ -18,7 +18,7 @@ import androidx.tv.material3.ListItem
 import androidx.tv.material3.ListItemDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
-import top.yogiczy.mytv.core.util.utils.humanizeMs
+import top.yogiczy.mytv.core.util.utils.humanizeBufferNum
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
@@ -55,7 +55,7 @@ fun SettingsVideoPlayerBufferTimeScreen(
                         .handleKeyEvents(onSelect = { onBufferTimeChanged(delay) }),
                     headlineContent = {
                         Text(
-                            delay.humanizeTime(),
+                            delay.humanizeBufferNum(),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
                         )
@@ -77,10 +77,6 @@ fun SettingsVideoPlayerBufferTimeScreen(
             }
         }
     }
-}
-
-fun Long.humanizeTime(): String {
-    return "${this / 1000}"
 }
 
 @Preview(device = "id:Android TV (720p)")

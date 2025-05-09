@@ -10,6 +10,7 @@ import androidx.tv.material3.Switch
 import androidx.tv.material3.Text
 import top.yogiczy.mytv.core.util.utils.headersValid
 import top.yogiczy.mytv.core.util.utils.humanizeMs
+import top.yogiczy.mytv.core.util.utils.humanizeBufferNum
 import top.yogiczy.mytv.tv.ui.screen.settings.SettingsViewModel
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
@@ -123,8 +124,8 @@ fun SettingsVideoPlayerScreen(
         item {
             SettingsListItem(
                 headlineContent = "播放缓冲",
-                supportingContent = "对于Media3，为播放前的最小缓存加载时间（秒）。对于Ijk，为播放前的最小缓存加载帧（数值x20）。",
-                trailingContent = settingsViewModel.videoPlayerBufferTime.humanizeMs(),
+                supportingContent = "对于Media3，为播放前的最小缓存加载时间（秒）。对于Ijk，为播放前的最小缓存加载帧（f）。",
+                trailingContent = settingsViewModel.videoPlayerBufferTime.humanizeBufferNum(),
                 onSelect = toVideoPlayerBufferTimeScreen,
                 link = true,
             )
