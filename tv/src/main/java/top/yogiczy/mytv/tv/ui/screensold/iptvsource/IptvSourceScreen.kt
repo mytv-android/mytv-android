@@ -75,7 +75,7 @@ fun IptvSourceScreen(
         position = DrawerPosition.End,
         header = { 
             Row(
-                modifier = Modifier.width(270.dp),
+                modifier = Modifier.width(200.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
