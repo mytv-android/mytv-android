@@ -38,8 +38,8 @@ function removeAllDivElements() {
     [...document.body.children].forEach((element) => {
         const tagName = element.tagName.toLowerCase()
         if (tagName != 'script' && tagName != 'video'){
-            console.info(element.innerHTML);
-            element.remove();
+            // element.remove();
+            element.style.display = 'none';
         } 
     })
 }
