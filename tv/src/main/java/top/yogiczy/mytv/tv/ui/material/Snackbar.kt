@@ -66,6 +66,46 @@ fun SnackbarUI(
 }
 
 @Composable
+fun SnackbarUICustom(
+    modifier: Modifier = Modifier,
+    visibleProvider: () -> Boolean = { false },
+    positionProvider: () -> Alignment = { Alignment.BottomCenter },
+    textProvider: () -> String = { "" },
+    showLeadingIconProvider: () -> Boolean = { false },
+    leadingIconProvider: () -> ImageVector = { Icons.Outlined.Info },
+    leadingLoadingProvider: () -> Boolean = { false },
+    showTrailingIconProvider: () -> Boolean = { false },
+    trailingIconProvider: () -> ImageVector = { Icons.Outlined.Info },
+    trailingLoadingProvider: () -> Boolean = { false },
+    typeProvider: () -> SnackbarType = { SnackbarType.DEFAULT },
+) {
+    val visible by rememberUpdatedState(visibleProvider())
+    val position by rememberUpdatedState(positionProvider())
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(
+            visible,
+            modifier = modifier
+                .align(position)
+                .padding(bottom = 28.dp),
+            enter = fadeIn() + scaleIn(),
+            exit = fadeOut() + scaleOut(),
+        ) {
+            SnackbarContent(
+                text = textProvider(),
+                showLeadingIcon = showLeadingIconProvider(),
+                leadingIcon = leadingIconProvider(),
+                leadingLoading = leadingLoadingProvider(),
+                showTrailingIcon = showTrailingIconProvider(),
+                trailingIcon = trailingIconProvider(),
+                trailingLoading = trailingLoadingProvider(),
+                type = typeProvider(),
+            )
+        }
+    }
+}
+
+@Composable
 private fun SnackbarContent(
     modifier: Modifier = Modifier,
     text: String,

@@ -67,6 +67,7 @@ import top.yogiczy.mytv.tv.X5CorePreLoadService
 @Composable
 fun MainContent(
     modifier: Modifier = Modifier,
+    isLoadingProvider: () -> Boolean = { false },
     filteredChannelGroupListProvider: () -> ChannelGroupList = { ChannelGroupList() },
     favoriteChannelListProvider: () -> ChannelList = { ChannelList() },
     epgListProvider: () -> EpgList = { EpgList() },
@@ -77,6 +78,7 @@ fun MainContent(
     onReload: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
+    val isLoading = isLoadingProvider()
     val coroutineScope = rememberCoroutineScope()
     val log = remember { Logger.create("MainContent")}
     val videoPlayerState =
@@ -123,7 +125,7 @@ fun MainContent(
                     }
                 },
                 onLongUp = { mainContentState.isIptvSourceScreenVisible = true },
-                onSelect = { mainContentState.isChannelScreenVisible = true },
+                onSelect = { if (!isLoading) mainContentState.isChannelScreenVisible = true },
                 onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
                 onSettings = { mainContentState.isQuickOpScreenVisible = true },
                 onLongLeft = { mainContentState.isEpgScreenVisible = true },

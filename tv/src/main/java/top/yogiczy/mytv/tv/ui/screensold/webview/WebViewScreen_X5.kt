@@ -159,7 +159,7 @@ class MyClient_X5(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
 ) : WebViewClient() {
-    private val logger = Logger.create("WebViewClient")
+    private val logger = Logger.create("WebViewClient_X5")
 
     override fun shouldInterceptRequest(
         view: WebView?,
