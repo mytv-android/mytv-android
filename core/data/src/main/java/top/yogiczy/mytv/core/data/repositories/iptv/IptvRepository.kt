@@ -13,6 +13,7 @@ import top.yogiczy.mytv.core.data.repositories.iptv.parser.IptvParser.ChannelIte
 import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.data.utils.Logger
 import kotlin.time.measureTimedValue
+import com.dokar.quickjs.QuickJs
 /**
  * 订阅源数据获取
  */
@@ -54,8 +55,6 @@ class IptvRepository(private val source: IptvSource) :
         withContext(Dispatchers.IO) {
             if (source.transformJs.isNullOrBlank()) return@withContext channelList
 
-            val context = org.mozilla.javascript.Context.enter()
-            context.optimizationLevel = -1
             val scriptString = """
                     (function() {
                         var channelList = ${Globals.json.encodeToString(channelList)};
@@ -64,12 +63,10 @@ class IptvRepository(private val source: IptvSource) :
                     })();
                     """.trimIndent()
             val result = runCatching {
-                val scope = context.initStandardObjects()
-                context.evaluateString(
-                    scope, scriptString, "JavaScript", 1, null
-                ) as String
+                QuickJs.create(Dispatchers.Default).use { quickJs ->
+                    quickJs.evaluate(scriptString) as String
+                }
             }
-            org.mozilla.javascript.Context.exit()
 
             if (result.isFailure) {
                 log.e("转换订阅源（${source.name}）错误: ${result.exceptionOrNull()}")
