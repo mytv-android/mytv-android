@@ -67,6 +67,8 @@ fun WebViewScreen_X5(
     if (actualUrl.contains("yangshipin.cn")){
         cookies = settingsVM.iptvHybridYangshipinCookie.split(";")
     }
+    val urlHost = getURLHost(actualUrl)
+    val blacklist = readBlacklist(getContext(), urlHost)
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier
@@ -87,6 +89,7 @@ fun WebViewScreen_X5(
                             logger.i("WebView页面加载完成")
                             // placeholderVisible = false
                         },
+                        blacklist = blacklist,
                     )
                     val cookieManager = CookieManager.getInstance()
                     cookieManager.setAcceptCookie(true)
@@ -158,6 +161,7 @@ fun WebViewScreen_X5(
 class MyClient_X5(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
+    private val blacklist: List<String> = emptyList(),
 ) : WebViewClient() {
     private val logger = Logger.create("WebViewClient_X5")
 
@@ -168,6 +172,13 @@ class MyClient_X5(
         val url = request?.url.toString() ?: ""
         if (!url.contains("jstv.com") && !url.contains("yangshipin.cn") && !url.contains("cztv.com") && url.endsWith(".css")) {
             return WebResourceResponse("text/css", "UTF-8", null) // 返回空响应以阻止加载
+        }
+        if(blacklist != null && blacklist.isNotEmpty()){
+            for (item in blacklist) {
+                if (url.contains(item)) {
+                    return WebResourceResponse("text", "UTF-8", null) // 返回空响应以阻止加载
+                }
+            }
         }
         return super.shouldInterceptRequest(view, request)
     }

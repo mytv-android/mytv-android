@@ -26,12 +26,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.screensold.webview.components.WebViewPlaceholder
 import top.yogiczy.mytv.core.data.utils.Logger
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
+import java.net.URI
+import org.json.JSONObject
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -65,6 +68,8 @@ fun WebViewScreen(
     if (actualUrl.contains("yangshipin.cn")){
         cookies = settingsVM.iptvHybridYangshipinCookie.split(";")
     }
+    val urlHost = getURLHost(actualUrl)
+    val blacklist = readBlacklist(getContext(), urlHost)
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier
@@ -85,6 +90,7 @@ fun WebViewScreen(
                             logger.i("WebView页面加载完成")
                             // placeholderVisible = false
                         },
+                        blacklist = blacklist,
                     )
                     val cookieManager = CookieManager.getInstance()
                     cookieManager.setAcceptCookie(true)
@@ -142,6 +148,7 @@ fun WebViewScreen(
 class MyClient(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
+    private val blacklist: List<String> = emptyList(),
 ) : WebViewClient() {
     private val logger = Logger.create("WebViewClient")
     
@@ -153,6 +160,13 @@ class MyClient(
         if (!url.contains("jstv.com") && !url.contains("yangshipin.cn") && !url.contains("cztv.com") && url.endsWith(".css")) {
             return WebResourceResponse("text/css", "UTF-8", null) // 返回空响应以阻止加载
         }
+        if(blacklist != null && blacklist.isNotEmpty()){
+            for (item in blacklist) {
+                if (url.contains(item)) {
+                    return WebResourceResponse("text", "UTF-8", null) // 返回空响应以阻止加载
+                }
+            }
+        }
         return super.shouldInterceptRequest(view, request)
     }
 
@@ -162,14 +176,14 @@ class MyClient(
         super.onPageStarted(view, url, favicon)
     }
 
-    fun readAssetFile(context: Context, fileName: String): String {
-        val inputStream = context.assets.open(fileName)
-        val size = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
-        return String(buffer, Charsets.UTF_8)
-    }
+    // fun readAssetFile(context: Context, fileName: String): String {
+    //     val inputStream = context.assets.open(fileName)
+    //     val size = inputStream.available()
+    //     val buffer = ByteArray(size)
+    //     inputStream.read(buffer)
+    //     inputStream.close()
+    //     return String(buffer, Charsets.UTF_8)
+    // }
 
     override fun onPageFinished(view: WebView, url: String) {
         onPageFinished()
@@ -204,4 +218,38 @@ class MyWebViewInterface(
     fun updatePlaceholderVisible(visible: Boolean, message: String) {
         onUpdatePlaceholderVisible(visible, message)
     }
+}
+
+fun readAssetFile(context: Context, fileName: String): String {
+    val inputStream = context.assets.open(fileName)
+    val size = inputStream.available()
+    val buffer = ByteArray(size)
+    inputStream.read(buffer)
+    inputStream.close()
+    return String(buffer, Charsets.UTF_8)
+}
+
+fun readBlacklist(context: Context, urlHost: String): List<String> {
+    val jsonString = readAssetFile(context, "webview_loading_blacklist.json")
+    val jsonObject = JSONObject(jsonString)
+    val items = mutableListOf<String>()
+    jsonObject.keys().forEach { key ->
+        if (key == urlHost) {
+            val list = jsonObject.getJSONArray(key)
+            for (i in 0 until list.length()) {
+                items.add(list.getString(i))
+            }
+        }
+    }
+    return items
+}
+
+fun getURLHost(url: String): String {
+    val uri = URI(url)
+    return uri.host ?: ""
+}
+
+@Composable
+fun getContext(): Context {
+    return LocalContext.current
 }

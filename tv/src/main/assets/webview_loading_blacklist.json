@@ -1,0 +1,27 @@
+{
+  "tv.cctv.com": [
+    "jweixin",
+    "daohang",
+    "dianshibao.js",
+    "dingtalk.js",
+    "configtool",
+    "qrcode",
+    "shareindex.js",
+    "zhibo_shoucang.js",
+    "gray",
+    "cntv_Advertise.js",
+    "top2023newindex.js",
+    "indexPC.js",
+    "getEpgInfoByChannelNew",
+    "epglist",
+    "epginfo",
+    "getHandDataList",
+    "2019whitetop/index.js",
+    "pc_nav/index.js",
+    "shareindex.js",
+    "mapjs/index.js",
+    "bottomjs/index.js",
+    "top2023newindex.js",
+    "2019dlbhyjs/index.js"
+  ]
+}
