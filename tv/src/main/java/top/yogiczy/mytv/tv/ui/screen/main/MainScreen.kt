@@ -177,7 +177,10 @@ fun MainScreen(
 
             composable(Screens.Loading()) {
                 LoadingScreen(
-                    onShowDialog = {isLoading = true},
+                    onShowDialog = {
+                        if (uiState is MainUiState.Loading)
+                            isLoading = true
+                    },
                     toDashboardScreen = {
                         navController.navigateUp()
                         navController.navigateSingleTop(settingsViewModel.appStartupScreen)

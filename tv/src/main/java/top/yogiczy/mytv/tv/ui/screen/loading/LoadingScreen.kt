@@ -51,14 +51,6 @@ fun LoadingScreen(
 ) {
     onShowDialog()
     toDashboardScreen()
-    AppScreen(
-        modifier = modifier,
-        header = {
-            Text(settingsVM.iptvSourceCurrent.name)
-        },
-        onBackPressed = {},
-    ) {
-    }
 }
 
 @Composable
