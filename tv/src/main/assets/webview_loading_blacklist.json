@@ -23,5 +23,18 @@
     "bottomjs/index.js",
     "top2023newindex.js",
     "2019dlbhyjs/index.js"
+  ],
+  "yangshipin.cn" :[
+    "kvcollect",
+    "index",
+    "cctvh5-openapicore.min.js",
+    "cctvh5-trace.min.js",
+    "VR.js",
+    "vconsole.min.js",
+    "three.js",
+    "blueprint.css",
+    "normalize.css",
+    "blueprint-select.css",
+    "cropper.css"
   ]
 }
