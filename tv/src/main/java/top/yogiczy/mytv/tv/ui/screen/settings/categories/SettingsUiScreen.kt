@@ -39,7 +39,7 @@ fun SettingsUiScreen(
                 supportingContent = "在频道底部显示当前节目进度条",
                 trailingContent = { Switch(showProgress, null) },
                 onSelect = {
-                    settingsViewModel.uiShowEpgProgrammeProgress = !showProgress
+                    settingsViewModel.uiShowEpgProgrammeProgress = !settingsViewModel.uiShowEpgProgrammeProgress
                 },
             )
         }
@@ -54,7 +54,7 @@ fun SettingsUiScreen(
                     Switch(showProgress, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiShowEpgProgrammePermanentProgress = !showProgress
+                    settingsViewModel.uiShowEpgProgrammePermanentProgress = !settingsViewModel.uiShowEpgProgrammePermanentProgress
                 },
             )
         }
@@ -68,7 +68,7 @@ fun SettingsUiScreen(
                     Switch(showChannelLogo, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiShowChannelLogo = !showChannelLogo
+                    settingsViewModel.uiShowChannelLogo = !settingsViewModel.uiShowChannelLogo
                 },
             )
         }
@@ -82,7 +82,7 @@ fun SettingsUiScreen(
                     Switch(showChannelPreview, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiShowChannelPreview = !showChannelPreview
+                    settingsViewModel.uiShowChannelPreview = !settingsViewModel.uiShowChannelPreview
                 },
             )
         }
@@ -97,7 +97,7 @@ fun SettingsUiScreen(
                     Switch(useClassicPanelScreen, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiUseClassicPanelScreen = !useClassicPanelScreen
+                    settingsViewModel.uiUseClassicPanelScreen = !settingsViewModel.uiUseClassicPanelScreen
                 },
             )
         }
@@ -171,7 +171,7 @@ fun SettingsUiScreen(
                     Switch(focusOptimize, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiFocusOptimize = !focusOptimize
+                    settingsViewModel.uiFocusOptimize = !settingsViewModel.uiFocusOptimize
                 },
             )
         }
@@ -186,7 +186,7 @@ fun SettingsUiScreen(
                     Switch(favoriteEnable, null)
                 },
                 onSelect = {
-                    settingsViewModel.iptvChannelFavoriteEnable = !favoriteEnable
+                    settingsViewModel.iptvChannelFavoriteEnable = !settingsViewModel.iptvChannelFavoriteEnable
                 },
             )
         }

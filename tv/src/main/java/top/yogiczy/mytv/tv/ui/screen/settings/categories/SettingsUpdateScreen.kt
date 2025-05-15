@@ -52,7 +52,7 @@ fun SettingsUpdateScreen(
                     Switch(forceRemind, null)
                 },
                 onSelect = {
-                    settingsViewModel.updateForceRemind = !forceRemind
+                    settingsViewModel.updateForceRemind = !settingsViewModel.updateForceRemind
                 },
             )
         }
