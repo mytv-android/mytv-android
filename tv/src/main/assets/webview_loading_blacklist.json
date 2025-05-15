@@ -27,7 +27,6 @@
   "yangshipin.cn" :[
     "kvcollect",
     "index",
-    "cctvh5-openapicore.min.js",
     "cctvh5-trace.min.js",
     "VR.js",
     "vconsole.min.js",
