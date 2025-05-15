@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import kotlinx.coroutines.launch
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroup
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
@@ -47,12 +49,16 @@ import top.yogiczy.mytv.core.data.entities.epg.EpgList.Companion.match
 import top.yogiczy.mytv.core.data.entities.epg.EpgList.Companion.recentProgramme
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgramme
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
+import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSource
+import top.yogiczy.mytv.core.data.entities.iptvsource.IptvSourceList
+import top.yogiczy.mytv.core.data.repositories.iptv.IptvRepository
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.screen.live.channels.components.LiveChannelsChannelInfo
 import top.yogiczy.mytv.tv.ui.screensold.channel.ChannelScreenTopRight
 import top.yogiczy.mytv.tv.ui.screensold.classicchannel.components.ClassicChannelGroupItemList
 import top.yogiczy.mytv.tv.ui.screensold.classicchannel.components.ClassicChannelItemList
 import top.yogiczy.mytv.tv.ui.screensold.classicchannel.components.ClassicEpgItemList
+import top.yogiczy.mytv.tv.ui.screensold.classicchannel.components.ClassicIptvSourceItemList
 import top.yogiczy.mytv.tv.ui.screensold.components.rememberScreenAutoCloseState
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
@@ -60,6 +66,8 @@ import top.yogiczy.mytv.tv.ui.theme.SAFE_AREA_VERTICAL_PADDING
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import kotlin.math.max
+import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
+import top.yogiczy.mytv.tv.ui.utils.Configs
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -84,12 +92,19 @@ fun ClassicChannelScreen(
     channelFavoriteEnabledProvider: () -> Boolean = { false },
     channelFavoriteListVisibleProvider: () -> Boolean = { false },
     onChannelFavoriteListVisibleChange: (Boolean) -> Unit = {},
+    iptvSourceListProvider: () -> IptvSourceList = { IptvSourceList() },
+    currentIptvSourceProvider: () -> IptvSource = { IptvSource() },
+    onIptvSourceChanged: (IptvSource) -> Unit = {},
     onClose: () -> Unit = {},
 ) {
     val screenAutoCloseState = rememberScreenAutoCloseState(onTimeout = onClose)
     val channelGroupList = channelGroupListProvider()
     val channelFavoriteListVisible = remember { channelFavoriteListVisibleProvider() }
+    val coroutineScope = rememberCoroutineScope()
 
+    var previewIptvSource by remember { mutableStateOf(currentIptvSourceProvider()) }
+    var previewChannelGroupList by remember { mutableStateOf(channelGroupList) }
+    
     var focusedChannelGroup by remember {
         mutableStateOf(
             if (channelFavoriteListVisible)
@@ -100,41 +115,122 @@ fun ClassicChannelScreen(
     }
     var focusedChannel by remember { mutableStateOf(currentChannelProvider()) }
     var epgListVisible by remember { mutableStateOf(false) }
-
+    var sourceListVisible by remember { mutableStateOf(false) }
+    var sourceWidth by remember { mutableIntStateOf(0) }
     var groupWidth by remember { mutableIntStateOf(0) }
     var channelListWidth by remember { mutableIntStateOf(0) }
     var epgListIsFocused by remember { mutableStateOf(false) }
+    var sourceListIsFocused by remember { mutableStateOf(false) }
+
+    val showSourceListFeature = settingsVM.uiClassicShowSourceList
+
     val offsetXPx by animateIntAsState(
-        targetValue = if (epgListVisible) if (epgListIsFocused) -groupWidth - channelListWidth else -groupWidth else 0,
+        targetValue = if (epgListVisible) {
+            if (epgListIsFocused) -groupWidth - channelListWidth else -groupWidth
+        } else 0,
         animationSpec = tween(),
         label = "",
     )
+
+    suspend fun loadPreviewIptvSourceData(iptvSource: IptvSource) {
+        try {
+            if (previewIptvSource != iptvSource) {
+                previewIptvSource = iptvSource
+                previewChannelGroupList = IptvRepository(iptvSource).getChannelGroupList(Configs.iptvSourceCacheTime)
+            }
+        } catch (e: Exception) {
+            previewChannelGroupList = ChannelGroupList()
+        }
+    }
 
     ClassicChannelScreenWrapper(
         modifier = modifier.offset { IntOffset(x = offsetXPx, y = 0) },
         onClose = onClose,
     ) {
         Row {
+            Visibility({ sourceListVisible && showSourceListFeature }) {
+                ClassicIptvSourceItemList(
+                    modifier = Modifier
+                        .onSizeChanged { sourceWidth = it.width }
+                        .onFocusChanged { sourceListIsFocused = it.hasFocus || it.hasFocus }
+                        .focusProperties {
+                            exit = { direction ->
+                                if (direction == FocusDirection.Right) {
+                                    FocusRequester.Default
+                                } else {
+                                    FocusRequester.Cancel
+                                }
+                            }
+                        },
+                    iptvSourceListProvider = iptvSourceListProvider,
+                    currentIptvSourceProvider = currentIptvSourceProvider,
+                    onIptvSourceFocused = { source ->
+                        if (previewIptvSource != source) {
+                            previewIptvSource = source
+                            previewChannelGroupList = ChannelGroupList()
+                            coroutineScope.launch {
+                                try {
+                                    previewChannelGroupList = IptvRepository(source).getChannelGroupList(Configs.iptvSourceCacheTime)
+                                } catch (e: Exception) {
+                                }
+                            }
+                        }
+                    },
+                    onUserAction = { screenAutoCloseState.active() },
+                )
+            }
+
+            Visibility({ !sourceListVisible && showSourceListFeature }) {
+                ClassicPanelScreenShowSourceTip(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surface.copy(0.7f))
+                        .padding(horizontal = 4.dp)
+                        .focusable(),
+                    onTap = { sourceListVisible = true },
+                )
+            }
+
             ClassicChannelGroupItemList(
-                modifier = Modifier.onSizeChanged { groupWidth = it.width },
+                modifier = Modifier
+                    .onSizeChanged { groupWidth = it.width }
+                    .focusProperties {
+                        exit = {
+                            if (!sourceListVisible && it == FocusDirection.Left && showSourceListFeature) {
+                                sourceListVisible = true
+                                FocusRequester.Cancel
+                            } else {
+                                FocusRequester.Default
+                            }
+                        }
+                    },
                 channelGroupListProvider = {
-                    if (channelFavoriteEnabledProvider())
-                        ChannelGroupList(listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList)
-                    else
-                        channelGroupList
+                    if (previewIptvSource == currentIptvSourceProvider()) {
+                        if (channelFavoriteEnabledProvider())
+                            ChannelGroupList(listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList)
+                        else
+                            channelGroupList
+                    } else {
+                        previewChannelGroupList
+                    }
                 },
                 initialChannelGroupProvider = {
-                    if (channelFavoriteListVisible)
-                        ClassicPanelScreenFavoriteChannelGroup
-                    else
-                        channelGroupList[max(
-                            0,
-                            channelGroupList.channelGroupIdx(currentChannelProvider())
-                        )]
+                    if (previewIptvSource == currentIptvSourceProvider()) {
+                        if (channelFavoriteListVisible)
+                            ClassicPanelScreenFavoriteChannelGroup
+                        else
+                            channelGroupList[max(
+                                0,
+                                channelGroupList.channelGroupIdx(currentChannelProvider())
+                            )]
+                    } else {
+                        previewChannelGroupList.firstOrNull() ?: ChannelGroup()
+                    }
                 },
                 onChannelGroupFocused = {
                     focusedChannelGroup = it
-                    onChannelFavoriteListVisibleChange(it == ClassicPanelScreenFavoriteChannelGroup)
+                    if (previewIptvSource == currentIptvSourceProvider()) {
+                        onChannelFavoriteListVisibleChange(it == ClassicPanelScreenFavoriteChannelGroup)
+                    }
                 },
                 onUserAction = { screenAutoCloseState.active() },
             )
@@ -157,80 +253,100 @@ fun ClassicChannelScreen(
                     },
                 channelGroupProvider = { focusedChannelGroup },
                 channelListProvider = {
-                    if (focusedChannelGroup == ClassicPanelScreenFavoriteChannelGroup)
-                        favoriteChannelListProvider()
-                    else
+                    if (previewIptvSource == currentIptvSourceProvider()) {
+                        if (focusedChannelGroup == ClassicPanelScreenFavoriteChannelGroup)
+                            favoriteChannelListProvider()
+                        else
+                            focusedChannelGroup.channelList
+                    } else {
                         focusedChannelGroup.channelList
+                    }
                 },
                 epgListProvider = epgListProvider,
-                initialChannelProvider = currentChannelProvider,
-                onChannelSelected = onChannelSelected,
+                initialChannelProvider = { 
+                    if (previewIptvSource == currentIptvSourceProvider()) {
+                        currentChannelProvider() 
+                    } else {
+                        focusedChannelGroup.channelList.firstOrNull() ?: Channel()
+                    }
+                },
+                onChannelSelected = { channel ->
+                    if (previewIptvSource != currentIptvSourceProvider()) {
+                        onIptvSourceChanged(previewIptvSource)
+                    }
+                    onChannelSelected(channel)
+                },
                 onChannelFavoriteToggle = onChannelFavoriteToggle,
                 onChannelFocused = { channel -> focusedChannel = channel },
                 showEpgProgrammeProgressProvider = showEpgProgrammeProgressProvider,
                 onUserAction = { screenAutoCloseState.active() },
-                inFavoriteModeProvider = { focusedChannelGroup == ClassicPanelScreenFavoriteChannelGroup },
+                inFavoriteModeProvider = { 
+                    previewIptvSource == currentIptvSourceProvider() && 
+                    focusedChannelGroup == ClassicPanelScreenFavoriteChannelGroup 
+                },
                 showChannelLogoProvider = showChannelLogoProvider,
             )
 
-            Visibility({ epgListVisible }) {
-                ClassicEpgItemList(
-                    modifier = Modifier
-                        .onFocusChanged { epgListIsFocused = it.hasFocus || it.hasFocus },
-                    programmeListModifier = Modifier
-                        .width(if (epgListIsFocused) 5.gridColumns() else 4.gridColumns()),
-                    epgProvider = { epgListProvider().match(focusedChannel) },
-                    epgProgrammeReserveListProvider = {
-                        EpgProgrammeReserveList(
-                            epgProgrammeReserveListProvider().filter { it.channel == focusedChannel.name }
-                        )
-                    },
-                    supportPlaybackProvider = { supportPlaybackProvider(focusedChannel) },
-                    currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
-                    onEpgProgrammePlayback = { onEpgProgrammePlayback(focusedChannel, it) },
-                    onEpgProgrammeReserve = { onEpgProgrammeReserve(focusedChannel, it) },
-                    onUserAction = { screenAutoCloseState.active() },
-                )
-            }
-            Visibility({ !epgListVisible }) {
-                ClassicPanelScreenShowEpgTip(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface.copy(0.7f))
-                        .padding(horizontal = 4.dp)
-                        .focusable(),
-                    onTap = { epgListVisible = true },
-                )
+            Visibility({ !sourceListVisible }) {
+                Visibility({ epgListVisible }) {
+                    ClassicEpgItemList(
+                        modifier = Modifier
+                            .onFocusChanged { epgListIsFocused = it.hasFocus || it.hasFocus },
+                            programmeListModifier = Modifier
+                                .width(if (epgListIsFocused) 5.gridColumns() else 4.gridColumns()),
+                            epgProvider = { epgListProvider().match(focusedChannel) },
+                            epgProgrammeReserveListProvider = {
+                                EpgProgrammeReserveList(
+                                    epgProgrammeReserveListProvider().filter { it.channel == focusedChannel.name }
+                                )
+                            },
+                            supportPlaybackProvider = { supportPlaybackProvider(focusedChannel) },
+                            currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
+                            onEpgProgrammePlayback = { onEpgProgrammePlayback(focusedChannel, it) },
+                            onEpgProgrammeReserve = { onEpgProgrammeReserve(focusedChannel, it) },
+                            onUserAction = { screenAutoCloseState.active() },
+                    )
+                }
+                Visibility({ !epgListVisible }) {
+                    ClassicPanelScreenShowEpgTip(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.surface.copy(0.7f))
+                            .padding(horizontal = 4.dp)
+                            .focusable(),
+                        onTap = { epgListVisible = true },
+                    )
+                }
             }
         }
     }
 
     ChannelScreenTopRight(channelNumberProvider = { currentChannelProvider().no })
 
-    // Visibility({ !epgListVisible }) {
-    //     Box(Modifier.fillMaxSize()) {
-    //         LiveChannelsChannelInfo(
-    //             modifier = Modifier
-    //                 .align(Alignment.BottomEnd)
-    //                 .fillMaxWidth(0.5f)
-    //                 .padding(SAFE_AREA_VERTICAL_PADDING.dp)
-    //                 .background(
-    //                     MaterialTheme.colorScheme.surface.copy(0.8f),
-    //                     MaterialTheme.shapes.medium,
-    //                 )
-    //                 .padding(horizontal = 20.dp, vertical = 10.dp),
-    //             channelProvider = currentChannelProvider,
-    //             channelLineIdxProvider = currentChannelLineIdxProvider,
-    //             recentEpgProgrammeProvider = {
-    //                 epgListProvider().recentProgramme(currentChannelProvider())
-    //             },
-    //             isInTimeShiftProvider = isInTimeShiftProvider,
-    //             currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
-    //             playerMetadataProvider = videoPlayerMetadataProvider,
-    //             dense = true,
-    //             showChannelLogo = false,
-    //         )
-    //     }
-    // }
+    Visibility({ !sourceListVisible && !epgListVisible }) {
+        Box(Modifier.fillMaxSize()) {
+            LiveChannelsChannelInfo(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .fillMaxWidth(0.5f)
+                    .padding(SAFE_AREA_VERTICAL_PADDING.dp)
+                    .background(
+                        MaterialTheme.colorScheme.surface.copy(0.8f),
+                        MaterialTheme.shapes.medium,
+                    )
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                channelProvider = currentChannelProvider,
+                channelLineIdxProvider = currentChannelLineIdxProvider,
+                recentEpgProgrammeProvider = {
+                    epgListProvider().recentProgramme(currentChannelProvider())
+                },
+                isInTimeShiftProvider = isInTimeShiftProvider,
+                currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
+                playerMetadataProvider = videoPlayerMetadataProvider,
+                dense = true,
+                showChannelLogo = false,
+            )
+        }
+    }
 }
 
 @Composable
@@ -275,6 +391,26 @@ private fun ClassicPanelScreenShowEpgTip(
     }
 }
 
+@Composable
+private fun ClassicPanelScreenShowSourceTip(
+    modifier: Modifier = Modifier,
+    onTap: () -> Unit = {},
+) {
+    Column(
+        modifier = modifier
+            .fillMaxHeight()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = { onTap() })
+            },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        "向左查看直播源".map {
+            Text(text = it.toString(), style = MaterialTheme.typography.labelSmall)
+        }
+    }
+}
+
 val ClassicPanelScreenFavoriteChannelGroup = ChannelGroup(name = "我的收藏")
 
 @Preview(device = "id:Android TV (720p)")
@@ -288,6 +424,8 @@ private fun ClassicChannelScreenPreview() {
                 currentChannelLineIdxProvider = { 0 },
                 epgListProvider = { EpgList.example(ChannelGroupList.EXAMPLE.channelList) },
                 showEpgProgrammeProgressProvider = { true },
+                iptvSourceListProvider = { IptvSourceList.EXAMPLE },
+                currentIptvSourceProvider = { IptvSourceList.EXAMPLE.first() },
             )
         }
     }
