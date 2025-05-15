@@ -157,9 +157,6 @@ class MyClient(
         request: WebResourceRequest?
     ): WebResourceResponse? {
         val url = request?.url.toString() ?: ""
-        if (!url.contains("jstv.com") && !url.contains("yangshipin.cn") && !url.contains("cztv.com") && url.endsWith(".css")) {
-            return WebResourceResponse("text/css", "UTF-8", null) // 返回空响应以阻止加载
-        }
         for (item in blacklistGlobal) {
             if (url.contains(item)) {
                 return WebResourceResponse("text", "UTF-8", null) // 返回空响应以阻止加载
@@ -180,15 +177,6 @@ class MyClient(
         onPageStarted()
         super.onPageStarted(view, url, favicon)
     }
-
-    // fun readAssetFile(context: Context, fileName: String): String {
-    //     val inputStream = context.assets.open(fileName)
-    //     val size = inputStream.available()
-    //     val buffer = ByteArray(size)
-    //     inputStream.read(buffer)
-    //     inputStream.close()
-    //     return String(buffer, Charsets.UTF_8)
-    // }
 
     override fun onPageFinished(view: WebView, url: String) {
         onPageFinished()
