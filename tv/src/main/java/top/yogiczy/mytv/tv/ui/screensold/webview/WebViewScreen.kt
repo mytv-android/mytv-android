@@ -160,6 +160,11 @@ class MyClient(
         if (!url.contains("jstv.com") && !url.contains("yangshipin.cn") && !url.contains("cztv.com") && url.endsWith(".css")) {
             return WebResourceResponse("text/css", "UTF-8", null) // 返回空响应以阻止加载
         }
+        for (item in blacklistGlobal) {
+            if (url.contains(item)) {
+                return WebResourceResponse("text", "UTF-8", null) // 返回空响应以阻止加载
+            }
+        }
         if(blacklist != null && blacklist.isNotEmpty()){
             for (item in blacklist) {
                 if (url.contains(item)) {
@@ -253,3 +258,7 @@ fun getURLHost(url: String): String {
 fun getContext(): Context {
     return LocalContext.current
 }
+
+val blacklistGlobal = listOf(
+    "ico",
+)
