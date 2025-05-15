@@ -36,5 +36,14 @@
     "normalize.css",
     "blueprint-select.css",
     "cropper.css"
+  ],
+  "www.cditv.cn":[
+    "css",
+    "hls.min.js",
+    "jquery.lazyload.js",
+    "jquery.SuperSlide.js",
+    "common.js",
+    "isMobile.js",
+    "omt_analytics.js"
   ]
 }
