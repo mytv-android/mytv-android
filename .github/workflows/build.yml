@@ -64,13 +64,13 @@ jobs:
       run  : echo "short_sha=`git rev-parse --short HEAD`" >> $GITHUB_ENV
 
     - name: Build with Gradle (Release)
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta'
       env:
             VERSION_CODE: ${{ github.run_number }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
-      if: (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      if: github.ref == 'refs/heads/dev'
       env:
             SENTRY_AUTH_TQOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
@@ -78,12 +78,12 @@ jobs:
       run: ./gradlew :tv:assembleDebug --warning-mode=all
 
     - name: Move Metadata (Dev)
-      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
+      if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
       run: |
         mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
     - name: Move Metadata  (Release)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/main')
       run: |
         mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
 
