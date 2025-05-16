@@ -41,6 +41,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsCloudSyncPro
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsEpgRefreshTimeThresholdScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsEpgSourceScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvHybridModeScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsUiControlSettingScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvSourceCacheTimeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvSourceScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsNetworkRetryCountScreen
@@ -165,6 +166,10 @@ fun SettingsScreen(
 
                 composable(SettingsCategories.CONTROL.name) {
                     SettingsControlScreen(
+                        settingsViewModel = settingsViewModel,
+                        toUiControlActionSettingsScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.UI_CONTROL_ACTION.name)
+                        },
                         onBackPressed = { navController.navigateUp() },
                     )
                 }
@@ -268,6 +273,52 @@ fun SettingsScreen(
                         onCacheTimeChanged = {
                             settingsViewModel.iptvSourceCacheTime = it
                             navController.navigateUp()
+                        },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.UI_CONTROL_ACTION.name) {
+                    SettingsUiControlSettingScreen(
+                        keyDownEventUpProvider = { settingsViewModel.keyDownEventUp },
+                        onkeyDownEventUpChanged = {
+                            settingsViewModel.keyDownEventUp = it
+                        },
+                        keyDownEventDownProvider = { settingsViewModel.keyDownEventDown },
+                        onkeyDownEventDownChanged = {
+                            settingsViewModel.keyDownEventDown = it
+                        },
+                        keyDownEventLeftProvider = { settingsViewModel.keyDownEventLeft },
+                        onkeyDownEventLeftChanged = {
+                            settingsViewModel.keyDownEventLeft = it
+                        },
+                        keyDownEventRightProvider = { settingsViewModel.keyDownEventRight },
+                        onkeyDownEventRightChanged = {
+                            settingsViewModel.keyDownEventRight = it
+                        },
+                        keyDownEventSelectProvider = { settingsViewModel.keyDownEventSelect },
+                        onkeyDownEventSelectChanged = {
+                            settingsViewModel.keyDownEventSelect = it
+                        },
+                        keyDownEventLongSelectProvider = { settingsViewModel.keyDownEventLongSelect },
+                        onkeyDownEventLongSelectChanged = {
+                            settingsViewModel.keyDownEventLongSelect = it
+                        },
+                        keyDownEventLongUpProvider = { settingsViewModel.keyDownEventLongUp },
+                        onkeyDownEventLongUpChanged = {
+                            settingsViewModel.keyDownEventLongUp = it
+                        },
+                        keyDownEventLongDownProvider = { settingsViewModel.keyDownEventLongDown },
+                        onkeyDownEventLongDownChanged = {
+                            settingsViewModel.keyDownEventLongDown = it
+                        },
+                        keyDownEventLongLeftProvider = { settingsViewModel.keyDownEventLongLeft },
+                        onkeyDownEventLongLeftChanged = {
+                            settingsViewModel.keyDownEventLongLeft = it
+                        },
+                        keyDownEventLongRightProvider = { settingsViewModel.keyDownEventLongRight },
+                        onkeyDownEventLongRightChanged = {
+                            settingsViewModel.keyDownEventLongRight = it
                         },
                         onBackPressed = { navController.navigateUp() },
                     )

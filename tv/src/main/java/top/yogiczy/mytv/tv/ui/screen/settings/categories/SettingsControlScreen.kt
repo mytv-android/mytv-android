@@ -16,6 +16,7 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 fun SettingsControlScreen(
     modifier: Modifier = Modifier,
     settingsViewModel: SettingsViewModel = settingsVM,
+    toUiControlActionSettingsScreen: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     SettingsCategoryScreen(
@@ -97,6 +98,15 @@ fun SettingsControlScreen(
                 onSelect = {
                     settingsViewModel.iptvChannelChangeLineWithLeftRight = !settingsViewModel.iptvChannelChangeLineWithLeftRight
                 },
+            )
+        }
+
+        item {
+            SettingsListItem(
+                headlineContent = "按键行为",
+                supportingContent = "自定义播放界面的按键行为",
+                onSelect = toUiControlActionSettingsScreen,
+                link = true,
             )
         }
     }

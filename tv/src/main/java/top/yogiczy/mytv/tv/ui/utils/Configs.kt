@@ -3,6 +3,7 @@ package top.yogiczy.mytv.tv.ui.utils
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.encodeToString
+import top.yogiczy.mytv.core.data.entities.actions.KeyDownAction
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelFavoriteList
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
@@ -40,7 +41,7 @@ object Configs {
         /** 打开直接进入直播 */
         APP_STARTUP_SCREEN,
 
-        /** ==================== 调式 ==================== */
+        /** ==================== 调试 ==================== */
         /** 开发者模式 */
         DEBUG_DEVELOPER_MODE,
 
@@ -116,6 +117,38 @@ object Configs {
 
         /** 左右键切换订阅源线路 **/
         IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT,
+
+        /** ==================== 按键行为控制 ==================== */
+
+        /** 按键行为上键 */
+        KEYDOWN_EVENT_UP,
+
+        /** 按键行为下键 */
+        KEYDOWN_EVENT_DOWN,
+
+        /** 按键行为左键 */
+        KEYDOWN_EVENT_LEFT,
+
+        /** 按键行为右键 */
+        KEYDOWN_EVENT_RIGHT,
+
+        /** 按键行为选择键 */
+        KEYDOWN_EVENT_SELECT,
+
+        /** 按键行为长按上键 */
+        KEYDOWN_EVENT_LONG_UP,
+
+        /** 按键行为长按下键 */
+        KEYDOWN_EVENT_LONG_DOWN,
+
+        /** 按键行为长按左键 */
+        KEYDOWN_EVENT_LONG_LEFT,
+
+        /** 按键行为长按右键 */
+        KEYDOWN_EVENT_LONG_RIGHT,
+
+        /** 按键行为长按选择键 */
+        KEYDOWN_EVENT_LONG_SELECT,
 
         /** ==================== 节目单 ==================== */
         /** 启用节目单 */
@@ -251,9 +284,6 @@ object Configs {
 
         /** 云同步 webdav 密码 */
         CLOUD_SYNC_WEBDAV_PASSWORD,
-
-        // /** 肥羊 AllInOne 文件路径 */
-        // FEIYANG_ALLINONE_FILE_PATH,
     }
 
     /** ==================== 应用 ==================== */
@@ -547,6 +577,57 @@ object Configs {
         get() = SP.getLong(KEY.UI_SCREEN_AUTO_CLOSE_DELAY.name, Constants.UI_SCREEN_AUTO_CLOSE_DELAY)
         set(value) = SP.putLong(KEY.UI_SCREEN_AUTO_CLOSE_DELAY.name, value)
 
+    /** ==================== 按键行为控制 ==================== */
+    /** 按键行为上键 */
+    var keyDownEventUp: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_UP.name, KeyDownAction.ChangeCurrentChannelToPrev.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_UP.name, value.value)
+
+    /** 按键行为下键 */
+    var keyDownEventDown: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_DOWN.name, KeyDownAction.ChangeCurrentChannelToNext.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_DOWN.name, value.value)
+
+    /** 按键行为左键 */
+    var keyDownEventLeft: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_LEFT.name, KeyDownAction.ChangeCurrentChannelLineIdxToPrev.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_LEFT.name, value.value)
+
+    /** 按键行为右键 */
+    var keyDownEventRight: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_RIGHT.name, KeyDownAction.ChangeCurrentChannelLineIdxToNext.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_RIGHT.name, value.value)
+
+    /** 按键行为选择键 */
+    var keyDownEventSelect: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_SELECT.name, KeyDownAction.ToChannelScreen.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_SELECT.name, value.value)
+
+    /** 按键行为长按上键 */
+    var keyDownEventLongUp: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_LONG_UP.name, KeyDownAction.ToIptvSourceScreen.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_LONG_UP.name, value.value)
+
+    /** 按键行为长按下键 */
+    var keyDownEventLongDown: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_LONG_DOWN.name, KeyDownAction.ToVideoPlayerControllerScreen.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_LONG_DOWN.name, value.value)
+
+    /** 按键行为长按左键 */
+    var keyDownEventLongLeft: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_LONG_LEFT.name, KeyDownAction.ToEpgScreen.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_LONG_LEFT.name, value.value)
+
+    /** 按键行为长按右键 */
+    var keyDownEventLongRight: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_LONG_RIGHT.name, KeyDownAction.ToChannelLineScreen.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_LONG_RIGHT.name, value.value)
+
+    /** 按键行为长按选择键 */
+    var keyDownEventLongSelect: KeyDownAction
+        get() = KeyDownAction.fromValue(SP.getInt(KEY.KEYDOWN_EVENT_LONG_SELECT.name, KeyDownAction.ToQuickOpScreen.value))
+        set(value) = SP.putInt(KEY.KEYDOWN_EVENT_LONG_SELECT.name, value.value)
+
     /** ==================== 更新 ==================== */
     /** 更新强提醒 */
     var updateForceRemind: Boolean
@@ -839,6 +920,16 @@ object Configs {
             uiTimeShowMode = uiTimeShowMode,
             uiFocusOptimize = uiFocusOptimize,
             uiScreenAutoCloseDelay = uiScreenAutoCloseDelay,
+            keyDownEventUp = keyDownEventUp,
+            keyDownEventDown = keyDownEventDown,
+            keyDownEventLeft = keyDownEventLeft,
+            keyDownEventRight = keyDownEventRight,
+            keyDownEventSelect = keyDownEventSelect,
+            keyDownEventLongUp = keyDownEventLongUp,
+            keyDownEventLongDown = keyDownEventLongDown,
+            keyDownEventLongLeft = keyDownEventLongLeft,
+            keyDownEventLongRight = keyDownEventLongRight,
+            keyDownEventLongSelect = keyDownEventLongSelect,
             updateForceRemind = updateForceRemind,
             updateChannel = updateChannel,
             videoPlayerCore = videoPlayerCore,
@@ -920,6 +1011,16 @@ object Configs {
         configs.uiTimeShowMode?.let { uiTimeShowMode = it }
         configs.uiFocusOptimize?.let { uiFocusOptimize = it }
         configs.uiScreenAutoCloseDelay?.let { uiScreenAutoCloseDelay = it }
+        configs.keyDownEventUp?.let { keyDownEventUp = it }
+        configs.keyDownEventDown?.let { keyDownEventDown = it }
+        configs.keyDownEventLeft?.let { keyDownEventLeft = it }
+        configs.keyDownEventRight?.let { keyDownEventRight = it }
+        configs.keyDownEventSelect?.let { keyDownEventSelect = it }
+        configs.keyDownEventLongUp?.let { keyDownEventLongUp = it }
+        configs.keyDownEventLongDown?.let { keyDownEventLongDown = it }
+        configs.keyDownEventLongLeft?.let { keyDownEventLongLeft = it }
+        configs.keyDownEventLongRight?.let { keyDownEventLongRight = it }
+        configs.keyDownEventLongSelect?.let { keyDownEventLongSelect = it }
         configs.updateForceRemind?.let { updateForceRemind = it }
         configs.updateChannel?.let { updateChannel = it }
         configs.videoPlayerCore?.let { videoPlayerCore = it }
@@ -999,6 +1100,16 @@ object Configs {
         val uiTimeShowMode: UiTimeShowMode? = null,
         val uiFocusOptimize: Boolean? = null,
         val uiScreenAutoCloseDelay: Long? = null,
+        val keyDownEventUp: KeyDownAction? = null,
+        val keyDownEventDown: KeyDownAction? = null,
+        val keyDownEventLeft: KeyDownAction? = null,
+        val keyDownEventRight: KeyDownAction? = null,
+        val keyDownEventSelect: KeyDownAction? = null,
+        val keyDownEventLongUp: KeyDownAction? = null,
+        val keyDownEventLongDown: KeyDownAction? = null,
+        val keyDownEventLongLeft: KeyDownAction? = null,
+        val keyDownEventLongRight: KeyDownAction? = null,
+        val keyDownEventLongSelect: KeyDownAction? = null,
         val updateForceRemind: Boolean? = null,
         val updateChannel: String? = null,
         val videoPlayerCore: VideoPlayerCore? = null,
@@ -1032,6 +1143,7 @@ object Configs {
         fun desensitized() = copy(
             cloudSyncAutoPull = null,
             cloudSyncProvider = null,
+            uiFocusOptimize = null,
             // cloudSyncGithubGistId = null,
             // cloudSyncGithubGistToken = null,
             // cloudSyncGiteeGistId = null,
