@@ -23,4 +23,9 @@ data class ChannelGroup(
             channelList = ChannelList.EXAMPLE,
         )
     }
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + channelList.hashCode()
+        return result
+    }
 }

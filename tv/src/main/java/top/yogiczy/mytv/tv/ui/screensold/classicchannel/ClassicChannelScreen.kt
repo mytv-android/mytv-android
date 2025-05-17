@@ -200,11 +200,14 @@ fun ClassicChannelScreen(
                             if (!sourceListVisible && it == FocusDirection.Left && showSourceListFeature) {
                                 sourceListVisible = true
                                 FocusRequester.Cancel
-                            } else {
+                            } else if (it == FocusDirection.Left && !showSourceListFeature) {
+                                FocusRequester.Cancel
+                            }else {
                                 FocusRequester.Default
                             }
                         }
                     },
+                channelSourceProvider = { previewIptvSource },
                 channelGroupListProvider = {
                     if (previewIptvSource == currentIptvSourceProvider()) {
                         if (channelFavoriteEnabledProvider())
@@ -324,31 +327,31 @@ fun ClassicChannelScreen(
 
     ChannelScreenTopRight(channelNumberProvider = { currentChannelProvider().no })
 
-    Visibility({ !sourceListVisible && !epgListVisible }) {
-        Box(Modifier.fillMaxSize()) {
-            LiveChannelsChannelInfo(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .fillMaxWidth(0.5f)
-                    .padding(SAFE_AREA_VERTICAL_PADDING.dp)
-                    .background(
-                        MaterialTheme.colorScheme.surface.copy(0.8f),
-                        MaterialTheme.shapes.medium,
-                    )
-                    .padding(horizontal = 20.dp, vertical = 10.dp),
-                channelProvider = currentChannelProvider,
-                channelLineIdxProvider = currentChannelLineIdxProvider,
-                recentEpgProgrammeProvider = {
-                    epgListProvider().recentProgramme(currentChannelProvider())
-                },
-                isInTimeShiftProvider = isInTimeShiftProvider,
-                currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
-                playerMetadataProvider = videoPlayerMetadataProvider,
-                dense = true,
-                showChannelLogo = false,
-            )
-        }
-    }
+    // Visibility({ !sourceListVisible && !epgListVisible }) {
+    //     Box(Modifier.fillMaxSize()) {
+    //         LiveChannelsChannelInfo(
+    //             modifier = Modifier
+    //                 .align(Alignment.BottomEnd)
+    //                 .fillMaxWidth(0.5f)
+    //                 .padding(SAFE_AREA_VERTICAL_PADDING.dp)
+    //                 .background(
+    //                     MaterialTheme.colorScheme.surface.copy(0.8f),
+    //                     MaterialTheme.shapes.medium,
+    //                 )
+    //                 .padding(horizontal = 20.dp, vertical = 10.dp),
+    //             channelProvider = currentChannelProvider,
+    //             channelLineIdxProvider = currentChannelLineIdxProvider,
+    //             recentEpgProgrammeProvider = {
+    //                 epgListProvider().recentProgramme(currentChannelProvider())
+    //             },
+    //             isInTimeShiftProvider = isInTimeShiftProvider,
+    //             currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
+    //             playerMetadataProvider = videoPlayerMetadataProvider,
+    //             dense = true,
+    //             showChannelLogo = false,
+    //         )
+    //     }
+    // }
 }
 
 @Composable
