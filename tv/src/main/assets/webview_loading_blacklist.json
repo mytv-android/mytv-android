@@ -1,0 +1,48 @@
+{
+  "tv.cctv.com": [
+    "jweixin",
+    "daohang",
+    "dianshibao.js",
+    "dingtalk.js",
+    "configtool",
+    "qrcode",
+    "shareindex.js",
+    "zhibo_shoucang.js",
+    "gray",
+    "cntv_Advertise.js",
+    "top2023newindex.js",
+    "indexPC.js",
+    "getEpgInfoByChannelNew",
+    "epglist",
+    "epginfo",
+    "getHandDataList",
+    "2019whitetop/index.js",
+    "pc_nav/index.js",
+    "shareindex.js",
+    "mapjs/index.js",
+    "bottomjs/index.js",
+    "top2023newindex.js",
+    "2019dlbhyjs/index.js"
+  ],
+  "yangshipin.cn" :[
+    "kvcollect",
+    "index",
+    "cctvh5-trace.min.js",
+    "VR.js",
+    "vconsole.min.js",
+    "three.js",
+    "blueprint.css",
+    "normalize.css",
+    "blueprint-select.css",
+    "cropper.css"
+  ],
+  "www.cditv.cn":[
+    "css",
+    "hls.min.js",
+    "jquery.lazyload.js",
+    "jquery.SuperSlide.js",
+    "common.js",
+    "isMobile.js",
+    "omt_analytics.js"
+  ]
+}

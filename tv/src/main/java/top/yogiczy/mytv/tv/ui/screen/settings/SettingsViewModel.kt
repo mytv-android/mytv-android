@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import top.yogiczy.mytv.core.data.entities.actions.KeyDownAction
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelFavoriteList
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
@@ -124,7 +125,7 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _iptvSourceList by mutableStateOf(IptvSourceList())
+    private var _iptvSourceList by mutableStateOf(Constants.IPTV_SOURCE_LIST)
     var iptvSourceList: IptvSourceList
         get() = if (_iptvSourceList.isEmpty()) {
             Constants.IPTV_SOURCE_LIST
@@ -660,7 +661,7 @@ class SettingsViewModel : ViewModel() {
             Configs.cloudSyncNetworkUrl = value
         }
 
-    private var _cloudSyncLocalFilePath by mutableStateOf("")
+    private var _cloudSyncLocalFilePath by mutableStateOf(Constants.DEFAULT_LOCAL_SYNC_FILE_PATH)
     var cloudSyncLocalFilePath: String
         get() = _cloudSyncLocalFilePath
         set(value) {
@@ -692,14 +693,85 @@ class SettingsViewModel : ViewModel() {
             Configs.cloudSyncWebDavPassword = value
         }
 
-    // private var _feiyangAllInOneFilePath by mutableStateOf("")
-    // var feiyangAllInOneFilePath: String
-    //     get() = _feiyangAllInOneFilePath
-    //     set(value) {
-    //         _feiyangAllInOneFilePath = value
-    //         Configs.feiyangAllInOneFilePath = value
-    //         afterSetWhenCloudSyncAutoPull()
-    //     }
+    private var _keyDownEventUp by mutableStateOf(KeyDownAction.ChangeCurrentChannelToPrev)
+    var keyDownEventUp: KeyDownAction
+        get() = _keyDownEventUp
+        set(value) {
+            _keyDownEventUp = value
+            Configs.keyDownEventUp = value
+        }
+
+    private var _keyDownEventDown by mutableStateOf(KeyDownAction.ChangeCurrentChannelToNext)
+    var keyDownEventDown: KeyDownAction
+        get() = _keyDownEventDown
+        set(value) {
+            _keyDownEventDown = value
+            Configs.keyDownEventDown = value
+        }
+
+    private var _keyDownEventLeft by mutableStateOf(KeyDownAction.ChangeCurrentChannelLineIdxToPrev)
+    var keyDownEventLeft: KeyDownAction
+        get() = _keyDownEventLeft
+        set(value) {
+            _keyDownEventLeft = value
+            Configs.keyDownEventLeft = value
+        }
+    
+    private var _keyDownEventRight by mutableStateOf(KeyDownAction.ChangeCurrentChannelLineIdxToNext)
+    var keyDownEventRight: KeyDownAction
+        get() = _keyDownEventRight
+        set(value) {
+            _keyDownEventRight = value
+            Configs.keyDownEventRight = value
+        }
+
+    private var _keyDownEventSelect by mutableStateOf(KeyDownAction.ToChannelScreen)
+    var keyDownEventSelect: KeyDownAction
+        get() = _keyDownEventSelect
+        set(value) {
+            _keyDownEventSelect = value
+            Configs.keyDownEventSelect = value
+        }
+
+    private var _keyDownEventLongUp by mutableStateOf(KeyDownAction.ToIptvSourceScreen)
+    var keyDownEventLongUp: KeyDownAction
+        get() = _keyDownEventLongUp
+        set(value) {
+            _keyDownEventLongUp = value
+            Configs.keyDownEventLongUp = value
+        }
+    
+    private var _keyDownEventLongDown by mutableStateOf(KeyDownAction.ToVideoPlayerControllerScreen)
+    var keyDownEventLongDown: KeyDownAction
+        get() = _keyDownEventLongDown
+        set(value) {
+            _keyDownEventLongDown = value
+            Configs.keyDownEventLongDown = value
+        }
+    
+    private var _keyDownEventLongLeft by mutableStateOf(KeyDownAction.ToEpgScreen)
+    var keyDownEventLongLeft: KeyDownAction
+        get() = _keyDownEventLongLeft
+        set(value) {
+            _keyDownEventLongLeft = value
+            Configs.keyDownEventLongLeft = value
+        }
+    
+    private var _keyDownEventLongRight by mutableStateOf(KeyDownAction.ToChannelLineScreen)
+    var keyDownEventLongRight: KeyDownAction
+        get() = _keyDownEventLongRight
+        set(value) {
+            _keyDownEventLongRight = value
+            Configs.keyDownEventLongRight = value
+        }
+    
+    private var _keyDownEventLongSelect by mutableStateOf(KeyDownAction.ToQuickOpScreen)
+    var keyDownEventLongSelect: KeyDownAction
+        get() = _keyDownEventLongSelect
+        set(value) {
+            _keyDownEventLongSelect = value
+            Configs.keyDownEventLongSelect = value
+        }
 
     private fun afterSetWhenCloudSyncAutoPull() {
         // if (_cloudSyncAutoPull) Snackbar.show("云同步：自动拉取已启用")
@@ -766,6 +838,16 @@ class SettingsViewModel : ViewModel() {
         _uiTimeShowMode = Configs.uiTimeShowMode
         _uiFocusOptimize = Configs.uiFocusOptimize
         _uiScreenAutoCloseDelay = Configs.uiScreenAutoCloseDelay
+        _keyDownEventUp = Configs.keyDownEventUp
+        _keyDownEventDown = Configs.keyDownEventDown
+        _keyDownEventLeft = Configs.keyDownEventLeft
+        _keyDownEventRight = Configs.keyDownEventRight
+        _keyDownEventSelect = Configs.keyDownEventSelect
+        _keyDownEventLongUp = Configs.keyDownEventLongUp
+        _keyDownEventLongDown = Configs.keyDownEventLongDown
+        _keyDownEventLongLeft = Configs.keyDownEventLongLeft
+        _keyDownEventLongRight = Configs.keyDownEventLongRight
+        _keyDownEventLongSelect = Configs.keyDownEventLongSelect
         _updateForceRemind = Configs.updateForceRemind
         _updateChannel = Configs.updateChannel
         _videoPlayerCore = Configs.videoPlayerCore

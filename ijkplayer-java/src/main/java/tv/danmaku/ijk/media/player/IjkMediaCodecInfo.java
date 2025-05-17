@@ -180,7 +180,9 @@ public class IjkMediaCodecInfo {
         } else if(
             name.startsWith("c2.exynos.") ||
             name.startsWith("omx.hisi.") ||
-            name.startsWith("omx.qcom.") 
+            name.startsWith("omx.qcom.")  ||
+            name.startsWith("c2.qti.")   ||
+            name.startsWith("c2.mtk.")
         ){
             rank = RANK_ACCEPTABLE;
         }else {

@@ -94,8 +94,10 @@ fun ClassicChannelScreen(
         mutableStateOf(
             if (channelFavoriteListVisible)
                 ClassicPanelScreenFavoriteChannelGroup
-            else
+            else if (channelGroupList.isNotEmpty())
                 channelGroupList[max(0, channelGroupList.channelGroupIdx(currentChannelProvider()))]
+            else
+                ChannelGroup(name = "尚未加载列表")
         )
     }
     var focusedChannel by remember { mutableStateOf(currentChannelProvider()) }
@@ -126,11 +128,13 @@ fun ClassicChannelScreen(
                 initialChannelGroupProvider = {
                     if (channelFavoriteListVisible)
                         ClassicPanelScreenFavoriteChannelGroup
-                    else
+                    else if (channelGroupList.isNotEmpty())
                         channelGroupList[max(
                             0,
                             channelGroupList.channelGroupIdx(currentChannelProvider())
                         )]
+                    else 
+                        ChannelGroup(name = "尚未加载列表")
                 },
                 onChannelGroupFocused = {
                     focusedChannelGroup = it

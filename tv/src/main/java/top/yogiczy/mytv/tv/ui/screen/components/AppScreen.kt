@@ -88,17 +88,19 @@ fun AppScreen(
     BackHandler { onBackPressed() }
     AppThemeWrapper {
         if (enableTopBarHidden) {
-            AppScaffoldTopBar(
-                modifier = Modifier
-                    .height(64.dp)
-                    .offset { IntOffset(x = 0, y = topBarYOffsetPx) }
-                    .onSizeChanged { topBarHeightPx = it.height },
-                header = header,
-                headerExtra = headerExtra,
-                canBack = canBack,
-                onBackPressed = onBackPressed,
-            )
-
+            Box(
+                modifier = modifier.offset { IntOffset(x = 0, y = topBarYOffsetPx) },
+            ) {
+                AppScaffoldTopBar(
+                    modifier = modifier
+                        .height(64.dp)
+                        .onSizeChanged { topBarHeightPx = it.height },
+                    header = header,
+                    headerExtra = headerExtra,
+                    canBack = canBack,
+                    onBackPressed = onBackPressed,
+                )
+            }
             Box(
                 modifier = modifier.offset { IntOffset(x = 0, y = contentPaddingPx) },
             ) {

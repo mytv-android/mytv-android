@@ -89,20 +89,6 @@ fun App(
     if (latestFile.exists()) {
         latestFile.delete()
     }
-    // LaunchedEffect(settingsViewModel.iptvSourceCurrent) {
-    //     if (settingsViewModel.feiyangAllInOneFilePath.isNotBlank()) {
-    //         AllInOne.start(
-    //             context,
-    //             File(settingsViewModel.feiyangAllInOneFilePath),
-    //             onFail = {
-    //                 Snackbar.show("肥羊AllInOne 启动失败", type = SnackbarType.ERROR)
-    //             },
-    //             onUnsupported = {
-    //                 Snackbar.show("肥羊AllInOne 不支持当前平台", type = SnackbarType.ERROR)
-    //             },
-    //         )
-    //     }
-    // }
 }
 
 /**

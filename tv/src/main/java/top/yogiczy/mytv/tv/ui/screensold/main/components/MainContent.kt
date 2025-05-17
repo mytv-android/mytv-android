@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 
 import top.yogiczy.mytv.core.data.utils.Constants
 import top.yogiczy.mytv.core.data.utils.Logger
-
+import top.yogiczy.mytv.core.data.entities.actions.KeyDownAction
 import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList.Companion.channelList
@@ -67,6 +67,7 @@ import top.yogiczy.mytv.tv.X5CorePreLoadService
 @Composable
 fun MainContent(
     modifier: Modifier = Modifier,
+    isLoadingProvider: () -> Boolean = { false },
     filteredChannelGroupListProvider: () -> ChannelGroupList = { ChannelGroupList() },
     favoriteChannelListProvider: () -> ChannelList = { ChannelList() },
     epgListProvider: () -> EpgList = { EpgList() },
@@ -77,6 +78,7 @@ fun MainContent(
     onReload: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
+    val isLoading = isLoadingProvider()
     val coroutineScope = rememberCoroutineScope()
     val log = remember { Logger.create("MainContent")}
     val videoPlayerState =
@@ -99,62 +101,50 @@ fun MainContent(
             .backHandler { onBackPressed() }
             .handleKeyEvents(
                 onUp = {
-                    if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToNext()
-                    else mainContentState.changeCurrentChannelToPrev()
+                    getKeyDownEvent(settingsViewModel.keyDownEventUp, settingsViewModel, mainContentState, isLoading)
                 },
                 onDown = {
-                    if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToPrev()
-                    else mainContentState.changeCurrentChannelToNext()
+                    getKeyDownEvent(settingsViewModel.keyDownEventDown, settingsViewModel, mainContentState, isLoading)
                 },
                 onLeft = {
-                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
-                        mainContentState.changeCurrentChannel(
-                            mainContentState.currentChannel,
-                            mainContentState.currentChannelLineIdx - 1,
-                        )
-                    }
+                    getKeyDownEvent(settingsViewModel.keyDownEventLeft, settingsViewModel, mainContentState, isLoading)
                 },
                 onRight = {
-                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
-                        mainContentState.changeCurrentChannel(
-                            mainContentState.currentChannel,
-                            mainContentState.currentChannelLineIdx + 1,
-                        )
-                    }
+                    getKeyDownEvent(settingsViewModel.keyDownEventRight, settingsViewModel, mainContentState, isLoading)
                 },
-                onLongUp = { mainContentState.isIptvSourceScreenVisible = true },
-                onSelect = { mainContentState.isChannelScreenVisible = true },
-                onLongSelect = { mainContentState.isQuickOpScreenVisible = true },
+                onLongUp = { 
+                    getKeyDownEvent(settingsViewModel.keyDownEventLongUp, settingsViewModel, mainContentState, isLoading)
+                },
+                onSelect = { 
+                    getKeyDownEvent(settingsViewModel.keyDownEventSelect, settingsViewModel, mainContentState, isLoading)
+                },
+                onLongSelect = {  
+                    getKeyDownEvent(settingsViewModel.keyDownEventLongSelect, settingsViewModel, mainContentState, isLoading)
+                },
                 onSettings = { mainContentState.isQuickOpScreenVisible = true },
-                onLongLeft = { mainContentState.isEpgScreenVisible = true },
-                onLongRight = { mainContentState.isChannelLineScreenVisible = true },
-                onLongDown = { mainContentState.isVideoPlayerControllerScreenVisible = true },
+                onLongLeft = {  
+                    getKeyDownEvent(settingsViewModel.keyDownEventLongLeft, settingsViewModel, mainContentState, isLoading)
+                },
+                onLongRight = {  
+                    getKeyDownEvent(settingsViewModel.keyDownEventLongRight, settingsViewModel, mainContentState, isLoading)
+                },
+                onLongDown = {  
+                    getKeyDownEvent(settingsViewModel.keyDownEventLongDown, settingsViewModel, mainContentState, isLoading)
+                },
                 onNumber = { channelNumberSelectState.input(it) },
             )
             .handleDragGestures(
                 onSwipeDown = {
-                    if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToNext()
-                    else mainContentState.changeCurrentChannelToPrev()
+                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelToPrev, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeUp = {
-                    if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToPrev()
-                    else mainContentState.changeCurrentChannelToNext()
+                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelToNext, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeRight = {
-                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
-                        mainContentState.changeCurrentChannel(
-                            mainContentState.currentChannel,
-                            mainContentState.currentChannelLineIdx - 1,
-                        )
-                    }
+                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelLineIdxToPrev, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeLeft = {
-                    if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
-                        mainContentState.changeCurrentChannel(
-                            mainContentState.currentChannel,
-                            mainContentState.currentChannelLineIdx + 1,
-                        )
-                    }
+                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelLineIdxToNext, settingsViewModel, mainContentState, isLoading)
                 },
             ),
     ) {
@@ -593,4 +583,42 @@ private fun preInitX5Core(context: Context) { // Accept context as a parameter
     // 预加载x5内核
     val intent = Intent(context, X5CorePreLoadService::class.java)
     X5CorePreLoadService.enqueueWork(context, intent)
+}
+
+private fun getKeyDownEvent(actionEvent: KeyDownAction, 
+                            settingsViewModel: SettingsViewModel, 
+                            mainContentState: MainContentState, 
+                            isLoading: Boolean) {
+    when (actionEvent) {
+        KeyDownAction.ChangeCurrentChannelToNext -> {
+            if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToPrev()
+            else mainContentState.changeCurrentChannelToNext()
+        }
+        KeyDownAction.ChangeCurrentChannelToPrev -> {
+            if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToNext()
+            else mainContentState.changeCurrentChannelToPrev()
+        }
+        KeyDownAction.ChangeCurrentChannelLineIdxToPrev -> {
+            if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
+                mainContentState.changeCurrentChannel(
+                    mainContentState.currentChannel,
+                    mainContentState.currentChannelLineIdx - 1,
+                )
+            }
+        }
+        KeyDownAction.ChangeCurrentChannelLineIdxToNext -> {
+            if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
+                mainContentState.changeCurrentChannel(
+                    mainContentState.currentChannel,
+                    mainContentState.currentChannelLineIdx + 1,
+                )
+            }
+        }
+        KeyDownAction.ToIptvSourceScreen -> { mainContentState.isIptvSourceScreenVisible = true }
+        KeyDownAction.ToChannelScreen -> { if (!isLoading) mainContentState.isChannelScreenVisible = true }
+        KeyDownAction.ToQuickOpScreen -> { mainContentState.isQuickOpScreenVisible = true }
+        KeyDownAction.ToEpgScreen -> { mainContentState.isEpgScreenVisible = true }
+        KeyDownAction.ToChannelLineScreen -> { mainContentState.isChannelLineScreenVisible = true }
+        KeyDownAction.ToVideoPlayerControllerScreen -> { mainContentState.isVideoPlayerControllerScreenVisible = true }
+    }
 }

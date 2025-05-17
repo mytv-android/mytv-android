@@ -85,7 +85,7 @@ fun IptvSourceItem(
             .handleKeyEvents(onSelect = onSelected),
         selected = false,
         onClick = {},
-        headlineContent = { Text(line.name ?: "播放源${lineIdx + 1}", maxLines = 1) },
+        headlineContent = { Text(line.name ?: "订阅源${lineIdx + 1}", maxLines = 1) },
         overlineContent = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),

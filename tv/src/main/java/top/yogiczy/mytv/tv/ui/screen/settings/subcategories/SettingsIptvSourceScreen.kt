@@ -104,7 +104,7 @@ fun SettingsIptvSourceScreen(
 
     AppScreen(
         modifier = modifier,
-        header = { Text("设置 / 播放源 / 自定义播放源") },
+        header = { Text("设置 / 订阅源 / 自定义订阅源") },
         headerExtra = {
             AppScaffoldHeaderBtn(
                 title = "刷新全部",

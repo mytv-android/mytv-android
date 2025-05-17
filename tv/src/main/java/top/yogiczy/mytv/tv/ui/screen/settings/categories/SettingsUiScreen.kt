@@ -31,73 +31,63 @@ fun SettingsUiScreen(
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
-            val showProgress = settingsViewModel.uiShowEpgProgrammeProgress
-
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
                 headlineContent = "节目进度",
                 supportingContent = "在频道底部显示当前节目进度条",
-                trailingContent = { Switch(showProgress, null) },
+                trailingContent = { Switch(settingsViewModel.uiShowEpgProgrammeProgress, null) },
                 onSelect = {
-                    settingsViewModel.uiShowEpgProgrammeProgress = !showProgress
+                    settingsViewModel.uiShowEpgProgrammeProgress = !settingsViewModel.uiShowEpgProgrammeProgress
                 },
             )
         }
 
         item {
-            val showProgress = settingsViewModel.uiShowEpgProgrammePermanentProgress
-
             SettingsListItem(
                 headlineContent = "常驻节目进度",
                 supportingContent = "在播放器底部显示当前节目进度条",
                 trailingContent = {
-                    Switch(showProgress, null)
+                    Switch(settingsViewModel.uiShowEpgProgrammePermanentProgress, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiShowEpgProgrammePermanentProgress = !showProgress
+                    settingsViewModel.uiShowEpgProgrammePermanentProgress = !settingsViewModel.uiShowEpgProgrammePermanentProgress
                 },
             )
         }
 
         item {
-            val showChannelLogo = settingsViewModel.uiShowChannelLogo
-
             SettingsListItem(
                 headlineContent = "台标显示",
                 trailingContent = {
-                    Switch(showChannelLogo, null)
+                    Switch(settingsViewModel.uiShowChannelLogo, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiShowChannelLogo = !showChannelLogo
+                    settingsViewModel.uiShowChannelLogo = !settingsViewModel.uiShowChannelLogo
                 },
             )
         }
 
         item {
-            val showChannelPreview = settingsViewModel.uiShowChannelPreview
-
             SettingsListItem(
                 headlineContent = "频道预览",
                 trailingContent = {
-                    Switch(showChannelPreview, null)
+                    Switch(settingsViewModel.uiShowChannelPreview, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiShowChannelPreview = !showChannelPreview
+                    settingsViewModel.uiShowChannelPreview = !settingsViewModel.uiShowChannelPreview
                 },
             )
         }
 
         item {
-            val useClassicPanelScreen = settingsViewModel.uiUseClassicPanelScreen
-
             SettingsListItem(
                 headlineContent = "经典选台界面",
                 supportingContent = "将选台界面替换为经典三段式结构",
                 trailingContent = {
-                    Switch(useClassicPanelScreen, null)
+                    Switch(settingsViewModel.uiUseClassicPanelScreen, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiUseClassicPanelScreen = !useClassicPanelScreen
+                    settingsViewModel.uiUseClassicPanelScreen = !settingsViewModel.uiUseClassicPanelScreen
                 },
             )
         }
@@ -162,31 +152,27 @@ fun SettingsUiScreen(
         }
 
         item {
-            val focusOptimize = settingsViewModel.uiFocusOptimize
-
             SettingsListItem(
                 headlineContent = "焦点优化",
                 supportingContent = "关闭后可解决触摸设备在部分场景下闪退",
                 trailingContent = {
-                    Switch(focusOptimize, null)
+                    Switch(settingsViewModel.uiFocusOptimize, null)
                 },
                 onSelect = {
-                    settingsViewModel.uiFocusOptimize = !focusOptimize
+                    settingsViewModel.uiFocusOptimize = !settingsViewModel.uiFocusOptimize
                 },
             )
         }
 
         item {
-            val favoriteEnable = settingsViewModel.iptvChannelFavoriteEnable
-
             SettingsListItem(
                 headlineContent = "启用收藏",
-                supportingContent = "是否显示播放源频道收藏列表",
+                supportingContent = "是否显示订阅源频道收藏列表",
                 trailingContent = {
-                    Switch(favoriteEnable, null)
+                    Switch(settingsViewModel.iptvChannelFavoriteEnable, null)
                 },
                 onSelect = {
-                    settingsViewModel.iptvChannelFavoriteEnable = !favoriteEnable
+                    settingsViewModel.iptvChannelFavoriteEnable = !settingsViewModel.iptvChannelFavoriteEnable
                 },
             )
         }

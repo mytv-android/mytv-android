@@ -13,8 +13,9 @@ import top.yogiczy.mytv.core.data.repositories.iptv.parser.IptvParser.ChannelIte
 import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.data.utils.Logger
 import kotlin.time.measureTimedValue
+import com.dokar.quickjs.QuickJs
 /**
- * 播放源数据获取
+ * 订阅源数据获取
  */
 class IptvRepository(private val source: IptvSource) :
     FileCacheRepository(source.cacheFileName("json")) {
@@ -36,7 +37,7 @@ class IptvRepository(private val source: IptvSource) :
         val raw = rawRepository.getRaw()
         val parser = IptvParser.instances.first { it.isSupport(source.url, raw) }
 
-        log.d("开始解析播放源（${source.name}）...")
+        log.d("开始解析订阅源（${source.name}）...")
         return measureTimedValue {
             val list = parser.parse(raw)
             Globals.json.encodeToString(withContext(Dispatchers.Default) {
@@ -45,7 +46,7 @@ class IptvRepository(private val source: IptvSource) :
                     .toChannelGroupList()
             })
         }.let {
-            log.i("解析播放源（${source.name}）完成", null, it.duration)
+            log.i("解析订阅源（${source.name}）完成", null, it.duration)
             it.value
         }
     }
@@ -54,8 +55,6 @@ class IptvRepository(private val source: IptvSource) :
         withContext(Dispatchers.IO) {
             if (source.transformJs.isNullOrBlank()) return@withContext channelList
 
-            val context = org.mozilla.javascript.Context.enter()
-            context.optimizationLevel = -1
             val scriptString = """
                     (function() {
                         var channelList = ${Globals.json.encodeToString(channelList)};
@@ -64,15 +63,13 @@ class IptvRepository(private val source: IptvSource) :
                     })();
                     """.trimIndent()
             val result = runCatching {
-                val scope = context.initStandardObjects()
-                context.evaluateString(
-                    scope, scriptString, "JavaScript", 1, null
-                ) as String
+                QuickJs.create(Dispatchers.Default).use { quickJs ->
+                    quickJs.evaluate(scriptString) as String
+                }
             }
-            org.mozilla.javascript.Context.exit()
 
             if (result.isFailure) {
-                log.e("转换播放源（${source.name}）错误: ${result.exceptionOrNull()}")
+                log.e("转换订阅源（${source.name}）错误: ${result.exceptionOrNull()}")
                 // log.e("转换脚本: ${scriptString}")
             }
 
@@ -81,7 +78,7 @@ class IptvRepository(private val source: IptvSource) :
         }
 
     /**
-     * 获取播放源分组列表
+     * 获取订阅源分组列表
      */
     suspend fun getChannelGroupList(cacheTime: Long): ChannelGroupList {
         try {
@@ -90,10 +87,10 @@ class IptvRepository(private val source: IptvSource) :
             }
 
             return Globals.json.decodeFromString<ChannelGroupList>(json).also { groupList ->
-                log.i("加载播放源（${source.name}）：${groupList.size}个分组，${groupList.sumOf { it.channelList.size }}个频道")
+                log.i("加载订阅源（${source.name}）：${groupList.size}个分组，${groupList.sumOf { it.channelList.size }}个频道")
             }
         } catch (ex: Exception) {
-            log.e("加载播放源（${source.name}）失败", ex)
+            log.e("加载订阅源（${source.name}）失败", ex)
             throw ex
         }
     }
@@ -129,13 +126,13 @@ private class IptvRawRepository(private val source: IptvSource) : FileCacheRepos
         return getOrRefresh(if (source.isLocal) Long.MAX_VALUE else cacheTime) {
 
 
-            log.d("获取播放源: $source")
+            log.d("获取订阅源: $source")
 
             try {
                 source.url.request { body -> body.string() } ?: ""
             } catch (ex: Exception) {
-                log.e("获取播放源（${source.name}）失败", ex)
-                throw HttpException("获取播放源失败，请检查网络连接", ex)
+                log.e("获取订阅源（${source.name}）失败", ex)
+                throw HttpException("获取订阅源失败，请检查网络连接", ex)
             }
         }
     }

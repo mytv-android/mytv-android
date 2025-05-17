@@ -11,6 +11,8 @@ import com.tencent.smtt.sdk.WebSettings
 import com.tencent.smtt.sdk.WebView
 import com.tencent.smtt.sdk.WebViewClient
 import com.tencent.smtt.sdk.CookieManager
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -65,6 +67,8 @@ fun WebViewScreen_X5(
     if (actualUrl.contains("yangshipin.cn")){
         cookies = settingsVM.iptvHybridYangshipinCookie.split(";")
     }
+    val urlHost = getURLHost(actualUrl)
+    val blacklist = readBlacklist(getContext(), urlHost)
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier
@@ -85,6 +89,7 @@ fun WebViewScreen_X5(
                             logger.i("WebView页面加载完成")
                             // placeholderVisible = false
                         },
+                        blacklist = blacklist,
                     )
                     val cookieManager = CookieManager.getInstance()
                     cookieManager.setAcceptCookie(true)
@@ -156,22 +161,34 @@ fun WebViewScreen_X5(
 class MyClient_X5(
     private val onPageStarted: () -> Unit,
     private val onPageFinished: () -> Unit,
+    private val blacklist: List<String> = emptyList(),
 ) : WebViewClient() {
-    private val logger = Logger.create("WebViewClient")
+    private val logger = Logger.create("WebViewClient_X5")
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest?
+    ): WebResourceResponse? {
+        val url = request?.url.toString() ?: ""
+        for (item in blacklistGlobal) {
+            if (url.contains(item)) {
+                return WebResourceResponse("text", "UTF-8", null) // 返回空响应以阻止加载
+            }
+        }
+        if(blacklist != null && blacklist.isNotEmpty()){
+            for (item in blacklist) {
+                if (url.contains(item)) {
+                    return WebResourceResponse("text", "UTF-8", null) // 返回空响应以阻止加载
+                }
+            }
+        }
+        return super.shouldInterceptRequest(view, request)
+    }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         logger.i("WebView页面开始加载: $url")
         onPageStarted()
         super.onPageStarted(view, url, favicon)
-    }
-
-    fun readAssetFile(context: Context, fileName: String): String {
-        val inputStream = context.assets.open(fileName)
-        val size = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
-        return String(buffer, Charsets.UTF_8)
     }
 
     override fun onPageFinished(view: WebView, url: String) {

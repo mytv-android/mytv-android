@@ -347,7 +347,7 @@ private fun ChannelsChannelItemTagList(
     ) {
         if (channel.lineList.size > 1) {
             ChannelsChannelItemTag(
-                text = "${channel.lineList.size}播放源",
+                text = "${channel.lineList.size}订阅源",
                 isFocusedProvider = isFocusedProvider,
             )
         }

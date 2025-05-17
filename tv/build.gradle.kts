@@ -22,7 +22,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = "${System.getenv("VERSION_CODE")}".toInt()
-        versionName = "1.1.0.${System.getenv("VERSION_CODE")}"//.${System.getenv("COMMIT_HASH")}"
+        versionName = "1.1.1.${System.getenv("VERSION_CODE")}"//.${System.getenv("COMMIT_HASH")}"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -40,7 +40,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
 
             ndk {
-                abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+                abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86"))
             }
         }
         debug{
@@ -51,7 +51,7 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
             ndk {
-                abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+                abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86"))
             }
         }
     }
@@ -148,6 +148,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+}
+
+sentry {
+    org.set("mytv-android")
+    projectName.set("mytv")
+    authToken.set(getProperty("sentry.auth_token") ?: System.getenv("SENTRY_AUTH_TOKEN"))
+    autoUploadProguardMapping = false
 }
 
 fun getProperty(key: String): String? {

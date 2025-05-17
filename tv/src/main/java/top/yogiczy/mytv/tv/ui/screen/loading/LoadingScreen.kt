@@ -1,5 +1,6 @@
 package top.yogiczy.mytv.tv.ui.screen.loading
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -7,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.runtime.Composable
@@ -20,14 +20,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.LocalContentColor
-import androidx.tv.material3.LocalTextStyle
+import androidx.compose.ui.window.Dialog
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import androidx.tv.material3.Icon
 import top.yogiczy.mytv.tv.ui.material.CircularProgressIndicator
+import top.yogiczy.mytv.tv.ui.material.SnackbarUICustom
+import top.yogiczy.mytv.tv.ui.material.SnackbarType
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.screen.main.MainUiState
@@ -40,144 +46,49 @@ import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 @Composable
 fun LoadingScreen(
     modifier: Modifier = Modifier,
-    mainUiState: MainUiState,
+    onShowDialog: () -> Unit = {},
     toDashboardScreen: () -> Unit = {},
-    toSettingsScreen: () -> Unit = {},
-    onBackPressed: () -> Unit = {},
 ) {
-    var hasReady by remember { mutableStateOf(false) }
+    onShowDialog()
+    toDashboardScreen()
+}
 
-    LaunchedEffect(mainUiState) {
-        if (hasReady) return@LaunchedEffect
-
-        if (mainUiState is MainUiState.Ready) {
-            hasReady = true
-            toDashboardScreen()
-        }
-    }
-
-    AppScreen(
-        modifier = modifier
-            .focusable()
-            .focusOnLaunched()
-            .handleKeyEvents(
-                onLongSelect = toSettingsScreen,
-                onSettings = toSettingsScreen,
-            ),
-        header = {
-            Text(settingsVM.iptvSourceCurrent.name)
-        },
-        onBackPressed = onBackPressed,
-    ) {
+@Composable
+fun LoadingBar(
+    modifier: Modifier = Modifier,
+    mainUiState: MainUiState,
+    visibleProvider: () -> Boolean = { true },
+) {
+    val text = remember(mainUiState) {
         when (mainUiState) {
-            is MainUiState.Ready -> LoadingStateLoading()
-            is MainUiState.Loading -> LoadingStateLoading(messageProvider = { mainUiState.message })
-            is MainUiState.Error -> LoadingStateError(messageProvider = { mainUiState.message })
+            is MainUiState.Ready -> "就绪"
+            is MainUiState.Loading -> mainUiState.message ?: "加载中..."
+            is MainUiState.Error -> mainUiState.message ?: "加载失败"
         }
     }
-}
-
-@Composable
-private fun LoadingState(
-    modifier: Modifier = Modifier,
-    title: @Composable () -> Unit,
-    messageProvider: () -> String? = { null },
-) {
-    val childPadding = rememberChildPadding()
-
-    Box(modifier = modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .fillMaxWidth()
-                .padding(childPadding.paddingValues),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Bottom,
-        ) {
-            Column {
-                CompositionLocalProvider(
-                    LocalTextStyle provides MaterialTheme.typography.titleLarge
-                ) { title() }
-
-                val message = messageProvider()
-                if (message != null) {
-                    Text(
-                        text = message,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = LocalContentColor.current.copy(0.8f),
-                        modifier = Modifier.sizeIn(maxWidth = 8.gridColumns()),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-
-            Text("长按OK键或短按菜单键进入设置页面", modifier = Modifier.alpha(0.6f))
+    val snackbarType = remember(mainUiState) {
+        when (mainUiState) {
+            is MainUiState.Ready -> SnackbarType.DEFAULT
+            is MainUiState.Loading -> SnackbarType.DEFAULT
+            is MainUiState.Error -> SnackbarType.ERROR
         }
     }
-}
-
-@Composable
-private fun LoadingStateLoading(
-    modifier: Modifier = Modifier,
-    messageProvider: () -> String? = { null }
-) {
-    LoadingState(
+    val icon = Icons.Default.Error
+    val isLoading = remember(mainUiState) {
+        when (mainUiState) {
+            is MainUiState.Ready -> true
+            is MainUiState.Loading -> true
+            is MainUiState.Error -> false
+        }
+    }
+    SnackbarUICustom(
         modifier = modifier,
-        title = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text("加载中")
-                CircularProgressIndicator(
-                    modifier = Modifier.size(22.dp),
-                    color = LocalContentColor.current,
-                    trackColor = MaterialTheme.colorScheme.surface.copy(0.1f),
-                    strokeWidth = 3.dp,
-                )
-            }
-        },
-        messageProvider = messageProvider
+        visibleProvider = visibleProvider,
+        textProvider = {text},
+        positionProvider = {Alignment.BottomEnd},
+        showLeadingIconProvider = {true},
+        leadingIconProvider = {icon},
+        leadingLoadingProvider = {isLoading},
+        typeProvider = {snackbarType}
     )
-}
-
-@Composable
-private fun LoadingStateError(
-    modifier: Modifier = Modifier,
-    messageProvider: () -> String? = { null },
-) {
-    CompositionLocalProvider(
-        LocalContentColor provides MaterialTheme.colorScheme.error
-    ) {
-        LoadingState(
-            modifier = modifier,
-            title = { Text("加载失败") },
-            messageProvider = messageProvider
-        )
-    }
-}
-
-@Preview(device = "id:Android TV (720p)")
-@Composable
-private fun LoadingStateLoadingPreview() {
-    MyTvTheme {
-        AppScreen {
-            LoadingStateLoading(
-                messageProvider = { "获取远程直播源(4/10)".repeat(10) }
-            )
-        }
-    }
-}
-
-@Preview(device = "id:Android TV (720p)")
-@Composable
-private fun LoadingStateErrorPreview() {
-    MyTvTheme {
-        AppScreen {
-            LoadingStateError(
-                messageProvider = { "获取远程直播源(4/10)".repeat(10) }
-            )
-        }
-    }
 }
