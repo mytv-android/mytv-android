@@ -66,13 +66,15 @@ jobs:
     - name: Build with Gradle (Release)
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta'
       env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
       run: ./gradlew :tv:assembleRelease
     
     - name: Build with Gradle (Dev)
       if: github.ref == 'refs/heads/dev'
       env:
-            SENTRY_AUTH_TQOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
       run: ./gradlew :tv:assembleDebug --warning-mode=all
