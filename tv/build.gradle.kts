@@ -150,12 +150,6 @@ dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
-sentry {
-    org.set("mytv-android")
-    projectName.set("mytv")
-    authToken.set(getProperty("sentry.auth_token") ?: System.getenv("SENTRY_AUTH_TOKEN"))
-    autoUploadProguardMapping = false
-}
 
 fun getProperty(key: String): String? {
     val propertiesFile = rootProject.file("local.properties")
