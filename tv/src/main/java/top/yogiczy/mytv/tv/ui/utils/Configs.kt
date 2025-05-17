@@ -284,6 +284,9 @@ object Configs {
 
         /** 云同步 webdav 密码 */
         CLOUD_SYNC_WEBDAV_PASSWORD,
+
+        /** 经典选台界面显示直播源列表 */
+        UI_CLASSIC_SHOW_SOURCE_LIST,
     }
 
     /** ==================== 应用 ==================== */
@@ -536,6 +539,11 @@ object Configs {
     var uiUseClassicPanelScreen: Boolean
         get() = SP.getBoolean(KEY.UI_USE_CLASSIC_PANEL_SCREEN.name, true)
         set(value) = SP.putBoolean(KEY.UI_USE_CLASSIC_PANEL_SCREEN.name, value)
+
+    /** 经典选台界面显示直播源列表 */
+    var uiClassicShowSourceList: Boolean
+        get() = SP.getBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, true)
+        set(value) = SP.putBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, value)
 
     /** 界面密度缩放比例 */
     var uiDensityScaleRatio: Float

@@ -558,6 +558,15 @@ fun MainContent(
             onChannelFavoriteListVisibleChange = {
                 settingsViewModel.iptvChannelFavoriteListVisible = it
             },
+            iptvSourceListProvider = { settingsViewModel.iptvSourceList },
+            currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
+            onIptvSourceChanged = { source ->
+                mainContentState.isChannelScreenVisible = false
+                settingsViewModel.iptvSourceCurrent = source
+                settingsViewModel.iptvChannelGroupHiddenList = emptySet()
+                settingsViewModel.iptvChannelLastPlay = Channel.EMPTY
+                onReload()
+            },
             onClose = { mainContentState.isChannelScreenVisible = false },
         )
     }
