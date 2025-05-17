@@ -50,13 +50,11 @@ jobs:
     
     - name: Add signing properties
       run: |
-          echo ${{ secrets.SIGNING_PROPERTIES }} > encoded_signing_properties
-          base64 -d -i encoded_signing_properties > signing.properties
+          echo "${{ secrets.SIGNING_PROPERTIES }}" | base64 -d > signing.properties
 
     - name: Add jks file
       run: |
-          echo ${{ secrets.SIGN_KEY }} > ./encoded_key
-          base64 -d -i encoded_key > keystore.jks
+          echo "${{ secrets.SIGN_KEY }}" | base64 -d > keystore.jks
       
     - name : Add SHORT_SHA Environment Variable
       id   : short-sha
