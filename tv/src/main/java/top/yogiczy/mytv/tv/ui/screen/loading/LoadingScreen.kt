@@ -85,7 +85,7 @@ fun LoadingBar(
         modifier = modifier,
         visibleProvider = visibleProvider,
         textProvider = {text},
-        positionProvider = {Alignment.BottomEnd},
+        positionProvider = {Alignment.BottomCenter},
         showLeadingIconProvider = {true},
         leadingIconProvider = {icon},
         leadingLoadingProvider = {isLoading},
