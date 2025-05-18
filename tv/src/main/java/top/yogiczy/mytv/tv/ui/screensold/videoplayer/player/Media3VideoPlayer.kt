@@ -32,6 +32,7 @@ import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.drm.DefaultDrmSessionManager
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm
 import androidx.media3.exoplayer.drm.LocalMediaDrmCallback
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.rtsp.RtspMediaSource
 import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
@@ -88,6 +89,11 @@ class Media3VideoPlayer(
                     else DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON
                 )
                 .setEnableDecoderFallback(true)
+                .setMediaCodecSelector(
+                    if (Configs.videoPlayerForceSoftDecode || softDecode ?: false)
+                        MediaCodecSelector.PREFER_SOFTWARE
+                    else MediaCodecSelector.DEFAULT
+                )
 
         val trackSelector = DefaultTrackSelector(context).apply {
             parameters = buildUponParameters()
