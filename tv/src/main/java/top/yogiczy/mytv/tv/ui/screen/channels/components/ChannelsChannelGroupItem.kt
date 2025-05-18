@@ -37,10 +37,13 @@ fun ChannelsChannelGroupItem(
 
     Box(
         modifier = modifier
-            .handleKeyEvents(onSelect = onChannelGroupSelected)
+            .handleKeyEvents(
+                onSelect = onChannelGroupSelected,
+                onLongSelect = onChannelGroupSelected
+            )
             .clip(MaterialTheme.shapes.extraLarge)
             .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
-            .clickable {  }
+            .clickable { onChannelGroupSelected() }
     ) {
         Row(
             modifier = Modifier
