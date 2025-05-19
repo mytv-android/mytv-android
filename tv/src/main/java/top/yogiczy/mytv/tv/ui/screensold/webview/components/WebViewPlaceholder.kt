@@ -20,7 +20,7 @@ fun WebViewPlaceholder(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f)), // 修改透明度为50%
+            .background(Color.Black), // 修改透明度为50%
     ) {
         Text(
             text = message,
