@@ -599,7 +599,7 @@ private fun getKeyDownEvent(actionEvent: KeyDownAction,
             else mainContentState.changeCurrentChannelToPrev()
         }
         KeyDownAction.ChangeCurrentChannelLineIdxToPrev -> {
-            if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
+            if (mainContentState.currentChannel.lineList.size > 1) {
                 mainContentState.changeCurrentChannel(
                     mainContentState.currentChannel,
                     mainContentState.currentChannelLineIdx - 1,
@@ -607,7 +607,7 @@ private fun getKeyDownEvent(actionEvent: KeyDownAction,
             }
         }
         KeyDownAction.ChangeCurrentChannelLineIdxToNext -> {
-            if (settingsViewModel.iptvChannelChangeLineWithLeftRight && mainContentState.currentChannel.lineList.size > 1) {
+            if (mainContentState.currentChannel.lineList.size > 1) {
                 mainContentState.changeCurrentChannel(
                     mainContentState.currentChannel,
                     mainContentState.currentChannelLineIdx + 1,
