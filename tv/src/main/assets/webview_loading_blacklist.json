@@ -42,8 +42,10 @@
     "vconsole.min.js",
     "three.js",
     "blueprint.css",
+    "normalize.css",
     "blueprint-select.css",
     "cropper.css"
+  ],
   "www.cditv.cn":[
     "css",
     "hls.min.js",
