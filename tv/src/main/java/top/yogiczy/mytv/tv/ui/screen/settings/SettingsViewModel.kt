@@ -407,6 +407,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _uiClassicShowChannelInfo by mutableStateOf(false)
+    var uiClassicShowChannelInfo: Boolean
+        get() = _uiClassicShowChannelInfo
+        set(value) {
+            _uiClassicShowChannelInfo = value
+            Configs.uiClassicShowChannelInfo = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _uiDensityScaleRatio by mutableFloatStateOf(0f)
     var uiDensityScaleRatio: Float
         get() = _uiDensityScaleRatio
@@ -842,6 +851,7 @@ class SettingsViewModel : ViewModel() {
         _uiShowChannelPreview = Configs.uiShowChannelPreview
         _uiUseClassicPanelScreen = Configs.uiUseClassicPanelScreen
         _uiClassicShowSourceList = Configs.uiClassicShowSourceList
+        _uiClassicShowChannelInfo = Configs.uiClassicShowChannelInfo
         _uiDensityScaleRatio = Configs.uiDensityScaleRatio
         _uiFontScaleRatio = Configs.uiFontScaleRatio
         _uiVideoPlayerSubtitle = Configs.uiVideoPlayerSubtitle

@@ -202,6 +202,12 @@ object Configs {
 
         /** 自动关闭界面延时 */
         UI_SCREEN_AUTO_CLOSE_DELAY,
+        
+        /** 经典选台界面显示直播源列表 */
+        UI_CLASSIC_SHOW_SOURCE_LIST,
+        
+        /** 经典选台界面显示频道信息 */
+        UI_CLASSIC_SHOW_CHANNEL_INFO,
 
         /** ==================== 更新 ==================== */
         /** 更新强提醒 */
@@ -284,9 +290,6 @@ object Configs {
 
         /** 云同步 webdav 密码 */
         CLOUD_SYNC_WEBDAV_PASSWORD,
-
-        /** 经典选台界面显示直播源列表 */
-        UI_CLASSIC_SHOW_SOURCE_LIST,
     }
 
     /** ==================== 应用 ==================== */
@@ -544,6 +547,11 @@ object Configs {
     var uiClassicShowSourceList: Boolean
         get() = SP.getBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, true)
         set(value) = SP.putBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, value)
+
+    /** 经典选台界面显示频道信息 */
+    var uiClassicShowChannelInfo: Boolean
+        get() = SP.getBoolean(KEY.UI_CLASSIC_SHOW_CHANNEL_INFO.name, false)
+        set(value) = SP.putBoolean(KEY.UI_CLASSIC_SHOW_CHANNEL_INFO.name, value)
 
     /** 界面密度缩放比例 */
     var uiDensityScaleRatio: Float

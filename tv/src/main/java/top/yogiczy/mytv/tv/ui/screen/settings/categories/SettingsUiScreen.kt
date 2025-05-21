@@ -105,6 +105,19 @@ fun SettingsUiScreen(
                     },
                 )
             }
+
+            item {
+                SettingsListItem(
+                    headlineContent = "显示频道信息",
+                    supportingContent = "在经典选台界面中显示当前频道的详细信息",
+                    trailingContent = {
+                        Switch(settingsViewModel.uiClassicShowChannelInfo, null)
+                    },
+                    onSelect = {
+                        settingsViewModel.uiClassicShowChannelInfo = !settingsViewModel.uiClassicShowChannelInfo
+                    },
+                )
+            }
         }
 
         item {

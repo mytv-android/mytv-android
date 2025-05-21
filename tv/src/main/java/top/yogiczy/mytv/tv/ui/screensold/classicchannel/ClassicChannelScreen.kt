@@ -327,31 +327,33 @@ fun ClassicChannelScreen(
 
     ChannelScreenTopRight(channelNumberProvider = { currentChannelProvider().no })
 
-    // Visibility({ !sourceListVisible && !epgListVisible }) {
-    //     Box(Modifier.fillMaxSize()) {
-    //         LiveChannelsChannelInfo(
-    //             modifier = Modifier
-    //                 .align(Alignment.BottomEnd)
-    //                 .fillMaxWidth(0.5f)
-    //                 .padding(SAFE_AREA_VERTICAL_PADDING.dp)
-    //                 .background(
-    //                     MaterialTheme.colorScheme.surface.copy(0.8f),
-    //                     MaterialTheme.shapes.medium,
-    //                 )
-    //                 .padding(horizontal = 20.dp, vertical = 10.dp),
-    //             channelProvider = currentChannelProvider,
-    //             channelLineIdxProvider = currentChannelLineIdxProvider,
-    //             recentEpgProgrammeProvider = {
-    //                 epgListProvider().recentProgramme(currentChannelProvider())
-    //             },
-    //             isInTimeShiftProvider = isInTimeShiftProvider,
-    //             currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
-    //             playerMetadataProvider = videoPlayerMetadataProvider,
-    //             dense = true,
-    //             showChannelLogo = false,
-    //         )
-    //     }
-    // }
+     val showChannelInfoFeature = settingsVM.uiClassicShowChannelInfo
+     
+     Visibility({ !sourceListVisible && !epgListVisible && showChannelInfoFeature }) {
+         Box(Modifier.fillMaxSize()) {
+             LiveChannelsChannelInfo(
+                 modifier = Modifier
+                     .align(Alignment.BottomEnd)
+                     .fillMaxWidth(0.5f)
+                     .padding(SAFE_AREA_VERTICAL_PADDING.dp)
+                     .background(
+                         MaterialTheme.colorScheme.surface.copy(0.8f),
+                         MaterialTheme.shapes.medium,
+                     )
+                     .padding(horizontal = 20.dp, vertical = 10.dp),
+                 channelProvider = currentChannelProvider,
+                 channelLineIdxProvider = currentChannelLineIdxProvider,
+                 recentEpgProgrammeProvider = {
+                     epgListProvider().recentProgramme(currentChannelProvider())
+                 },
+                 isInTimeShiftProvider = isInTimeShiftProvider,
+                 currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
+                 playerMetadataProvider = videoPlayerMetadataProvider,
+                 dense = true,
+                 showChannelLogo = false,
+             )
+         }
+     }
 }
 
 @Composable
