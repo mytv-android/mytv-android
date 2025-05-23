@@ -246,6 +246,10 @@ private fun IptvSourceItem(
             ) {
                 Text(iptvSource.url)
 
+                if (!iptvSource.httpUserAgent.isNullOrBlank()) {
+                    Text("UA: ${iptvSource.httpUserAgent}")
+                }
+
                 if (iptvSourceDetail is IptvSourceDetail.Ready) {
                     Text(
                         listOf(

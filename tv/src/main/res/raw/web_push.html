@@ -69,6 +69,9 @@
                                         </van-field>
                                     </template>
 
+                                    <van-field class="!pl-0" input-align="right" label="直播源UA" placeholder="专用UA"
+                                        v-model="iptvSource.httpUserAgent"></van-field>
+
                                     <div class="flex justify-end">
                                         <van-button @click="pushIptvSource" size="small" type="primary">
                                             推送直播源
@@ -150,10 +153,10 @@
                     </van-cell-group>
 
                     <van-cell-group inset title="播放器">
-                        <van-cell title="自定义ua">
+                        <van-cell title="全局UA">
                             <template #label>
                                 <van-space class="w-full" direction="vertical" size="small">
-                                    <van-field class="!p-0" placeholder="播放器自定义ua"
+                                    <van-field class="!p-0" placeholder="播放器全局UA"
                                         v-model="configs.videoPlayerUserAgent"></van-field>
 
                                     <div class="flex justify-end">

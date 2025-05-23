@@ -28,6 +28,11 @@ data class IptvSource(
      * 转换js
      */
     val transformJs: String? = null,
+    
+    /**
+     * 自定义UA
+     */
+    val httpUserAgent: String? = null,
 ) {
     fun cacheFileName(ext: String) =
         "${cacheDir.name}/iptv_source_${hashCode().toUInt().toString(16)}.$ext"

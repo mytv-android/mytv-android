@@ -133,7 +133,7 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "自定义ua",
+                headlineContent = "全局UA",
                 trailingContent = settingsViewModel.videoPlayerUserAgent,
                 remoteConfig = true,
             )

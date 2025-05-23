@@ -40,9 +40,16 @@ class IptvRepository(private val source: IptvSource) :
         log.d("开始解析订阅源（${source.name}）...")
         return measureTimedValue {
             val list = parser.parse(raw)
+            val processedList = list.map { item ->
+                if (item.httpUserAgent.isNullOrBlank() && !source.httpUserAgent.isNullOrBlank()) {
+                    item.copy(httpUserAgent = source.httpUserAgent)
+                } else {
+                    item
+                }
+            }
             Globals.json.encodeToString(withContext(Dispatchers.Default) {
-                runCatching { transform(list) }
-                    .getOrDefault(list)
+                runCatching { transform(processedList) }
+                    .getOrDefault(processedList)
                     .toChannelGroupList()
             })
         }.let {
@@ -129,7 +136,10 @@ private class IptvRawRepository(private val source: IptvSource) : FileCacheRepos
             log.d("获取订阅源: $source")
 
             try {
-                source.url.request { body -> body.string() } ?: ""
+                source.url.request({ builder ->
+                    source.httpUserAgent?.let { builder.addHeader("User-Agent", it) }
+                    builder
+                }) { body -> body.string() } ?: ""
             } catch (ex: Exception) {
                 log.e("获取订阅源（${source.name}）失败", ex)
                 throw HttpException("获取订阅源失败，请检查网络连接", ex)

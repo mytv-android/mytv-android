@@ -225,23 +225,24 @@ object HttpServer : Loggable("HttpServer") {
         val url = body.get("url").toString()
         val filePath = body.get("filePath").toString()
         val content = body.get("content").toString()
+        val httpUserAgent = body.opt("httpUserAgent")?.toString()
 
         var newIptvSource: IptvSource? = null
 
         when (type) {
             "url" -> {
-                newIptvSource = IptvSource(name, url)
+                newIptvSource = IptvSource(name = name, url = url, httpUserAgent = httpUserAgent)
             }
 
             "file" -> {
-                newIptvSource = IptvSource(name, filePath, true)
+                newIptvSource = IptvSource(name = name, url = filePath, isLocal = true, httpUserAgent = httpUserAgent)
             }
 
             "content" -> {
                 val file =
                     File(Globals.fileDir, "iptv_source_local_${System.currentTimeMillis()}.txt")
                 file.writeText(content)
-                newIptvSource = IptvSource(name, file.path, true)
+                newIptvSource = IptvSource(name = name, url = file.path, isLocal = true, httpUserAgent = httpUserAgent)
             }
         }
 
