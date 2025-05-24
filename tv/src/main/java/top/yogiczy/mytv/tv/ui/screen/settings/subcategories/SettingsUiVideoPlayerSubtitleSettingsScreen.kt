@@ -68,6 +68,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
     val childPadding = rememberChildPadding()
 
     val useSystemDefault = remember { mutableStateOf(currentSubtitleSettings.useSystemDefault) }
+    val isApplyEmbeddedStyles = remember { mutableStateOf(currentSubtitleSettings.isApplyEmbeddedStyles) }
     val textSize = remember { mutableStateOf(currentSubtitleSettings.textSize) }
     val foregroundColor = remember { mutableStateOf(currentSubtitleSettings.style.foregroundColor) }
     val backgroundColor = remember { mutableStateOf(currentSubtitleSettings.style.backgroundColor) }
@@ -77,6 +78,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
     fun updateSubtitleSettings() {
         currentSubtitleSettings = VideoPlayerSubtitleStyle(
             useSystemDefault = useSystemDefault.value,
+            isApplyEmbeddedStyles = isApplyEmbeddedStyles.value,
             textSize = textSize.value,
             style = CaptionStyleCompat(
                 foregroundColor.value,
@@ -115,6 +117,20 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                         },
                         onSelect = {
                             useSystemDefault.value = !useSystemDefault.value
+                            updateSubtitleSettings()
+                        },
+                    )
+                }
+                item {
+                    SettingsListItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        headlineContent = "跟随源嵌入样式",
+                        supportingContent = "使用视频源中嵌入的字幕样式",
+                        trailingContent = {
+                            Switch(isApplyEmbeddedStyles.value, null)
+                        },
+                        onSelect = {
+                            isApplyEmbeddedStyles.value = !isApplyEmbeddedStyles.value
                             updateSubtitleSettings()
                         },
                     )
@@ -188,6 +204,13 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                     } else {
                         subtitleView.setStyle(currentSubtitleSettings.style)
                         subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.value)
+                    }
+                    if (isApplyEmbeddedStyles.value) {
+                        subtitleView.setApplyEmbeddedStyles(true)
+                        subtitleView.setApplyEmbeddedFontSizes(true)
+                    } else {
+                        subtitleView.setApplyEmbeddedStyles(false)
+                        subtitleView.setApplyEmbeddedFontSizes(false)
                     }
                 }
             )

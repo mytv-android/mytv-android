@@ -92,6 +92,7 @@ fun VideoPlayerScreen(
 
         if (state.instance is Media3VideoPlayer) {
             val useSystemDefault = settingsVM.uiVideoPlayerSubtitle.useSystemDefault
+            val isApplyEmbeddedStyles = settingsVM.uiVideoPlayerSubtitle.isApplyEmbeddedStyles
             val textSize = settingsVM.uiVideoPlayerSubtitle.textSize
             val style = settingsVM.uiVideoPlayerSubtitle.style
             AndroidView(
@@ -104,7 +105,13 @@ fun VideoPlayerScreen(
                             setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
                             setStyle(style)
                         }
-                        
+                        if (isApplyEmbeddedStyles) {
+                            setApplyEmbeddedStyles(true)
+                            setApplyEmbeddedFontSizes(true)
+                        }else {
+                            setApplyEmbeddedStyles(false)
+                            setApplyEmbeddedFontSizes(false)
+                        }
                     }
                 },
                 update = {
