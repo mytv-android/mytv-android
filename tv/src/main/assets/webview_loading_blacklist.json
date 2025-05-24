@@ -57,6 +57,8 @@
   ],
   "www.mana2.my":[
     "show_companion_ad.js",
-    "adsbygoogle.js"
+    "adsbygoogle.js",
+    "ads",
+    "gpt.js"
   ]
 }
