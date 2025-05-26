@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.common.text.Cue
+import androidx.media3.ui.CaptionStyleCompat
 import androidx.media3.ui.SubtitleView
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
@@ -90,13 +91,27 @@ fun VideoPlayerScreen(
         }
 
         if (state.instance is Media3VideoPlayer) {
+            val useSystemDefault = settingsVM.uiVideoPlayerSubtitle.useSystemDefault
+            val isApplyEmbeddedStyles = settingsVM.uiVideoPlayerSubtitle.isApplyEmbeddedStyles
             val textSize = settingsVM.uiVideoPlayerSubtitle.textSize
-            val style =    settingsVM.uiVideoPlayerSubtitle.style
+            val style = settingsVM.uiVideoPlayerSubtitle.style
             AndroidView(
                 factory = { 
                     SubtitleView(context).apply {
-                        setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
-                        setStyle(style)
+                        if (useSystemDefault) {
+                            setUserDefaultStyle()
+                            setUserDefaultTextSize()
+                        } else {
+                            setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize)
+                            setStyle(style)
+                        }
+                        if (isApplyEmbeddedStyles) {
+                            setApplyEmbeddedStyles(true)
+                            setApplyEmbeddedFontSizes(true)
+                        }else {
+                            setApplyEmbeddedStyles(false)
+                            setApplyEmbeddedFontSizes(false)
+                        }
                     }
                 },
                 update = {

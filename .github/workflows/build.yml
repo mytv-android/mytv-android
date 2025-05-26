@@ -125,7 +125,8 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: |
-            tv/build/outputs/apk/release/*.apk
+            tv/build/outputs/apk/release/*all*disguised.apk
+            tv/build/outputs/apk/release/*original.apk
         tag_name: V${{ env.info_version_name }}
         name: ${{ env.release_title }}
         body: ${{ env.changelog }}
@@ -137,7 +138,8 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: |
-            tv/build/outputs/apk/release/*.apk
+            tv/build/outputs/apk/release/*all*disguised.apk
+            tv/build/outputs/apk/release/*original.apk
         tag_name: V${{ env.info_version_name }}
         name: ${{ env.release_title }}
         body: ${{ env.changelog }}
@@ -167,5 +169,5 @@ jobs:
         gitee_release_id: ${{ steps.create_release.outputs.release-id }}
         gitee_upload_retry_times:  3
         gitee_files: |
-            tv/build/outputs/apk/release/*original.apk
+            tv/build/outputs/apk/release/*all*original.apk
 

@@ -37,13 +37,15 @@ import androidx.tv.material3.ListItem
 import androidx.tv.material3.ListItemDefaults
 import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
+import androidx.tv.material3.Switch
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.ui.SubtitleView
 import androidx.media3.ui.CaptionStyleCompat
+import androidx.media3.ui.SubtitleView
 import androidx.media3.common.text.Cue
 import androidx.compose.ui.graphics.Color
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.theme.SAFE_AREA_HORIZONTAL_PADDING
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
@@ -65,6 +67,8 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
 
     val childPadding = rememberChildPadding()
 
+    val useSystemDefault = remember { mutableStateOf(currentSubtitleSettings.useSystemDefault) }
+    val isApplyEmbeddedStyles = remember { mutableStateOf(currentSubtitleSettings.isApplyEmbeddedStyles) }
     val textSize = remember { mutableStateOf(currentSubtitleSettings.textSize) }
     val foregroundColor = remember { mutableStateOf(currentSubtitleSettings.style.foregroundColor) }
     val backgroundColor = remember { mutableStateOf(currentSubtitleSettings.style.backgroundColor) }
@@ -73,6 +77,8 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
 
     fun updateSubtitleSettings() {
         currentSubtitleSettings = VideoPlayerSubtitleStyle(
+            useSystemDefault = useSystemDefault.value,
+            isApplyEmbeddedStyles = isApplyEmbeddedStyles.value,
             textSize = textSize.value,
             style = CaptionStyleCompat(
                 foregroundColor.value,
@@ -94,13 +100,41 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize() // Ensure the parent container has bounded constraints
+                .fillMaxSize()
         ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = modifier.fillMaxWidth()
                     .padding(SAFE_AREA_HORIZONTAL_PADDING.dp)
             ) {
+                item{
+                    SettingsListItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        headlineContent = "使用系统样式",
+                        supportingContent = "使用Android系统（设置-无障碍）中设置的字体样式",
+                        trailingContent = {
+                            Switch(useSystemDefault.value, null)
+                        },
+                        onSelect = {
+                            useSystemDefault.value = !useSystemDefault.value
+                            updateSubtitleSettings()
+                        },
+                    )
+                }
+                item {
+                    SettingsListItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        headlineContent = "跟随源嵌入样式",
+                        supportingContent = "使用视频源中嵌入的字幕样式",
+                        trailingContent = {
+                            Switch(isApplyEmbeddedStyles.value, null)
+                        },
+                        onSelect = {
+                            isApplyEmbeddedStyles.value = !isApplyEmbeddedStyles.value
+                            updateSubtitleSettings()
+                        },
+                    )
+                }
                 item {
                     ColorPickerSection(
                         modifier = Modifier.fillMaxWidth(),
@@ -164,8 +198,20 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                         .setText("示例字幕") // 设置字幕内容
                         .build()
                     subtitleView.setCues(listOf(exampleCue))
-                    subtitleView.setStyle(currentSubtitleSettings.style)
-                    subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.value)
+                    if (useSystemDefault.value) {
+                        subtitleView.setUserDefaultStyle()
+                        subtitleView.setUserDefaultTextSize()
+                    } else {
+                        subtitleView.setStyle(currentSubtitleSettings.style)
+                        subtitleView.setFixedTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize.value)
+                    }
+                    if (isApplyEmbeddedStyles.value) {
+                        subtitleView.setApplyEmbeddedStyles(true)
+                        subtitleView.setApplyEmbeddedFontSizes(true)
+                    } else {
+                        subtitleView.setApplyEmbeddedStyles(false)
+                        subtitleView.setApplyEmbeddedFontSizes(false)
+                    }
                 }
             )
         }
@@ -274,7 +320,8 @@ fun SizePicker(
         LazyVerticalGrid(
             modifier = modifier.fillMaxWidth(),
             columns = GridCells.Fixed(6),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items((1..18).map { it * 10f }){ size ->
                 ListItem(
