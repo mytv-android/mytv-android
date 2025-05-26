@@ -115,9 +115,6 @@ object Configs {
         /** 换台跨分组切换 **/
         IPTV_CHANNEL_CHANGE_CROSS_GROUP,
 
-        /** 左右键切换订阅源线路 **/
-        IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT,
-
         /** ==================== 按键行为控制 ==================== */
 
         /** 按键行为上键 */
@@ -457,11 +454,6 @@ object Configs {
     var iptvChannelChangeCrossGroup: Boolean
         get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_CROSS_GROUP.name, true)
         set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_CROSS_GROUP.name, value)
-
-    /** 左右键切换订阅源线路 **/
-    var iptvChannelChangeLineWithLeftRight: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT.name, true)
-        set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_LINE_WITH_LEFT_RIGHT.name, value)
 
     /** ==================== 节目单 ==================== */
     /** 启用节目单 */
@@ -1144,6 +1136,9 @@ object Configs {
             cloudSyncAutoPull = null,
             cloudSyncProvider = null,
             uiFocusOptimize = null,
+            videoPlayerCore = null,
+            webViewCore = null,
+            videoPlayerForceSoftDecode = null,
             // cloudSyncGithubGistId = null,
             // cloudSyncGithubGistToken = null,
             // cloudSyncGiteeGistId = null,

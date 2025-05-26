@@ -290,14 +290,6 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _iptvChannelChangeLineWithLeftRight by mutableStateOf(false)
-    var iptvChannelChangeLineWithLeftRight: Boolean
-        get() = _iptvChannelChangeLineWithLeftRight
-        set(value) {
-            _iptvChannelChangeLineWithLeftRight = value
-            Configs.iptvChannelChangeLineWithLeftRight = value
-            afterSetWhenCloudSyncAutoPull()
-        }
 
     private var _epgEnable by mutableStateOf(false)
     var epgEnable: Boolean
@@ -789,7 +781,6 @@ class SettingsViewModel : ViewModel() {
 
         _iptvChannelChangeListLoop = Configs.iptvChannelChangeListLoop
         _iptvChannelChangeCrossGroup = Configs.iptvChannelChangeCrossGroup
-        _iptvChannelChangeLineWithLeftRight = Configs.iptvChannelChangeLineWithLeftRight
         _epgEnable = Configs.epgEnable
     }
 

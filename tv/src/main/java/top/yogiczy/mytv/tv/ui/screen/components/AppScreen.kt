@@ -89,10 +89,10 @@ fun AppScreen(
     AppThemeWrapper {
         if (enableTopBarHidden) {
             Box(
-                modifier = modifier.offset { IntOffset(x = 0, y = topBarYOffsetPx) },
+                modifier = Modifier.offset { IntOffset(x = 0, y = topBarYOffsetPx) },
             ) {
                 AppScaffoldTopBar(
-                    modifier = modifier
+                    modifier = Modifier
                         .height(64.dp)
                         .onSizeChanged { topBarHeightPx = it.height },
                     header = header,
