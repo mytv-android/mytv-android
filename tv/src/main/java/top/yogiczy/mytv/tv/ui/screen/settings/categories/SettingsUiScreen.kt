@@ -118,6 +118,19 @@ fun SettingsUiScreen(
                     },
                 )
             }
+
+            item {
+                SettingsListItem(
+                    headlineContent = "显示全部频道",
+                    supportingContent = "是否显示当前订阅源全部频道列表",
+                    trailingContent = {
+                        Switch(settingsViewModel.uiClassicShowAllChannels, null)
+                    },
+                    onSelect = {
+                        settingsViewModel.uiClassicShowAllChannels = !settingsViewModel.uiClassicShowAllChannels
+                    },
+                )
+            }
         }
 
         item {
@@ -195,7 +208,7 @@ fun SettingsUiScreen(
         item {
             SettingsListItem(
                 headlineContent = "启用收藏",
-                supportingContent = "是否显示订阅源频道收藏列表",
+                supportingContent = "是否显示当前订阅源频道收藏列表",
                 trailingContent = {
                     Switch(settingsViewModel.iptvChannelFavoriteEnable, null)
                 },
