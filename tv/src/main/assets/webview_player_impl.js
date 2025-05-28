@@ -78,7 +78,7 @@ function cleanAllStyle() {
 function __initializetMain() {
     let video = document.querySelector('video');
     video = video ? video : getVideoParentShadowRoots();
-    if (Date.now() - ___startTime > 15000) {
+    if (Date.now() - ___startTime > webview_player_timeout) {
         clearInterval(my_pollingIntervalId);
         try {
             video.pause();

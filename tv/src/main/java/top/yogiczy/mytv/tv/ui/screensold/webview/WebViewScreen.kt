@@ -31,6 +31,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.screensold.webview.components.WebViewPlaceholder
+import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.core.data.utils.Logger
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import java.net.URI
@@ -182,7 +183,11 @@ class MyClient(
         onPageFinished()
         val scriptContent = readAssetFile(view.context, "webview_player_impl.js")
         logger.i("注入脚本到WebView")
-        view.evaluateJavascript(scriptContent.trimIndent()
+        val jsContent = """
+            const webview_player_timeout = ${Configs.videoPlayerLoadTimeout.toInt()};
+            $scriptContent
+        """.trimIndent()
+        view.evaluateJavascript(jsContent
         ) {
             logger.i("脚本注入完成")
         }
