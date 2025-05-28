@@ -69,8 +69,8 @@
                                         </van-field>
                                     </template>
 
-                                    <van-field class="!pl-0" input-align="right" label="直播源UA" placeholder="专用UA"
-                                        v-model="iptvSource.httpUserAgent"></van-field>
+                                    <van-field class="!pl-0" input-align="right" label="UA" placeholder="UA"
+                                    v-if="iptvSource.type === 'url'" v-model="iptvSource.httpUserAgent"></van-field>
 
                                     <div class="flex justify-end">
                                         <van-button @click="pushIptvSource" size="small" type="primary">
