@@ -139,6 +139,7 @@ fun ClassicChannelScreen(
         try {
             if (previewIptvSource != iptvSource) {
                 previewIptvSource = iptvSource
+                previewChannelGroupList = ChannelGroupList()
                 previewChannelGroupList = IptvRepository(iptvSource).getChannelGroupList(Configs.iptvSourceCacheTime)
             }
         } catch (e: Exception) {
@@ -173,15 +174,8 @@ fun ClassicChannelScreen(
                     iptvSourceListProvider = iptvSourceListProvider,
                     currentIptvSourceProvider = currentIptvSourceProvider,
                     onIptvSourceFocused = { source ->
-                        if (previewIptvSource != source) {
-                            previewIptvSource = source
-                            previewChannelGroupList = ChannelGroupList()
-                            coroutineScope.launch {
-                                try {
-                                    previewChannelGroupList = IptvRepository(source).getChannelGroupList(Configs.iptvSourceCacheTime)
-                                } catch (e: Exception) {
-                                }
-                            }
+                        coroutineScope.launch {
+                            loadPreviewIptvSourceData(source)
                         }
                     },
                     onUserAction = { screenAutoCloseState.active() },

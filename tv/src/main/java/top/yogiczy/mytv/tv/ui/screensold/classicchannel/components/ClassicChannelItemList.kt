@@ -85,7 +85,10 @@ fun ClassicChannelItemList(
     val itemFocusRequesterList =
         remember(channelList) { List(channelList.size) { FocusRequester() } }
 
-    var hasFocused by rememberSaveable { mutableStateOf(!channelList.contains(initialChannel)) }
+    var hasFocused by rememberSaveable(channelList) { 
+        mutableStateOf(!channelList.contains(initialChannel)) 
+    }
+    
     var focusedChannel by remember(channelList) {
         mutableStateOf(initialChannel)
     }
