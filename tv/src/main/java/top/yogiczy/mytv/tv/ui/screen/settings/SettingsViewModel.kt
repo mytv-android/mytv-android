@@ -390,7 +390,7 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _uiClassicShowSourceList by mutableStateOf(true)
+    private var _uiClassicShowSourceList by mutableStateOf(Configs.uiClassicShowSourceList)
     var uiClassicShowSourceList: Boolean
         get() = _uiClassicShowSourceList
         set(value) {
@@ -399,7 +399,16 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _uiClassicShowChannelInfo by mutableStateOf(false)
+    private var _uiClassicShowAllChannels by mutableStateOf(Configs.uiClassicShowAllChannels)
+    var uiClassicShowAllChannels: Boolean
+        get() = _uiClassicShowAllChannels
+        set(value) {
+            _uiClassicShowAllChannels = value
+            Configs.uiClassicShowAllChannels = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
+    private var _uiClassicShowChannelInfo by mutableStateOf(Configs.uiClassicShowChannelInfo)
     var uiClassicShowChannelInfo: Boolean
         get() = _uiClassicShowChannelInfo
         set(value) {
@@ -842,6 +851,7 @@ class SettingsViewModel : ViewModel() {
         _uiShowChannelPreview = Configs.uiShowChannelPreview
         _uiUseClassicPanelScreen = Configs.uiUseClassicPanelScreen
         _uiClassicShowSourceList = Configs.uiClassicShowSourceList
+        _uiClassicShowAllChannels = Configs.uiClassicShowAllChannels
         _uiClassicShowChannelInfo = Configs.uiClassicShowChannelInfo
         _uiDensityScaleRatio = Configs.uiDensityScaleRatio
         _uiFontScaleRatio = Configs.uiFontScaleRatio

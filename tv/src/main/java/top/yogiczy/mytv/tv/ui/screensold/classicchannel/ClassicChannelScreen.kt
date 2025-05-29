@@ -101,6 +101,7 @@ fun ClassicChannelScreen(
     val channelGroupList = channelGroupListProvider()
     val channelFavoriteListVisible = remember { channelFavoriteListVisibleProvider() }
     val coroutineScope = rememberCoroutineScope()
+    val settings = settingsVM
 
     var previewIptvSource by remember { mutableStateOf(currentIptvSourceProvider()) }
     var previewChannelGroupList by remember { mutableStateOf(channelGroupList) }
@@ -124,7 +125,7 @@ fun ClassicChannelScreen(
     var epgListIsFocused by remember { mutableStateOf(false) }
     var sourceListIsFocused by remember { mutableStateOf(false) }
 
-    val showSourceListFeature = settingsVM.uiClassicShowSourceList
+    val showSourceListFeature = settings.uiClassicShowSourceList
 
     val offsetXPx by animateIntAsState(
         targetValue = if (epgListVisible) {
@@ -144,6 +145,11 @@ fun ClassicChannelScreen(
             previewChannelGroupList = ChannelGroupList()
         }
     }
+
+    fun saveLastSelectedGroupName(name: String) {
+        Configs.classicPanelLastSelectedGroupName = name
+    }
+    fun getLastSelectedGroupName(): String? = Configs.classicPanelLastSelectedGroupName
 
     ClassicChannelScreenWrapper(
         modifier = modifier.offset { IntOffset(x = offsetXPx, y = 0) },
@@ -210,10 +216,20 @@ fun ClassicChannelScreen(
                 channelSourceProvider = { previewIptvSource },
                 channelGroupListProvider = {
                     if (previewIptvSource == currentIptvSourceProvider()) {
-                        if (channelFavoriteEnabledProvider())
-                            ChannelGroupList(listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList)
+                        val baseList = if (channelFavoriteEnabledProvider())
+                            listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList
                         else
                             channelGroupList
+
+                        if (settings.uiClassicShowAllChannels) {
+                            val allChannelsGroup = ChannelGroup(
+                                name = "全部频道",
+                                channelList = ChannelList(channelGroupList.channelList)
+                            )
+                            ChannelGroupList(listOf(allChannelsGroup) + baseList)
+                        } else {
+                            ChannelGroupList(baseList)
+                        }
                     } else {
                         previewChannelGroupList
                     }
@@ -222,11 +238,20 @@ fun ClassicChannelScreen(
                     if (previewIptvSource == currentIptvSourceProvider()) {
                         if (channelFavoriteListVisible)
                             ClassicPanelScreenFavoriteChannelGroup
-                        else
-                            channelGroupList[max(
-                                0,
-                                channelGroupList.channelGroupIdx(currentChannelProvider())
-                            )]
+                        else {
+                            val current = currentChannelProvider()
+                            val groupList = if (settings.uiClassicShowAllChannels) {
+                                val allChannelsGroup = ChannelGroup(
+                                    name = "全部频道",
+                                    channelList = ChannelList(channelGroupList.channelList)
+                                )
+                                listOf(allChannelsGroup) + (if (channelFavoriteEnabledProvider()) listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList else channelGroupList)
+                            } else {
+                                if (channelFavoriteEnabledProvider()) listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList else channelGroupList
+                            }
+                            val lastGroup = getLastSelectedGroupName()?.let { name -> groupList.firstOrNull { it.name == name } }
+                            lastGroup ?: groupList.firstOrNull { it.channelList.any { ch -> ch == current } && it.name != "全部频道" } ?: groupList.firstOrNull { it.name == "全部频道" && it.channelList.any { ch -> ch == current } } ?: groupList.firstOrNull() ?: ChannelGroup(name = "尚未加载列表")
+                        }
                     } else {
                         previewChannelGroupList.firstOrNull() ?: ChannelGroup(name = "尚未加载列表")
                     }
@@ -270,7 +295,12 @@ fun ClassicChannelScreen(
                 epgListProvider = epgListProvider,
                 initialChannelProvider = { 
                     if (previewIptvSource == currentIptvSourceProvider()) {
-                        currentChannelProvider() 
+                        val current = currentChannelProvider()
+                        if (focusedChannelGroup.channelList.any { it == current }) {
+                            current
+                        } else {
+                            focusedChannelGroup.channelList.firstOrNull() ?: Channel()
+                        }
                     } else {
                         focusedChannelGroup.channelList.firstOrNull() ?: Channel()
                     }
@@ -279,6 +309,7 @@ fun ClassicChannelScreen(
                     if (previewIptvSource != currentIptvSourceProvider()) {
                         onIptvSourceChanged(previewIptvSource)
                     }
+                    saveLastSelectedGroupName(focusedChannelGroup.name)
                     onChannelSelected(channel)
                 },
                 onChannelFavoriteToggle = onChannelFavoriteToggle,
@@ -327,7 +358,7 @@ fun ClassicChannelScreen(
 
     ChannelScreenTopRight(channelNumberProvider = { currentChannelProvider().no })
 
-     val showChannelInfoFeature = settingsVM.uiClassicShowChannelInfo
+     val showChannelInfoFeature = settings.uiClassicShowChannelInfo
      
      Visibility({ !sourceListVisible && !epgListVisible && showChannelInfoFeature }) {
          Box(Modifier.fillMaxSize()) {

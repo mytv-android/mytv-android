@@ -87,18 +87,15 @@ fun ClassicChannelItemList(
 
     var hasFocused by rememberSaveable { mutableStateOf(!channelList.contains(initialChannel)) }
     var focusedChannel by remember(channelList) {
-        mutableStateOf(
-            if (hasFocused) channelList.firstOrNull() ?: Channel() else initialChannel
-        )
+        mutableStateOf(initialChannel)
     }
     val onChannelFocusedDebounce = rememberDebounceState(wait = 100L) {
         onChannelFocused(focusedChannel)
     }
 
-    val listState = remember(channelGroup) {
+    val listState = remember(channelGroup, channelList) {
         LazyListState(
-            if (hasFocused) 0
-            else max(0, channelList.indexOf(initialChannel) - 2)
+            max(0, channelList.indexOf(initialChannel) - 2)
         )
     }
     LaunchedEffect(listState) {

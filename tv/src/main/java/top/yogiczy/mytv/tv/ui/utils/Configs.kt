@@ -203,6 +203,9 @@ object Configs {
         /** 经典选台界面显示直播源列表 */
         UI_CLASSIC_SHOW_SOURCE_LIST,
         
+        /** 经典选台界面显示全部频道 */
+        UI_CLASSIC_SHOW_ALL_CHANNELS,
+        
         /** 经典选台界面显示频道信息 */
         UI_CLASSIC_SHOW_CHANNEL_INFO,
 
@@ -540,6 +543,11 @@ object Configs {
         get() = SP.getBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, true)
         set(value) = SP.putBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, value)
 
+    /** 经典选台界面显示全部频道 */
+    var uiClassicShowAllChannels: Boolean
+        get() = SP.getBoolean(KEY.UI_CLASSIC_SHOW_ALL_CHANNELS.name, false)
+        set(value) = SP.putBoolean(KEY.UI_CLASSIC_SHOW_ALL_CHANNELS.name, value)
+
     /** 经典选台界面显示频道信息 */
     var uiClassicShowChannelInfo: Boolean
         get() = SP.getBoolean(KEY.UI_CLASSIC_SHOW_CHANNEL_INFO.name, false)
@@ -698,7 +706,7 @@ object Configs {
         )
         set(value) = SP.putInt(KEY.VIDEO_PLAYER_DISPLAY_MODE.name, value.value)
 
-    /** 播放器 强制软解 */
+    /** 播放器 强制音频软解 */
     var videoPlayerForceSoftDecode: Boolean
         get() = SP.getBoolean(KEY.VIDEO_PLAYER_FORCE_SOFT_DECODE.name, false)
         set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_FORCE_SOFT_DECODE.name, value)
@@ -800,6 +808,11 @@ object Configs {
     var networkRetryInterval: Long
         get() = SP.getLong("network_retry_interval", Constants.NETWORK_RETRY_INTERVAL)
         set(value) = SP.putLong("network_retry_interval", value)
+
+    /** 经典选台界面上次选中分组名 */
+    var classicPanelLastSelectedGroupName: String?
+        get() = SP.getString("classicPanelLastSelectedGroupName", "").ifBlank { null }
+        set(value) = SP.putString("classicPanelLastSelectedGroupName", value ?: "")
 
     enum class UiTimeShowMode(val value: Int, val label: String) {
         /** 隐藏 */
@@ -967,6 +980,7 @@ object Configs {
             // feiyangAllInOneFilePath = feiyangAllInOneFilePath,
             networkRetryCount = networkRetryCount,
             networkRetryInterval = networkRetryInterval,
+            classicPanelLastSelectedGroupName = classicPanelLastSelectedGroupName,
         )
     }
 
@@ -1058,6 +1072,7 @@ object Configs {
         // configs.feiyangAllInOneFilePath?.let { feiyangAllInOneFilePath = it }
         configs.networkRetryCount?.let { networkRetryCount = it }
         configs.networkRetryInterval?.let { networkRetryInterval = it }
+        configs.classicPanelLastSelectedGroupName?.let { classicPanelLastSelectedGroupName = it }
     }
 
     @Serializable
@@ -1147,6 +1162,7 @@ object Configs {
         // val feiyangAllInOneFilePath: String? = null,
         val networkRetryCount: Long? = null,
         val networkRetryInterval: Long? = null,
+        val classicPanelLastSelectedGroupName: String? = null,
     ) {
         fun desensitized() = copy(
             cloudSyncAutoPull = null,
