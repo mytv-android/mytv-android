@@ -1,10 +1,6 @@
 package top.yogiczy.mytv.tv.ui.screen.channels.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -12,13 +8,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.ClickableSurfaceDefaults
 import androidx.tv.material3.Icon
 import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.Surface
 import androidx.tv.material3.Text
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroup
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
@@ -34,16 +30,17 @@ fun ChannelsChannelGroupItem(
 ) {
     val channelGroup = channelGroupProvider()
     val isSelected = isSelectedProvider()
-
-    Box(
+    Surface(
         modifier = modifier
             .handleKeyEvents(
                 onSelect = onChannelGroupSelected,
                 onLongSelect = onChannelGroupSelected
-            )
-            .clip(MaterialTheme.shapes.extraLarge)
-            .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
-            .clickable { onChannelGroupSelected() }
+            ),
+        shape = ClickableSurfaceDefaults.shape(MaterialTheme.shapes.extraLarge),
+        colors = ClickableSurfaceDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.onSurface.copy(0.1f),
+        ),
+        onClick = { onChannelGroupSelected() },
     ) {
         Row(
             modifier = Modifier

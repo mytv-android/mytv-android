@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -71,21 +70,21 @@ fun ChannelsChannelItem(
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
-    Box(
-    modifier = modifier
-        .onFocusChanged { isFocused = it.isFocused || it.hasFocus }
-        .width(2.4f.gridColumns())
-        .handleKeyEvents(
-            onSelect = onChannelSelected,
-            onLongSelect = onChannelFavoriteToggle,
-        )
-        .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
-        .border(
-            BorderStroke(
-                1.dp,
-                if (isFocused) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0f)
-            )
+    Surface(
+        modifier = modifier
+            .onFocusChanged { isFocused = it.isFocused || it.hasFocus }
+            .width(2.4f.gridColumns())
+            .handleKeyEvents(
+                onSelect = onChannelSelected,
+                onLongSelect = onChannelFavoriteToggle,
+            ),
+        colors = ClickableSurfaceDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.onSurface.copy(0.1f),
         ),
+        border = ClickableSurfaceDefaults.border(
+            focusedBorder = Border(BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface)),
+        ),
+        onClick = {},
     ) {
         Column {
             ChannelsChannelItemLogoWithPreview(
