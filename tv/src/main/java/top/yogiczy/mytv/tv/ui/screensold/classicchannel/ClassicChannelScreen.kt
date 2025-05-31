@@ -105,15 +105,32 @@ fun ClassicChannelScreen(
 
     var previewIptvSource by remember { mutableStateOf(currentIptvSourceProvider()) }
     var previewChannelGroupList by remember { mutableStateOf(channelGroupList) }
-    
+    val emptyChannelGroup = remember {
+        ChannelGroup(name = "尚未加载列表")
+    }
+    var allChannelsGroup by remember(settings.uiClassicShowAllChannels, previewIptvSource) {
+        mutableStateOf(
+            if (settings.uiClassicShowAllChannels) {
+                ChannelGroup(
+                    name = "全部频道",
+                    channelList = ChannelList(channelGroupList.channelList)
+                )
+            } else {
+                emptyChannelGroup
+            }
+        )
+    }
+    val initCurrentGroupIdx by remember {
+        mutableStateOf(channelGroupList.channelGroupIdx(currentChannelProvider()))
+    }
     var focusedChannelGroup by remember {
         mutableStateOf(
             if (channelFavoriteListVisible)
                 ClassicPanelScreenFavoriteChannelGroup
             else if (channelGroupList.isNotEmpty())
-                channelGroupList[max(0, channelGroupList.channelGroupIdx(currentChannelProvider()))]
+                channelGroupList[max(0, initCurrentGroupIdx)]
             else
-                ChannelGroup(name = "尚未加载列表")
+                emptyChannelGroup
         )
     }
     var focusedChannel by remember { mutableStateOf(currentChannelProvider()) }
@@ -124,7 +141,9 @@ fun ClassicChannelScreen(
     var channelListWidth by remember { mutableIntStateOf(0) }
     var epgListIsFocused by remember { mutableStateOf(false) }
     var sourceListIsFocused by remember { mutableStateOf(false) }
-
+    var channelInCurrentSource by remember { 
+        mutableStateOf( initCurrentGroupIdx >= 0) 
+    }
     val showSourceListFeature = settings.uiClassicShowSourceList
 
     val offsetXPx by animateIntAsState(
@@ -139,11 +158,11 @@ fun ClassicChannelScreen(
         try {
             if (previewIptvSource != iptvSource) {
                 previewIptvSource = iptvSource
-                previewChannelGroupList = ChannelGroupList()
+                previewChannelGroupList = ChannelGroupList(listOf(emptyChannelGroup))
                 previewChannelGroupList = IptvRepository(iptvSource).getChannelGroupList(Configs.iptvSourceCacheTime)
             }
         } catch (e: Exception) {
-            previewChannelGroupList = ChannelGroupList()
+            previewChannelGroupList = ChannelGroupList(listOf(emptyChannelGroup))
         }
     }
 
@@ -202,7 +221,10 @@ fun ClassicChannelScreen(
                                 FocusRequester.Cancel
                             } else if (it == FocusDirection.Left && !showSourceListFeature) {
                                 FocusRequester.Cancel
-                            }else {
+                            } else if (sourceListVisible && it == FocusDirection.Right) {
+                                sourceListVisible = false
+                                FocusRequester.Cancel
+                            } else {
                                 FocusRequester.Default
                             }
                         }
@@ -214,12 +236,7 @@ fun ClassicChannelScreen(
                             listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList
                         else
                             channelGroupList
-
                         if (settings.uiClassicShowAllChannels) {
-                            val allChannelsGroup = ChannelGroup(
-                                name = "全部频道",
-                                channelList = ChannelList(channelGroupList.channelList)
-                            )
                             ChannelGroupList(listOf(allChannelsGroup) + baseList)
                         } else {
                             ChannelGroupList(baseList)
@@ -228,34 +245,14 @@ fun ClassicChannelScreen(
                         previewChannelGroupList
                     }
                 },
-                initialChannelGroupProvider = {
-                    if (previewIptvSource == currentIptvSourceProvider()) {
-                        if (channelFavoriteListVisible)
-                            ClassicPanelScreenFavoriteChannelGroup
-                        else {
-                            val current = currentChannelProvider()
-                            val groupList = if (settings.uiClassicShowAllChannels) {
-                                val allChannelsGroup = ChannelGroup(
-                                    name = "全部频道",
-                                    channelList = ChannelList(channelGroupList.channelList)
-                                )
-                                listOf(allChannelsGroup) + (if (channelFavoriteEnabledProvider()) listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList else channelGroupList)
-                            } else {
-                                if (channelFavoriteEnabledProvider()) listOf(ClassicPanelScreenFavoriteChannelGroup) + channelGroupList else channelGroupList
-                            }
-                            val lastGroup = getLastSelectedGroupName()?.let { name -> groupList.firstOrNull { it.name == name } }
-                            lastGroup ?: groupList.firstOrNull { it.channelList.any { ch -> ch == current } && it.name != "全部频道" } ?: groupList.firstOrNull { it.name == "全部频道" && it.channelList.any { ch -> ch == current } } ?: groupList.firstOrNull() ?: ChannelGroup(name = "尚未加载列表")
-                        }
-                    } else {
-                        previewChannelGroupList.firstOrNull() ?: ChannelGroup(name = "尚未加载列表")
-                    }
-                },
+                initialChannelGroupProvider = { focusedChannelGroup },
                 onChannelGroupFocused = {
                     focusedChannelGroup = it
                     if (previewIptvSource == currentIptvSourceProvider()) {
                         onChannelFavoriteListVisibleChange(it == ClassicPanelScreenFavoriteChannelGroup)
                     }
                 },
+                channelInCurrentSourceProvider = { channelInCurrentSource },
                 onUserAction = { screenAutoCloseState.active() },
             )
 
@@ -266,7 +263,7 @@ fun ClassicChannelScreen(
                         exit = {
                             if (epgListVisible && it == FocusDirection.Left) {
                                 epgListVisible = false
-                                FocusRequester.Cancel
+                                FocusRequester.Default //FocusRequester.Cancel
                             } else if (!epgListVisible && it == FocusDirection.Right) {
                                 epgListVisible = true
                                 FocusRequester.Cancel
@@ -287,18 +284,7 @@ fun ClassicChannelScreen(
                     }
                 },
                 epgListProvider = epgListProvider,
-                initialChannelProvider = { 
-                    if (previewIptvSource == currentIptvSourceProvider()) {
-                        val current = currentChannelProvider()
-                        if (focusedChannelGroup.channelList.any { it == current }) {
-                            current
-                        } else {
-                            focusedChannelGroup.channelList.firstOrNull() ?: Channel()
-                        }
-                    } else {
-                        focusedChannelGroup.channelList.firstOrNull() ?: Channel()
-                    }
-                },
+                initialChannelProvider = currentChannelProvider,
                 onChannelSelected = { channel ->
                     if (previewIptvSource != currentIptvSourceProvider()) {
                         onIptvSourceChanged(previewIptvSource)
@@ -352,33 +338,33 @@ fun ClassicChannelScreen(
 
     ChannelScreenTopRight(channelNumberProvider = { currentChannelProvider().no })
 
-     val showChannelInfoFeature = settings.uiClassicShowChannelInfo
-     
-     Visibility({ !sourceListVisible && !epgListVisible && showChannelInfoFeature }) {
-         Box(Modifier.fillMaxSize()) {
-             LiveChannelsChannelInfo(
-                 modifier = Modifier
-                     .align(Alignment.BottomEnd)
-                     .fillMaxWidth(0.5f)
-                     .padding(SAFE_AREA_VERTICAL_PADDING.dp)
-                     .background(
-                         MaterialTheme.colorScheme.surface.copy(0.8f),
-                         MaterialTheme.shapes.medium,
-                     )
-                     .padding(horizontal = 20.dp, vertical = 10.dp),
-                 channelProvider = currentChannelProvider,
-                 channelLineIdxProvider = currentChannelLineIdxProvider,
-                 recentEpgProgrammeProvider = {
-                     epgListProvider().recentProgramme(currentChannelProvider())
-                 },
-                 isInTimeShiftProvider = isInTimeShiftProvider,
-                 currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
-                 playerMetadataProvider = videoPlayerMetadataProvider,
-                 dense = true,
-                 showChannelLogo = false,
-             )
-         }
-     }
+    val showChannelInfoFeature = settings.uiClassicShowChannelInfo
+    
+    Visibility({ !sourceListVisible && !epgListVisible && showChannelInfoFeature }) {
+        Box(Modifier.fillMaxSize()) {
+            LiveChannelsChannelInfo(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .fillMaxWidth(0.5f)
+                    .padding(SAFE_AREA_VERTICAL_PADDING.dp)
+                    .background(
+                        MaterialTheme.colorScheme.surface.copy(0.8f),
+                        MaterialTheme.shapes.medium,
+                    )
+                    .padding(horizontal = 20.dp, vertical = 10.dp),
+                channelProvider = currentChannelProvider,
+                channelLineIdxProvider = currentChannelLineIdxProvider,
+                recentEpgProgrammeProvider = {
+                    epgListProvider().recentProgramme(currentChannelProvider())
+                },
+                isInTimeShiftProvider = isInTimeShiftProvider,
+                currentPlaybackEpgProgrammeProvider = currentPlaybackEpgProgrammeProvider,
+                playerMetadataProvider = videoPlayerMetadataProvider,
+                dense = true,
+                showChannelLogo = false,
+            )
+        }
+    }
 }
 
 @Composable

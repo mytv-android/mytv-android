@@ -53,6 +53,7 @@ fun ClassicChannelGroupItemList(
     channelGroupListProvider: () -> ChannelGroupList = { ChannelGroupList() },
     initialChannelGroupProvider: () -> ChannelGroup = { ChannelGroup() },
     onChannelGroupFocused: (ChannelGroup) -> Unit = {},
+    channelInCurrentSourceProvider: () -> Boolean = { false },
     onUserAction: () -> Unit = {},
 ) {
     val channelGroupList = channelGroupListProvider()
@@ -60,11 +61,10 @@ fun ClassicChannelGroupItemList(
     val initialChannelGroup = initialChannelGroupProvider()
     val itemFocusRequesterList =
         remember(channelGroupList) { List(channelGroupList.size) { FocusRequester() } }
-    
-    var hasFocused by rememberSaveable { mutableStateOf(!channelGroupList.contains(initialChannelGroup)) }
+    var hasFocused by rememberSaveable { mutableStateOf(channelInCurrentSourceProvider()) }
     var focusedChannelGroup by remember(channelGroupList) {
         mutableStateOf(
-            if (hasFocused) channelGroupList.firstOrNull() ?: ChannelGroup() else initialChannelGroup
+            initialChannelGroup
         )
     }
     val onChannelGroupFocusedDebounce = rememberDebounceState(wait = 100L) {
@@ -111,7 +111,9 @@ fun ClassicChannelGroupItemList(
             .ifElse(
                 settingsVM.uiFocusOptimize,
                 Modifier.saveFocusRestorer {
-                    itemFocusRequesterList.getOrElse(channelGroupList.indexOf(focusedChannelGroup)) { FocusRequester.Default }
+                    itemFocusRequesterList.getOrElse(channelGroupList.indexOf(focusedChannelGroup)) { 
+                        FocusRequester.Default 
+                    }
                 },
             ),
         state = listState,
@@ -120,9 +122,9 @@ fun ClassicChannelGroupItemList(
     ) {
         itemsIndexed(channelGroupList, key = { _, channelGroup -> channelGroup.hashCode() }) { index, channelGroup ->
             val isSelected by remember { derivedStateOf { channelGroup == focusedChannelGroup } }
-            // val initialFocused by remember {
-            //     derivedStateOf { !hasFocused && channelGroup == initialChannelGroup }
-            // }
+            val initialFocused by remember {
+                derivedStateOf { !hasFocused && channelGroup == initialChannelGroup }
+            }
             ClassicChannelGroupItem(
                 modifier = Modifier
                     .ifElse(
@@ -140,8 +142,8 @@ fun ClassicChannelGroupItemList(
                 channelGroupProvider = { channelGroup },
                 isSelectedProvider = { isSelected },
                 focusRequesterProvider = { itemFocusRequesterList[index] },
-                // initialFocusedProvider = { initialFocused },
-                // onInitialFocused = { hasFocused = true },
+                initialFocusedProvider = { initialFocused },
+                onInitialFocused = { hasFocused = true },
                 onFocused = {
                     focusedChannelGroup = channelGroup
                     onChannelGroupFocusedDebounce.send()
@@ -157,8 +159,8 @@ private fun ClassicChannelGroupItem(
     channelGroupProvider: () -> ChannelGroup = { ChannelGroup() },
     isSelectedProvider: () -> Boolean = { false },
     focusRequesterProvider: () -> FocusRequester = { FocusRequester() },
-    // initialFocusedProvider: () -> Boolean = { false },
-    // onInitialFocused: () -> Unit = {},
+    initialFocusedProvider: () -> Boolean = { false },
+    onInitialFocused: () -> Unit = {},
     onFocused: () -> Unit = {},
 ) {
     val channelGroup = channelGroupProvider()
@@ -166,12 +168,12 @@ private fun ClassicChannelGroupItem(
     val focusRequester = focusRequesterProvider()
     var isFocused by remember { mutableStateOf(false) }
 
-    // LaunchedEffect(Unit) {
-    //     if (initialFocusedProvider()) {
-    //         onInitialFocused()
-    //         focusRequester.saveRequestFocus()
-    //     }
-    // }
+    LaunchedEffect(Unit) {
+        if (initialFocusedProvider()) {
+            onInitialFocused()
+            focusRequester.saveRequestFocus()
+        }
+    }
     DenseListItem(
         modifier = Modifier
             .focusRequester(focusRequester)
