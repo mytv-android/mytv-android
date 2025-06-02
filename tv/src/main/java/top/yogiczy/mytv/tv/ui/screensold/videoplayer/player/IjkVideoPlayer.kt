@@ -18,7 +18,7 @@ import tv.danmaku.ijk.media.player.IjkMediaMeta
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import top.yogiczy.mytv.core.data.utils.Logger
 import top.yogiczy.mytv.core.data.utils.Loggable
-
+import kotlin.math.max
 
 class IjkVideoPlayer(
     private val context: Context,
@@ -74,7 +74,9 @@ class IjkVideoPlayer(
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "buffer_size", 1316)
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "infbuf", 1)  // 无限读
             setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "flush_packets", 1L)
-            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", (Configs.videoPlayerBufferTime.toLong() * 0.03).toLong());
+            setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "min-frames", 
+                    max(10L, (Configs.videoPlayerBufferTime.toLong() * 0.03).toLong())
+            )
 
             //  关闭播放器缓冲，这个必须关闭，否则会出现播放一段时间后，一直卡住，控制台打印 FFP_MSG_BUFFERING_START
             setOption(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "packet-buffering", 0)
