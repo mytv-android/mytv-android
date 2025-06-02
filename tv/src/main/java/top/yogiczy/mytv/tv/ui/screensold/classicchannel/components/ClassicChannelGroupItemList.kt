@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,31 +60,27 @@ fun ClassicChannelGroupItemList(
     val channelGroupList = channelGroupListProvider()
     val channelSource = channelSourceProvider()
     val initialChannelGroup = initialChannelGroupProvider()
-    val itemFocusRequesterList =
-        remember(channelGroupList) { List(channelGroupList.size) { FocusRequester() } }
+    val itemFocusRequesterList = List(channelGroupList.size) { FocusRequester() }
     var hasFocused by rememberSaveable { mutableStateOf(channelInCurrentSourceProvider()) }
-    var focusedChannelGroup by remember(channelGroupList) {
+    var focusedChannelGroup by remember(channelSource) {
         mutableStateOf(
             initialChannelGroup
         )
     }
-    val onChannelGroupFocusedDebounce = rememberDebounceState(wait = 100L) {
-        onChannelGroupFocused(focusedChannelGroup)
-    }
 
-    val listState = remember(channelSource) {
-        LazyListState(
-            if (hasFocused) 0
-            else max(0, channelGroupList.indexOf(initialChannelGroup) - 2)
-        )
-    }
+    // val listState = remember(channelSource) {
+    //     LazyListState(
+    //         if (hasFocused) 0
+    //         else max(0, channelGroupList.indexOf(initialChannelGroup) - 2)
+    //     )
+    // }
+    val listState = rememberLazyListState(max(0, channelGroupList.indexOf(initialChannelGroup) - 2))
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }
             .distinctUntilChanged()
             .collect { _ ->
                 onUserAction()
-                onChannelGroupFocusedDebounce.send()
             }
     }
 
@@ -146,7 +143,7 @@ fun ClassicChannelGroupItemList(
                 onInitialFocused = { hasFocused = true },
                 onFocused = {
                     focusedChannelGroup = channelGroup
-                    onChannelGroupFocusedDebounce.send()
+                    onChannelGroupFocused(channelGroup)
                 },
             )
         }
