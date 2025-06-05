@@ -588,6 +588,14 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _videoPlayerSupportTSHighProfile by mutableStateOf(false)
+    var videoPlayerSupportTSHighProfile: Boolean
+        get() = _videoPlayerSupportTSHighProfile
+        set(value) {
+            _videoPlayerSupportTSHighProfile = value
+            Configs.videoPlayerSupportTSHighProfile = value
+        }
+
     private var _videoPlayerVolumeNormalization by mutableStateOf(false)
     var videoPlayerVolumeNormalization: Boolean
         get() = _videoPlayerVolumeNormalization
@@ -882,6 +890,7 @@ class SettingsViewModel : ViewModel() {
         _videoPlayerForceSoftDecode = Configs.videoPlayerForceSoftDecode
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem
         _videoPlayerSkipMultipleFramesOnSameVSync = Configs.videoPlayerSkipMultipleFramesOnSameVSync
+        _videoPlayerSupportTSHighProfile = Configs.videoPlayerSupportTSHighProfile
         _networkRetryCount = Configs.networkRetryCount
         _networkRetryInterval = Configs.networkRetryInterval
         _themeAppCurrent = Configs.themeAppCurrent

@@ -41,6 +41,9 @@ import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import androidx.media3.exoplayer.util.EventLogger
 import androidx.media3.exoplayer.video.MediaCodecVideoRenderer
+import androidx.media3.extractor.DefaultExtractorsFactory
+import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ALLOW_NON_IDR_KEYFRAMES
+import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_DETECT_ACCESS_UNITS
 import com.google.common.collect.ImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -193,11 +196,25 @@ class Media3VideoPlayer(
                 val mediaItem = MediaItem.Builder().setUri(uri)
                                         .setMimeType(mimeType)
                                         .build()
-                val mediaSource = DefaultMediaSourceFactory(context)
-                            .setDataSourceFactory(dataSourceFactory)
-                            .createMediaSource(mediaItem)
-                if (mediaSource != null) {
-                    return mediaSource
+                if(Configs.videoPlayerSupportTSHighProfile){
+                    val extractorsFactory = DefaultExtractorsFactory()
+                        .setTsExtractorFlags(
+                            FLAG_DETECT_ACCESS_UNITS or
+                            FLAG_ALLOW_NON_IDR_KEYFRAMES
+                        )
+                    val mediaSource = DefaultMediaSourceFactory(context, extractorsFactory)
+                        .setDataSourceFactory(dataSourceFactory)
+                        .createMediaSource(mediaItem)
+                    if (mediaSource != null) {
+                        return mediaSource
+                    }
+                }else{
+                    val mediaSource = DefaultMediaSourceFactory(context)
+                        .setDataSourceFactory(dataSourceFactory)
+                        .createMediaSource(mediaItem)
+                    if (mediaSource != null) {
+                        return mediaSource
+                    }
                 }
             }
         }
@@ -218,13 +235,10 @@ class Media3VideoPlayer(
             }
         }
         
-
-        
-
         return when (contentTypeForce ?: Util.inferContentType(uri)) {
             C.CONTENT_TYPE_HLS -> {
                 HlsMediaSource.Factory(dataSourceFactory)
-                    .apply{
+                    .apply {
                         setAllowChunklessPreparation(true)
                     }
                     .createMediaSource(mediaItem)
@@ -277,11 +291,26 @@ class Media3VideoPlayer(
             }
 
             C.CONTENT_TYPE_OTHER -> {
-                if (uri.toString().startsWith("rtmp://")) {
-                    ProgressiveMediaSource.Factory(RtmpDataSource.Factory()).createMediaSource(mediaItem)
+                if(Configs.videoPlayerSupportTSHighProfile){
+                    val extractorsFactory = DefaultExtractorsFactory()
+                        .setTsExtractorFlags(
+                            FLAG_DETECT_ACCESS_UNITS or
+                            FLAG_ALLOW_NON_IDR_KEYFRAMES
+                        )
+                    if (uri.toString().startsWith("rtmp://")) {
+                        ProgressiveMediaSource.Factory(RtmpDataSource.Factory(), extractorsFactory).createMediaSource(mediaItem)
+                    }
+                    else{
+                        ProgressiveMediaSource.Factory(dataSourceFactory, extractorsFactory).createMediaSource(mediaItem)
+                    }
                 }
                 else{
-                    ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                    if (uri.toString().startsWith("rtmp://")) {
+                        ProgressiveMediaSource.Factory(RtmpDataSource.Factory()).createMediaSource(mediaItem)
+                    }
+                    else{
+                        ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem)
+                    }
                 }
             }
 
