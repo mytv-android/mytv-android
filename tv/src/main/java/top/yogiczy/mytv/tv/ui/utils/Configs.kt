@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.encodeToString
 import top.yogiczy.mytv.core.data.entities.actions.KeyDownAction
-import top.yogiczy.mytv.core.data.entities.channel.channel
+import top.yogiczy.mytv.core.data.entities.channel.Channel
 import top.yogiczy.mytv.core.data.entities.channel.ChannelList
 import top.yogiczy.mytv.core.data.entities.channel.ChannelFavoriteList
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
@@ -1128,7 +1128,7 @@ object Configs {
         val iptvChannelFavoriteEnable: Boolean? = null,
         val iptvChannelFavoriteListVisible: Boolean? = null,
         val iptvChannelFavoriteList: ChannelFavoriteList? = null,
-        val iptvChannelHistoryList: ChannelHistoryList? = null,
+        val iptvChannelHistoryList: ChannelList? = null,
         val iptvChannelLastPlay: Channel? = null,
         val iptvChannelLinePlayableHostList: Set<String>? = null,
         val iptvChannelLinePlayableUrlList: Set<String>? = null,
