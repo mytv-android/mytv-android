@@ -40,6 +40,8 @@ object Constants {
             )
         )
     )
+    /*  历史列表大小 */
+    const val MAX_CHANNEL_HISTORY_SIZE = 15
 
     /**
      * 订阅源缓存时间（毫秒）

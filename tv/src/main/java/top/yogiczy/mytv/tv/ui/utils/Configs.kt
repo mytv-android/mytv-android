@@ -4,7 +4,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.encodeToString
 import top.yogiczy.mytv.core.data.entities.actions.KeyDownAction
-import top.yogiczy.mytv.core.data.entities.channel.Channel
+import top.yogiczy.mytv.core.data.entities.channel.channel
+import top.yogiczy.mytv.core.data.entities.channel.ChannelList
 import top.yogiczy.mytv.core.data.entities.channel.ChannelFavoriteList
 import top.yogiczy.mytv.core.data.entities.epg.EpgProgrammeReserveList
 import top.yogiczy.mytv.core.data.entities.epgsource.EpgSource
@@ -93,6 +94,9 @@ object Configs {
 
         /** 订阅源频道收藏列表 */
         IPTV_CHANNEL_FAVORITE_LIST,
+
+        /** 频道历史记录 */
+        IPTV_CHANNEL_HISTORY_LIST,
 
         /** 上一次播放频道 */
         IPTV_CHANNEL_LAST_PLAY,
@@ -420,6 +424,19 @@ object Configs {
         )
         set(value) = SP.putString(
             KEY.IPTV_CHANNEL_FAVORITE_LIST.name,
+            Globals.json.encodeToString(value)
+        )
+
+    /** 频道历史记录 */
+    var iptvChannelHistoryList: ChannelList
+        get() = Globals.json.decodeFromString(
+            SP.getString(
+                KEY.IPTV_CHANNEL_HISTORY_LIST.name,
+                Globals.json.encodeToString(ChannelList())
+            )
+        )
+        set(value) = SP.putString(
+            KEY.IPTV_CHANNEL_HISTORY_LIST.name,
             Globals.json.encodeToString(value)
         )
 
@@ -925,6 +942,7 @@ object Configs {
             iptvChannelFavoriteEnable = iptvChannelFavoriteEnable,
             iptvChannelFavoriteListVisible = iptvChannelFavoriteListVisible,
             iptvChannelFavoriteList = iptvChannelFavoriteList,
+            iptvChannelHistoryList = iptvChannelHistoryList,
             iptvChannelLastPlay = iptvChannelLastPlay,
             iptvChannelLinePlayableHostList = iptvChannelLinePlayableHostList,
             iptvChannelLinePlayableUrlList = iptvChannelLinePlayableUrlList,
@@ -1016,6 +1034,7 @@ object Configs {
         configs.iptvChannelFavoriteEnable?.let { iptvChannelFavoriteEnable = it }
         configs.iptvChannelFavoriteListVisible?.let { iptvChannelFavoriteListVisible = it }
         configs.iptvChannelFavoriteList?.let { iptvChannelFavoriteList = it }
+        configs.iptvChannelHistoryList?.let { iptvChannelHistoryList = it }
         configs.iptvChannelLastPlay?.let { iptvChannelLastPlay = it }
         configs.iptvChannelLinePlayableHostList?.let { iptvChannelLinePlayableHostList = it }
         configs.iptvChannelLinePlayableUrlList?.let { iptvChannelLinePlayableUrlList = it }
@@ -1109,6 +1128,7 @@ object Configs {
         val iptvChannelFavoriteEnable: Boolean? = null,
         val iptvChannelFavoriteListVisible: Boolean? = null,
         val iptvChannelFavoriteList: ChannelFavoriteList? = null,
+        val iptvChannelHistoryList: ChannelHistoryList? = null,
         val iptvChannelLastPlay: Channel? = null,
         val iptvChannelLinePlayableHostList: Set<String>? = null,
         val iptvChannelLinePlayableUrlList: Set<String>? = null,
@@ -1181,6 +1201,8 @@ object Configs {
             uiFocusOptimize = null,
             videoPlayerCore = null,
             webViewCore = null,
+            iptvChannelHistoryList = null,
+            iptvChannelFavoriteList = null,
             videoPlayerForceSoftDecode = null,
             videoPlayerSupportTSHighProfile = null,
             // cloudSyncGithubGistId = null,

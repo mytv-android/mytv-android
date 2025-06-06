@@ -193,6 +193,7 @@ fun MainScreen(
                 DashboardScreen(
                     currentIptvSourceProvider = { settingsViewModel.iptvSourceCurrent },
                     channelFavoriteListProvider = { settingsViewModel.iptvChannelFavoriteList },
+                    channelHistoryListProvider = { settingsViewModel.iptvChannelHistoryList },
                     onChannelSelected = { onChannelSelected(it) },
                     epgListProvider = epgListProvider,
                     toLiveScreen = { navController.navigateSingleTop(Screens.Live()) },
