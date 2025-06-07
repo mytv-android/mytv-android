@@ -16,28 +16,30 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 fun SettingsDebugScreen(
     modifier: Modifier = Modifier,
     settingsViewModel: SettingsViewModel = settingsVM,
+    toUiSettingsDecoderInfoScreen: () -> Unit = {},
     onBackPressed: () -> Unit = {},
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 调试") },
+        header = { Text("设置 / 开发者选项") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
-        item {
-            SettingsListItem(
-                modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "开发者模式",
-                trailingContent = {
-                    Switch(settingsViewModel.debugDeveloperMode, null)
-                },
-                onSelect = {
-                    settingsViewModel.debugDeveloperMode = !settingsViewModel.debugDeveloperMode
-                },
-            )
-        }
+        // item {
+        //     SettingsListItem(
+        //         modifier = Modifier.focusRequester(firstItemFocusRequester),
+        //         headlineContent = "开发者模式",
+        //         trailingContent = {
+        //             Switch(settingsViewModel.debugDeveloperMode, null)
+        //         },
+        //         onSelect = {
+        //             settingsViewModel.debugDeveloperMode = !settingsViewModel.debugDeveloperMode
+        //         },
+        //     )
+        // }
 
         item {
             SettingsListItem(
+                modifier = Modifier.focusRequester(firstItemFocusRequester),
                 headlineContent = "显示FPS",
                 supportingContent = "在屏幕左上角显示fps和柱状图",
                 trailingContent = {
@@ -73,6 +75,15 @@ fun SettingsDebugScreen(
                     settingsViewModel.debugShowLayoutGrids =
                         !settingsViewModel.debugShowLayoutGrids
                 },
+            )
+        }
+
+        item {
+            SettingsListItem(
+                headlineContent = "解码器信息",
+                supportingContent = "查看系统解码器",
+                onSelect = toUiSettingsDecoderInfoScreen,
+                link = true,
             )
         }
     }

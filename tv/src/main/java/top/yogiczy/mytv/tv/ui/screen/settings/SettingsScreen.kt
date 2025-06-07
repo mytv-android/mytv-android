@@ -38,6 +38,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.categories.SettingsUpdateScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.categories.SettingsVideoPlayerScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsChannelGroupVisibilityScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsCloudSyncProviderScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsDecoderInfoScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsEpgRefreshTimeThresholdScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsEpgSourceScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsIptvHybridModeScreen
@@ -225,6 +226,9 @@ fun SettingsScreen(
 
                 composable(SettingsCategories.DEBUG.name) {
                     SettingsDebugScreen(
+                        toUiSettingsDecoderInfoScreen = {
+                            navController.navigateSingleTop(SettingsSubCategories.UI_SETTINGS_DECODER_INFO.name)
+                        },
                         onBackPressed = { navController.navigateUp() },
                     )
                 }
@@ -537,6 +541,12 @@ fun SettingsScreen(
                             settingsViewModel.cloudSyncProvider = it
                             navController.navigateUp()
                         },
+                        onBackPressed = { navController.navigateUp() },
+                    )
+                }
+
+                composable(SettingsSubCategories.UI_SETTINGS_DECODER_INFO.name) {
+                    SettingsDecoderInfoScreen(
                         onBackPressed = { navController.navigateUp() },
                     )
                 }
