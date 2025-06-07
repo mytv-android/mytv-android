@@ -167,7 +167,7 @@ private fun SettingsIptvSourceContent(
 
             ListItem(
                 modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                headlineContent = { Text("添加其他直播源") },
+                headlineContent = { Text("添加其他订阅源") },
                 selected = false,
                 onClick = {},
             )

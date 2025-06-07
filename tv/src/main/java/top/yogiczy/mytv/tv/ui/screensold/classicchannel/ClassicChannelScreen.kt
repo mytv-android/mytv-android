@@ -423,7 +423,7 @@ private fun ClassicPanelScreenShowSourceTip(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        "向左查看直播源".map {
+        "向左查看订阅源".map {
             Text(text = it.toString(), style = MaterialTheme.typography.labelSmall)
         }
     }

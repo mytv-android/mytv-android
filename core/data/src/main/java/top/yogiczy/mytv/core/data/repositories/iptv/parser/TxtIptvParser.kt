@@ -4,7 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * txt直播源解析
+ * txt订阅源解析
  */
 class TxtIptvParser : IptvParser {
 

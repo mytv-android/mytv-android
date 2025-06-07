@@ -62,7 +62,7 @@ object Configs {
         /** 订阅源列表 */
         IPTV_SOURCE_LIST,
 
-        /** 直播源缓存时间（毫秒） */
+        /** 订阅源缓存时间（毫秒） */
         IPTV_SOURCE_CACHE_TIME,
 
         /** 订阅源分组隐藏列表 */
@@ -101,10 +101,10 @@ object Configs {
         /** 上一次播放频道 */
         IPTV_CHANNEL_LAST_PLAY,
 
-        /** 直播源线路可播放host列表 */
+        /** 订阅源线路可播放host列表 */
         IPTV_CHANNEL_LINE_PLAYABLE_HOST_LIST,
 
-        /** 直播源线路可播放地址列表 */
+        /** 订阅源线路可播放地址列表 */
         IPTV_CHANNEL_LINE_PLAYABLE_URL_LIST,
 
         /** 换台反转 */
@@ -204,7 +204,7 @@ object Configs {
         /** 自动关闭界面延时 */
         UI_SCREEN_AUTO_CLOSE_DELAY,
         
-        /** 经典选台界面显示直播源列表 */
+        /** 经典选台界面显示订阅源列表 */
         UI_CLASSIC_SHOW_SOURCE_LIST,
         
         /** 经典选台界面显示全部频道 */
@@ -362,7 +362,7 @@ object Configs {
         )
         set(value) = SP.putString(KEY.IPTV_SOURCE_LIST.name, Globals.json.encodeToString(value))
 
-    /** 直播源缓存时间（毫秒） */
+    /** 订阅源缓存时间（毫秒） */
     var iptvSourceCacheTime: Long
         get() = SP.getLong(KEY.IPTV_SOURCE_CACHE_TIME.name, Constants.IPTV_SOURCE_CACHE_TIME)
         set(value) = SP.putLong(KEY.IPTV_SOURCE_CACHE_TIME.name, value)
@@ -453,12 +453,12 @@ object Configs {
             Globals.json.encodeToString(value)
         )
 
-    /** 直播源线路可播放host列表 */
+    /** 订阅源线路可播放host列表 */
     var iptvChannelLinePlayableHostList: Set<String>
         get() = SP.getStringSet(KEY.IPTV_CHANNEL_LINE_PLAYABLE_HOST_LIST.name, emptySet())
         set(value) = SP.putStringSet(KEY.IPTV_CHANNEL_LINE_PLAYABLE_HOST_LIST.name, value)
 
-    /** 直播源线路可播放地址列表 */
+    /** 订阅源线路可播放地址列表 */
     // IPTV_CHANNEL_LINE_PLAYABLE_URL_LIST,
     var iptvChannelLinePlayableUrlList: Set<String>
         get() = SP.getStringSet(KEY.IPTV_CHANNEL_LINE_PLAYABLE_URL_LIST.name, emptySet())
@@ -558,7 +558,7 @@ object Configs {
         get() = SP.getBoolean(KEY.UI_USE_CLASSIC_PANEL_SCREEN.name, true)
         set(value) = SP.putBoolean(KEY.UI_USE_CLASSIC_PANEL_SCREEN.name, value)
 
-    /** 经典选台界面显示直播源列表 */
+    /** 经典选台界面显示订阅源列表 */
     var uiClassicShowSourceList: Boolean
         get() = SP.getBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, true)
         set(value) = SP.putBoolean(KEY.UI_CLASSIC_SHOW_SOURCE_LIST.name, value)
@@ -863,8 +863,8 @@ object Configs {
         /** 禁用 */
         DISABLE(0, "禁用"),
 
-        /** 直播源优先 */
-        IPTV_FIRST(1, "直播源优先"),
+        /** 订阅源优先 */
+        IPTV_FIRST(1, "订阅源优先"),
 
         /** 网页源优先 */
         HYBRID_FIRST(2, "网页源优先");

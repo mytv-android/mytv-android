@@ -5,7 +5,7 @@ import top.yogiczy.mytv.core.data.utils.Globals
 import java.io.File
 
 /**
- *  直播源
+ *  订阅源
  */
 @Serializable
 data class IptvSource(
@@ -41,7 +41,7 @@ data class IptvSource(
         val cacheDir by lazy { File(Globals.cacheDir, "iptv_source_cache") }
 
         val EXAMPLE = IptvSource(
-            name = "测试直播源1",
+            name = "测试订阅源1",
             url = "http://1.2.3.4/tv.txt",
             transformJs = "",
         )

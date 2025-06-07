@@ -16,7 +16,7 @@ data class ChannelFavoriteList(
                     epgName = "直播频道${i + 1}",
                     index = 9998,
                 ),
-                iptvSourceName = "直播源${i + 1}",
+                iptvSourceName = "订阅源${i + 1}",
                 groupName = "分组${i + 1}",
             )
         })

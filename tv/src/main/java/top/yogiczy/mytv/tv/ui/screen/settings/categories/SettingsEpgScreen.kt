@@ -37,8 +37,8 @@ fun SettingsEpgScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "跟随直播源",
-                supportingContent = "优先使用直播源中定义的节目单",
+                headlineContent = "跟随订阅源",
+                supportingContent = "优先使用订阅源中定义的节目单",
                 trailingContent = { Switch(settingsViewModel.epgSourceFollowIptv, null) },
                 onSelect = {
                     settingsViewModel.epgSourceFollowIptv = !settingsViewModel.epgSourceFollowIptv

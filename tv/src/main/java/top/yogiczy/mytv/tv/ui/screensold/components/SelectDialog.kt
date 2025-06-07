@@ -114,7 +114,7 @@ private fun SelectDialogPreview() {
         PreviewWithLayoutGrids {
             PopupHandleableApplication {
                 SelectDialog(
-                    title = "直播源缓存时间",
+                    title = "订阅源缓存时间",
                     currentDataProvider = { 0L },
                     dataListProvider = {
                         (0..<24).map { it * 1000L * 60 * 60 }

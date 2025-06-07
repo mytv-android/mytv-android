@@ -95,8 +95,8 @@ fun SettingsUiScreen(
         if (settingsViewModel.uiUseClassicPanelScreen) {
             item {
                 SettingsListItem(
-                    headlineContent = "显示直播源列表",
-                    supportingContent = "在经典选台界面中启用\"向左查看直播源\"功能",
+                    headlineContent = "显示订阅源列表",
+                    supportingContent = "在经典选台界面中启用\"向左查看订阅源\"功能",
                     trailingContent = {
                         Switch(settingsViewModel.uiClassicShowSourceList, null)
                     },

@@ -10,16 +10,16 @@ import top.yogiczy.mytv.core.data.entities.channel.ChannelList
 import top.yogiczy.mytv.core.data.utils.ChannelAlias
 
 /**
- * 直播源数据解析接口
+ * 订阅源数据解析接口
  */
 interface IptvParser {
     /**
-     * 是否支持该直播源格式
+     * 是否支持该订阅源格式
      */
     fun isSupport(url: String, data: String): Boolean
 
     /**
-     * 解析直播源数据
+     * 解析订阅源数据
      */
     suspend fun parse(data: String): List<ChannelItem>
 

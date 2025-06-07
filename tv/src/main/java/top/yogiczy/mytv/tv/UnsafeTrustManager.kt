@@ -8,7 +8,7 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-// 防止部分直播源链接证书不被信任
+// 防止部分订阅源链接证书不被信任
 @SuppressLint("CustomX509TrustManager")
 class UnsafeTrustManager : X509TrustManager {
     @SuppressLint("TrustAllX509TrustManager")

@@ -154,7 +154,7 @@ private fun UpdateScreenPreview() {
             updateViewModel = UpdateViewModel(
                 debugLatestRelease = GitRelease(
                     version = "9.0.0",
-                    description = " 移除自定义直播源界面获取直播源信息，可能导致部分低内存设备OOM\r\n\r\n"
+                    description = " 移除自定义订阅源界面获取订阅源信息，可能导致部分低内存设备OOM\r\n\r\n"
                         .repeat(20),
                 )
             )

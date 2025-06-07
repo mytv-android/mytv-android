@@ -43,7 +43,7 @@ fun SettingsIptvScreen(
 
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "自定义直播源",
+                headlineContent = "自定义订阅源",
                 trailingContent = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -69,7 +69,7 @@ fun SettingsIptvScreen(
             val cacheTime = settingsViewModel.iptvSourceCacheTime
 
             SettingsListItem(
-                headlineContent = "直播源缓存时间",
+                headlineContent = "订阅源缓存时间",
                 trailingContent = when (cacheTime) {
                     0L -> "不缓存"
                     Long.MAX_VALUE -> "永久"

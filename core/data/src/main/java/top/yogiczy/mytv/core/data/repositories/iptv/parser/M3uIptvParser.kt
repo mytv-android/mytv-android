@@ -5,7 +5,7 @@ import kotlinx.coroutines.withContext
 import top.yogiczy.mytv.core.data.utils.Logger
 
 /**
- * m3u直播源解析
+ * m3u订阅源解析
  */
 class M3uIptvParser : IptvParser {
 

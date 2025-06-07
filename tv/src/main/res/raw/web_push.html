@@ -31,7 +31,7 @@
                     </van-cell-group>
 
                     <van-cell-group inset title="订阅源">
-                        <van-cell title="自定义直播源">
+                        <van-cell title="自定义订阅源">
                             <template #label>
                                 <van-space class="w-full" direction="vertical" size="small">
                                     <span>支持m3u、txt格式</span>
@@ -46,19 +46,19 @@
                                         </template>
                                     </van-field>
 
-                                    <van-field class="!pl-0" input-align="right" label="名称" placeholder="直播源名称"
+                                    <van-field class="!pl-0" input-align="right" label="名称" placeholder="订阅源名称"
                                         v-model="iptvSource.name"></van-field>
 
-                                    <van-field class="!pl-0" input-align="right" label="链接" placeholder="直播源链接"
+                                    <van-field class="!pl-0" input-align="right" label="链接" placeholder="订阅源链接"
                                         v-if="iptvSource.type === 'url'" v-model="iptvSource.url"></van-field>
 
-                                    <van-field class="!pl-0" input-align="right" label="文件路径" placeholder="直播源文件路径"
+                                    <van-field class="!pl-0" input-align="right" label="文件路径" placeholder="订阅源文件路径"
                                         v-else-if="iptvSource.type === 'file'"
                                         v-model="iptvSource.filePath"></van-field>
 
                                     <template v-else-if="iptvSource.type === 'content'">
                                         <van-field :input-align="iptvSource.content ? 'left' : 'right'" class="!pl-0"
-                                            label="内容" placeholder="直播源内容" rows="5" type="textarea"
+                                            label="内容" placeholder="订阅源内容" rows="5" type="textarea"
                                             v-model="iptvSource.content"></van-field>
 
                                         <van-field class="!pl-0" input-align="right" label="上传">
@@ -74,7 +74,7 @@
 
                                     <div class="flex justify-end">
                                         <van-button @click="pushIptvSource" size="small" type="primary">
-                                            推送直播源
+                                            推送订阅源
                                         </van-button>
                                     </div>
                                 </van-space>
@@ -402,22 +402,22 @@
                 })
                 async function pushIptvSource() {
                     if (!iptvSource.value.name) {
-                        vant.showFailToast('请填写直播源名称')
+                        vant.showFailToast('请填写订阅源名称')
                         return
                     }
 
                     if (!iptvSource.value.type === 'url' && !iptvSource.value.url) {
-                        vant.showFailToast('请填写直播源链接')
+                        vant.showFailToast('请填写订阅源链接')
                         return
                     }
 
                     if (iptvSource.value.type === 'file' && !iptvSource.value.filePath) {
-                        vant.showFailToast('请填写直播源文件路径')
+                        vant.showFailToast('请填写订阅源文件路径')
                         return
                     }
 
                     if (iptvSource.value.type === 'content' && !iptvSource.value.content) {
-                        vant.showFailToast('请填写直播源内容')
+                        vant.showFailToast('请填写订阅源内容')
                         return
                     }
 
@@ -428,9 +428,9 @@
                             body: JSON.stringify({ ...iptvSource.value }),
                             headers: { 'Content-Type': 'application/json' }
                         })
-                        vant.showSuccessToast("推送直播源成功")
+                        vant.showSuccessToast("推送订阅源成功")
                     } catch (e) {
-                        vant.showFailToast('推送直播源失败')
+                        vant.showFailToast('推送订阅源失败')
                         console.error(e)
                     }
                 }
