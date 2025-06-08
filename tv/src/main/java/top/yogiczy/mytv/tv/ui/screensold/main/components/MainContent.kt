@@ -155,7 +155,7 @@ fun MainContent(
                 forceTextureView = false,
             )
         }
-        key(mainContentState.isInPlaybackMode) {
+        key(mainContentState.triggerPlayerReinit) {
             Visibility({ mainContentState.currentChannelLine?.hybridType == ChannelLine.HybridType.WebView }) {
                 mainContentState.currentChannelLine.let {
                     log.i("当前频道$it, 播放链接: ${it.playableUrl}")

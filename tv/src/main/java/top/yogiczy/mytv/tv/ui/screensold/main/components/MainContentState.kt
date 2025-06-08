@@ -101,13 +101,6 @@ class MainContentState(
             _isQuickOpScreenVisible = value
         }
     
-    private var _isInPlaybackMOde by mutableStateOf(false)
-    var isInPlaybackMode
-        get() = _isInPlaybackMOde
-        set(value) {
-            _isInPlaybackMOde = value
-        }
-
     private var _isEpgScreenVisible by mutableStateOf(false)
     var isEpgScreenVisible
         get() = _isEpgScreenVisible
@@ -135,6 +128,17 @@ class MainContentState(
         set(value) {
             _isVideoTracksScreenVisible = value
         }
+    
+    private var _triggerPlayerReinit by mutableStateOf(false)
+    var triggerPlayerReinit
+        get() = _triggerPlayerReinit
+        set(value) {
+            _triggerPlayerReinit = value
+        }
+
+    private fun updatePlayerTrigger(){
+        _triggerPlayerReinit = !_triggerPlayerReinit
+    } 
 
     private var _isAudioTracksScreenVisible by mutableStateOf(false)
     var isAudioTracksScreenVisible
@@ -332,7 +336,7 @@ class MainContentState(
         settingsViewModel.iptvChannelLastPlay = channel
         val realLineIdx = getLineIdx(channel.lineList, lineIdx)
 
-        if (channel == _currentChannel && realLineIdx == _currentChannelLineIdx && playbackEpgProgramme == _currentPlaybackEpgProgramme) return
+        // if (channel == _currentChannel && realLineIdx == _currentChannelLineIdx && playbackEpgProgramme == _currentPlaybackEpgProgramme) return
         
         if (channel == _currentChannel && realLineIdx != _currentChannelLineIdx) {
             settingsViewModel.iptvChannelLinePlayableUrlList -= currentChannelLine.url
@@ -345,7 +349,6 @@ class MainContentState(
         _currentChannelLineIdx = realLineIdx
         _currentPlaybackEpgProgramme = playbackEpgProgramme
         currentChannelLine.playbackUrl = null
-        isInPlaybackMode = false
         var url = currentChannelLine.url
         if (_currentPlaybackEpgProgramme != null) {
             if(currentChannelLine.playbackType != null){
@@ -398,7 +401,6 @@ class MainContentState(
                 }
             }
             currentChannelLine.playbackUrl = url
-            isInPlaybackMode = true
         }
         
         val line = currentChannelLine.copy(url = url)
@@ -406,6 +408,7 @@ class MainContentState(
         log.d("播放${_currentChannel.name}（${_currentChannelLineIdx + 1}/${_currentChannel.lineList.size}）: $line")
 
         if (line.hybridType == ChannelLine.HybridType.WebView) {
+            updatePlayerTrigger()
             log.i("检测到WebView类型URL: ${line.url}")
             log.i("正在使用WebView打开而不是视频播放器")
             videoPlayerState.metadata = VideoPlayer.Metadata()
