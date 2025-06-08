@@ -32,7 +32,7 @@ fun SettingsNetworkRetryCountScreen(
 ) {
     val childPadding = rememberChildPadding()
     val currentCount = countProvider()
-    val countList = listOf(5L, 10L, 15L, 20L, 25L, 30L, 35L, 40L, 45L, 50L)
+    val countList = listOf(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 15L, 20L, 30L, 40L, 50L)
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
