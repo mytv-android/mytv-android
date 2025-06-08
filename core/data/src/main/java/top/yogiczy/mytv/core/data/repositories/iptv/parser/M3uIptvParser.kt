@@ -12,7 +12,7 @@ class M3uIptvParser : IptvParser {
     private val logger = Logger.create("M3uIptvParser")
 
     override fun isSupport(url: String, data: String): Boolean {
-        return data.startsWith("#EXTM3U")
+        return data.contains("#EXTM3U")
     }
 
     override suspend fun parse(data: String) =
@@ -61,6 +61,8 @@ class M3uIptvParser : IptvParser {
                         Regex("http-referrer=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
                     val httpOrigin =
                         Regex("http-origin=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
+                    val httpCookie =
+                        Regex("http-cookie=\"(.+?)\"").find(line)?.groupValues?.get(1)?.trim()
                     var playbackType: Int? = null
                     var playbackFormat: String? = null
                     if(globalPlaybackType != null){
@@ -88,7 +90,7 @@ class M3uIptvParser : IptvParser {
                         } 
                     }
                     // 记录解析结果
-                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer, httpOrigin=$httpOrigin, playbackType=$playbackType, playbackFormat=$playbackFormat")
+                    logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer, httpOrigin=$httpOrigin, httpCookie=$httpCookie, playbackType=$playbackType, playbackFormat=$playbackFormat")
 
                     addedChannels = groupNames.map { groupName ->
                         IptvParser.ChannelItem(
@@ -100,6 +102,7 @@ class M3uIptvParser : IptvParser {
                             httpUserAgent = httpUserAgent,
                             httpReferrer = httpReferrer,
                             httpOrigin = httpOrigin,
+                            httpCookie = httpCookie,
                             playbackType = playbackType,
                             playbackFormat = playbackFormat,
                         )
@@ -114,7 +117,19 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key")) {
                         addedChannels =
                             addedChannels.map { it.copy(licenseKey = line.split("=").last()) }
-                    } else if (line.startsWith("#EXTVLCOPT:http-origin")) {
+                    } else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Cookie=")){
+                        addedChannels =
+                            addedChannels.map { it.copy(httpCookie = line.split("=").last()) }
+                    }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Cookie%3d")){
+                        addedChannels =
+                            addedChannels.map { it.copy(httpCookie = line.split(".stream_headers=Cookie%3d").last()) }
+                    }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=User-Agent=")){
+                        addedChannels =
+                            addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }
+                    }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Referer=")){
+                        addedChannels =
+                            addedChannels.map { it.copy(httpReferrer = line.split("=").last()) }
+                    }else if (line.startsWith("#EXTVLCOPT:http-origin")) {
                         addedChannels =
                             addedChannels.map { it.copy(httpOrigin = line.split("=").last()) }
                     } else if (line.startsWith("#EXTVLCOPT:http-referrer")) {
@@ -123,6 +138,9 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#EXTVLCOPT:http-user-agent")) {
                         addedChannels =
                             addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }                      
+                    } else if (line.startsWith("#EXTVLCOPT:http-cookie")) {
+                        addedChannels =
+                            addedChannels.map { it.copy(httpCookie = line.split("=").last()) }                      
                     } else if (line.startsWith("#") || line.startsWith("//")) {
                         return@forEach
                     } else{

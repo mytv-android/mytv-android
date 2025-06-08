@@ -11,6 +11,7 @@ data class ChannelLine(
     val httpUserAgent: String? = null,
     val httpReferrer: String? = null,
     val httpOrigin: String? = null,
+    val httpCookie: String? = null,
     val hybridType: HybridType = HybridType.None,
     val name: String? = if (url.contains("$")) url.split("$").lastOrNull() else null,
     val manifestType: String? = null,

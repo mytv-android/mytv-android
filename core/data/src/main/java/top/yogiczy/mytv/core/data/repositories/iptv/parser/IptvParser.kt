@@ -45,6 +45,7 @@ interface IptvParser {
         val httpUserAgent: String? = null,
         val httpReferrer: String? = null,
         val httpOrigin: String? = null,
+        val httpCookie: String? = null,
         val hybridType: HybridType = HybridType.None,
         val manifestType: String? = null,
         val licenseType: String? = null,

@@ -152,6 +152,8 @@ class Media3VideoPlayer(
             "Referer" to (currentChannelLine.httpReferrer ?: "")
             ).filterValues { it.isNotEmpty() } + mapOf(
                 "Origin" to (currentChannelLine.httpOrigin ?: "")
+                ).filterValues { it.isNotEmpty() } + mapOf(
+                "Cookie" to (currentChannelLine.httpCookie ?: "")
                 ).filterValues { it.isNotEmpty() }
         
         // 使用应用内日志系统
