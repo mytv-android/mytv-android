@@ -32,6 +32,7 @@ import androidx.media3.exoplayer.dash.DashMediaSource
 import androidx.media3.exoplayer.drm.DefaultDrmSessionManager
 import androidx.media3.exoplayer.drm.FrameworkMediaDrm
 import androidx.media3.exoplayer.drm.LocalMediaDrmCallback
+import androidx.media3.exoplayer.drm.HttpMediaDrmCallback
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.rtsp.RtspMediaSource
@@ -249,32 +250,61 @@ class Media3VideoPlayer(
             C.CONTENT_TYPE_DASH -> {
                 DashMediaSource.Factory(dataSourceFactory)
                     .apply {
-                        if (!(currentChannelLine.manifestType == "mpd" && currentChannelLine.licenseType == "clearkey" && currentChannelLine.licenseKey != null))
+                        if (currentChannelLine.licenseKey == null)
                             return@apply
-
+                        
                         runCatching {
-                            val (drmKeyId, drmKey) = currentChannelLine.licenseKey!!.split(":")
-                            val encodedDrmKey = Base64.encodeToString(
-                                drmKey.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
-                                Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
-                            )
-                            val encodedDrmKeyId = Base64.encodeToString(
-                                drmKeyId.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
-                                Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
-                            )
-                            val drmBody =
-                                "{\"keys\":[{\"kty\":\"oct\",\"k\":\"${encodedDrmKey}\",\"kid\":\"${encodedDrmKeyId}\"}],\"type\":\"temporary\"}"
+                            when {
+                                currentChannelLine.licenseType?.contains("clearkey", true) == true -> {
+                                    val (drmKeyId, drmKey) = currentChannelLine.licenseKey!!.split(":")
+                                    val encodedDrmKey = Base64.encodeToString(
+                                        drmKey.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
+                                        Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
+                                    )
+                                    val encodedDrmKeyId = Base64.encodeToString(
+                                        drmKeyId.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
+                                        Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
+                                    )
+                                    val drmBody =
+                                        "{\"keys\":[{\"kty\":\"oct\",\"k\":\"${encodedDrmKey}\",\"kid\":\"${encodedDrmKeyId}\"}],\"type\":\"temporary\"}"
 
-                            val drmCallback = LocalMediaDrmCallback(drmBody.toByteArray())
-                            val drmSessionManager = DefaultDrmSessionManager.Builder()
-                                .setMultiSession(true)
-                                .setUuidAndExoMediaDrmProvider(
-                                    C.CLEARKEY_UUID,
-                                    FrameworkMediaDrm.DEFAULT_PROVIDER
-                                )
-                                .build(drmCallback)
-
-                            setDrmSessionManagerProvider { drmSessionManager }
+                                    val drmCallback = LocalMediaDrmCallback(drmBody.toByteArray())
+                                    val drmSessionManager = DefaultDrmSessionManager.Builder()
+                                        .setMultiSession(true)
+                                        .setUuidAndExoMediaDrmProvider(
+                                            C.CLEARKEY_UUID,
+                                            FrameworkMediaDrm.DEFAULT_PROVIDER
+                                        )
+                                        .build(drmCallback)
+                                    setDrmSessionManagerProvider { drmSessionManager }
+                                }
+                                currentChannelLine.licenseType?.contains("widevine", true) == true -> {
+                                    val drmCallback = if (currentChannelLine.licenseKey!!.startsWith("http")) {
+                                        HttpMediaDrmCallback(
+                                            currentChannelLine.licenseKey,
+                                            dataSourceFactory
+                                        )
+                                    } else {
+                                        LocalMediaDrmCallback((currentChannelLine.licenseKey ?: "").toByteArray())
+                                    }
+                                    val drmSessionManager = DefaultDrmSessionManager.Builder()
+                                        .setMultiSession(true)
+                                        .setUuidAndExoMediaDrmProvider(
+                                            C.WIDEVINE_UUID,
+                                            FrameworkMediaDrm.DEFAULT_PROVIDER
+                                        )
+                                        .build(drmCallback)
+                                    setDrmSessionManagerProvider { drmSessionManager }
+                                }
+                                else -> {
+                                    triggerError(
+                                        PlaybackException(
+                                            "MEDIA3_ERROR_UNSUPPORTED_DRM_TYPE: ${currentChannelLine.licenseType}",
+                                            10086
+                                        )
+                                    )
+                                }
+                            }
                         }
                             .onFailure {
                                 triggerError(

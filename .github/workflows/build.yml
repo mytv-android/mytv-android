@@ -122,7 +122,7 @@ jobs:
         
     - name: Publish Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v2.2.2
       with:
         files: |
             tv/build/outputs/apk/release/*all*disguised.apk
@@ -135,7 +135,7 @@ jobs:
 
     - name: Publish Pre-Release
       if: github.event_name == 'push' && (github.ref == 'refs/heads/beta' || github.ref == 'refs/heads/dev')
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v2.2.2
       with:
         files: |
             tv/build/outputs/apk/release/*all*disguised.apk
