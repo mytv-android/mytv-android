@@ -233,7 +233,7 @@ class SettingsViewModel : ViewModel() {
         get() = _iptvChannelHistoryList
         set(value) {
             _iptvChannelHistoryList = value
-            Configs.iptvChannelHistoryList = _iptvChannelHistoryList
+            Configs.iptvChannelHistoryList = value
             afterSetWhenCloudSyncAutoPull()
         }
 
@@ -852,6 +852,7 @@ class SettingsViewModel : ViewModel() {
         _iptvChannelFavoriteEnable = Configs.iptvChannelFavoriteEnable
         _iptvChannelFavoriteListVisible = Configs.iptvChannelFavoriteListVisible
         _iptvChannelFavoriteList = Configs.iptvChannelFavoriteList
+        _iptvChannelHistoryList = Configs.iptvChannelHistoryList
         _iptvChannelLastPlay = Configs.iptvChannelLastPlay
         _iptvChannelLinePlayableHostList = Configs.iptvChannelLinePlayableHostList
         _iptvChannelLinePlayableUrlList = Configs.iptvChannelLinePlayableUrlList
