@@ -600,10 +600,10 @@ private fun getKeyDownEvent(actionEvent: KeyDownAction,
                             isLoading: Boolean) {
     when (actionEvent) {
         KeyDownAction.ChangeCurrentChannelToNext -> {
-            else mainContentState.changeCurrentChannelToNext()
+            mainContentState.changeCurrentChannelToNext()
         }
         KeyDownAction.ChangeCurrentChannelToPrev -> {
-            else mainContentState.changeCurrentChannelToPrev()
+            mainContentState.changeCurrentChannelToPrev()
         }
         KeyDownAction.ChangeCurrentChannelLineIdxToPrev -> {
             if (mainContentState.currentChannel.lineList.size > 1) {
