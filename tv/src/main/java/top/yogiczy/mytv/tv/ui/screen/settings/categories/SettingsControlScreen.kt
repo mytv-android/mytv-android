@@ -41,22 +41,6 @@ fun SettingsControlScreen(
         }
 
         item {
-            val flip = settingsViewModel.iptvChannelChangeFlip
-
-            SettingsListItem(
-                headlineContent = "换台反转",
-                supportingContent = if (flip) "方向键上：下一个频道；方向键下：上一个频道"
-                else "方向键上：上一个频道；方向键下：下一个频道",
-                trailingContent = {
-                    Switch(flip, null)
-                },
-                onSelect = {
-                    settingsViewModel.iptvChannelChangeFlip = !settingsViewModel.iptvChannelChangeFlip
-                },
-            )
-        }
-
-        item {
             val loop = settingsViewModel.iptvChannelChangeListLoop
 
             SettingsListItem(
@@ -88,8 +72,8 @@ fun SettingsControlScreen(
         
         item {
             SettingsListItem(
-                headlineContent = "按键行为",
-                supportingContent = "自定义播放界面的按键行为",
+                headlineContent = "按键（手势）行为",
+                supportingContent = "自定义播放界面的按键/手势行为",
                 onSelect = toUiControlActionSettingsScreen,
                 link = true,
             )

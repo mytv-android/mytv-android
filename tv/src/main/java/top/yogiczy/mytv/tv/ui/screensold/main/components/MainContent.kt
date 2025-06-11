@@ -135,16 +135,16 @@ fun MainContent(
             )
             .handleDragGestures(
                 onSwipeDown = {
-                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelToPrev, settingsViewModel, mainContentState, isLoading)
+                    getKeyDownEvent(settingsViewModel.keyDownEventUp, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeUp = {
-                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelToNext, settingsViewModel, mainContentState, isLoading)
+                    getKeyDownEvent(settingsViewModel.keyDownEventDown, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeRight = {
-                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelLineIdxToPrev, settingsViewModel, mainContentState, isLoading)
+                    getKeyDownEvent(settingsViewModel.keyDownEventRight, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeLeft = {
-                    getKeyDownEvent(KeyDownAction.ChangeCurrentChannelLineIdxToNext, settingsViewModel, mainContentState, isLoading)
+                    getKeyDownEvent(settingsViewModel.keyDownEventLeft, settingsViewModel, mainContentState, isLoading)
                 },
             ),
     ) {
@@ -600,11 +600,9 @@ private fun getKeyDownEvent(actionEvent: KeyDownAction,
                             isLoading: Boolean) {
     when (actionEvent) {
         KeyDownAction.ChangeCurrentChannelToNext -> {
-            if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToPrev()
             else mainContentState.changeCurrentChannelToNext()
         }
         KeyDownAction.ChangeCurrentChannelToPrev -> {
-            if (settingsViewModel.iptvChannelChangeFlip) mainContentState.changeCurrentChannelToNext()
             else mainContentState.changeCurrentChannelToPrev()
         }
         KeyDownAction.ChangeCurrentChannelLineIdxToPrev -> {

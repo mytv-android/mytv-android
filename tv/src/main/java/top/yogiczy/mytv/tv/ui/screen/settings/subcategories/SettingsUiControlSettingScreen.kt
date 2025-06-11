@@ -68,12 +68,12 @@ fun SettingsUiControlSettingScreen(
 
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 控制 / 按键行为") },
+        header = { Text("设置 / 控制 / 按键（手势）行为") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"上键"},
+                titleProvider = {"上键/上滑"},
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventUpProvider,
                 onValueChanged = {
@@ -88,7 +88,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"下键"},
+                titleProvider = {"下键/下滑"},
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventDownProvider,
                 onValueChanged = {
@@ -103,7 +103,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"左键"},
+                titleProvider = {"左键/左滑"},
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventLeftProvider,
                 onValueChanged = {
@@ -118,7 +118,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"右键"},
+                titleProvider = {"右键/右滑"},
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventRightProvider,
                 onValueChanged = {

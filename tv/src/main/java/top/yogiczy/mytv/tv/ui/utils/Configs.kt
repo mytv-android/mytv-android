@@ -107,9 +107,6 @@ object Configs {
         /** 订阅源线路可播放地址列表 */
         IPTV_CHANNEL_LINE_PLAYABLE_URL_LIST,
 
-        /** 换台反转 */
-        IPTV_CHANNEL_CHANGE_FLIP,
-
         /** 是否启用数字选台 */
         IPTV_CHANNEL_NO_SELECT_ENABLE,
 
@@ -463,11 +460,6 @@ object Configs {
     var iptvChannelLinePlayableUrlList: Set<String>
         get() = SP.getStringSet(KEY.IPTV_CHANNEL_LINE_PLAYABLE_URL_LIST.name, emptySet())
         set(value) = SP.putStringSet(KEY.IPTV_CHANNEL_LINE_PLAYABLE_URL_LIST.name, value)
-
-    /** 换台反转 */
-    var iptvChannelChangeFlip: Boolean
-        get() = SP.getBoolean(KEY.IPTV_CHANNEL_CHANGE_FLIP.name, false)
-        set(value) = SP.putBoolean(KEY.IPTV_CHANNEL_CHANGE_FLIP.name, value)
 
     /** 是否启用数字选台 */
     var iptvChannelNoSelectEnable: Boolean
@@ -946,7 +938,6 @@ object Configs {
             iptvChannelLastPlay = iptvChannelLastPlay,
             iptvChannelLinePlayableHostList = iptvChannelLinePlayableHostList,
             iptvChannelLinePlayableUrlList = iptvChannelLinePlayableUrlList,
-            iptvChannelChangeFlip = iptvChannelChangeFlip,
             iptvChannelNoSelectEnable = iptvChannelNoSelectEnable,
             iptvChannelChangeListLoop = iptvChannelChangeListLoop,
             iptvChannelChangeCrossGroup = iptvChannelChangeCrossGroup,
@@ -1038,7 +1029,6 @@ object Configs {
         configs.iptvChannelLastPlay?.let { iptvChannelLastPlay = it }
         configs.iptvChannelLinePlayableHostList?.let { iptvChannelLinePlayableHostList = it }
         configs.iptvChannelLinePlayableUrlList?.let { iptvChannelLinePlayableUrlList = it }
-        configs.iptvChannelChangeFlip?.let { iptvChannelChangeFlip = it }
         configs.iptvChannelNoSelectEnable?.let { iptvChannelNoSelectEnable = it }
         configs.iptvChannelChangeListLoop?.let { iptvChannelChangeListLoop = it }
         configs.iptvChannelChangeCrossGroup?.let { iptvChannelChangeCrossGroup = it }
@@ -1132,7 +1122,6 @@ object Configs {
         val iptvChannelLastPlay: Channel? = null,
         val iptvChannelLinePlayableHostList: Set<String>? = null,
         val iptvChannelLinePlayableUrlList: Set<String>? = null,
-        val iptvChannelChangeFlip: Boolean? = null,
         val iptvChannelNoSelectEnable: Boolean? = null,
         val iptvChannelChangeListLoop: Boolean? = null,
         val iptvChannelChangeCrossGroup: Boolean? = null,

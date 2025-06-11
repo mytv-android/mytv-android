@@ -273,15 +273,6 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
-    private var _iptvChannelChangeFlip by mutableStateOf(false)
-    var iptvChannelChangeFlip: Boolean
-        get() = _iptvChannelChangeFlip
-        set(value) {
-            _iptvChannelChangeFlip = value
-            Configs.iptvChannelChangeFlip = value
-            afterSetWhenCloudSyncAutoPull()
-        }
-
     private var _iptvChannelNoSelectEnable by mutableStateOf(false)
     var iptvChannelNoSelectEnable: Boolean
         get() = _iptvChannelNoSelectEnable
@@ -864,7 +855,6 @@ class SettingsViewModel : ViewModel() {
         _iptvChannelLastPlay = Configs.iptvChannelLastPlay
         _iptvChannelLinePlayableHostList = Configs.iptvChannelLinePlayableHostList
         _iptvChannelLinePlayableUrlList = Configs.iptvChannelLinePlayableUrlList
-        _iptvChannelChangeFlip = Configs.iptvChannelChangeFlip
         _iptvChannelNoSelectEnable = Configs.iptvChannelNoSelectEnable
         _epgEnable = Configs.epgEnable
         _epgSourceCurrent = Configs.epgSourceCurrent
@@ -924,7 +914,6 @@ class SettingsViewModel : ViewModel() {
         _cloudSyncWebDavUrl = Configs.cloudSyncWebDavUrl
         _cloudSyncWebDavUsername = Configs.cloudSyncWebDavUsername
         _cloudSyncWebDavPassword = Configs.cloudSyncWebDavPassword
-        // _feiyangAllInOneFilePath = Configs.feiyangAllInOneFilePath
         _videoPlayerVolumeNormalization = Configs.videoPlayerVolumeNormalization
     }
 
