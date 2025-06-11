@@ -92,7 +92,7 @@ fun IptvSourceItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Tag(
-                    if (line.isLocal) "本地" else "远程",
+                    line.TagName(),
                     colors = TagDefaults.colors(
                         containerColor = LocalContentColor.current.copy(0.1f)
                     ),

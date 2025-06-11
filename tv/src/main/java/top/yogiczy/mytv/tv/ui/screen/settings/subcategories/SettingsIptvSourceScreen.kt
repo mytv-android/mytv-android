@@ -223,7 +223,7 @@ private fun IptvSourceItem(
 
                 if (!iptvSource.name.isNullOrEmpty()) {
                     Tag(
-                        if (iptvSource.isLocal) "本地" else "远程",
+                        iptvSource.TagName(),
                         colors = TagDefaults.colors(
                             containerColor = LocalContentColor.current.copy(0.1f)
                         ),

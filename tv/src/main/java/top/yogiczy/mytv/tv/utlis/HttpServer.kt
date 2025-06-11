@@ -231,18 +231,37 @@ object HttpServer : Loggable("HttpServer") {
 
         when (type) {
             "url" -> {
-                newIptvSource = IptvSource(name = name, url = url, httpUserAgent = httpUserAgent)
+                newIptvSource = IptvSource(name = name, url = url, sourceType = 0, httpUserAgent = httpUserAgent)
             }
 
             "file" -> {
-                newIptvSource = IptvSource(name = name, url = filePath, isLocal = true, httpUserAgent = httpUserAgent)
+                newIptvSource = IptvSource(name = name, url = filePath, sourceType = 1, httpUserAgent = httpUserAgent)
             }
 
             "content" -> {
                 val file =
                     File(Globals.fileDir, "iptv_source_local_${System.currentTimeMillis()}.txt")
                 file.writeText(content)
-                newIptvSource = IptvSource(name = name, url = file.path, isLocal = true, httpUserAgent = httpUserAgent)
+                newIptvSource = IptvSource(name = name, url = file.path, sourceType = 1, httpUserAgent = httpUserAgent)
+            }
+
+            "xtream" -> {
+                val userName = body.get("userName").toString()
+                val password = body.get("password").toString()
+                val format = body.get("format").toString()
+                newIptvSource = IptvSource(
+                    name = name,
+                    url = url,
+                    sourceType = 2,
+                    userName = userName,
+                    password = password,
+                    format = format,
+                    httpUserAgent = httpUserAgent
+                )
+            }
+
+            else -> {
+                return response.code(400).send("Invalid type")
             }
         }
 

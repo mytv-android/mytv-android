@@ -20,10 +20,26 @@ data class IptvSource(
     val url: String = "",
 
     /**
-     * 是否本地
+     * 源类型
+     * 0:网络m3u/txt 1:本地 2:xtream
      */
-    val isLocal: Boolean = false,
+    val sourceType: Int = 0,
+    
+    /**
+     * 用户名
+     */
+    val userName: String? = null,
 
+    /**
+     * 密码
+     */
+    val password: String? = null,
+
+    /**
+     * 输出格式
+     * m3u
+     */
+    val format: String? = null,
     /**
      * 转换js
      */
@@ -47,7 +63,10 @@ data class IptvSource(
         )
 
         fun IptvSource.needExternalStoragePermission(): Boolean {
-            return this.isLocal && !this.url.startsWith(Globals.fileDir.path)
+            return this.sourceType == 1 && !this.url.startsWith(Globals.fileDir.path)
         }
+    }
+    fun TagName(): String {
+        return if (sourceType == 1) "本地" else if (sourceType == 2) "XTREAM" else "远程"
     }
 }

@@ -25,7 +25,7 @@ class IptvRepository(private val source: IptvSource) :
 
     private fun isExpired(lastModified: Long, cacheTime: Long): Boolean {
         val timeout =
-            System.currentTimeMillis() - lastModified >= (if (source.isLocal) Long.MAX_VALUE else cacheTime)
+            System.currentTimeMillis() - lastModified >= (if (source.sourceType == 1) Long.MAX_VALUE else cacheTime)
         val rawChanged = lastModified < rawRepository.lastModified()
 
         return timeout || rawChanged
@@ -123,20 +123,26 @@ class IptvRepository(private val source: IptvSource) :
 }
 
 private class IptvRawRepository(private val source: IptvSource) : FileCacheRepository(
-    if (source.isLocal) source.url else source.cacheFileName("txt"),
-    source.isLocal,
+    if (source.sourceType == 1) source.url else source.cacheFileName("txt"),
+    source.sourceType == 1,
 ) {
 
     private val log = Logger.create("IptvRawRepository")
 
     suspend fun getRaw(cacheTime: Long = 0): String {
-        return getOrRefresh(if (source.isLocal) Long.MAX_VALUE else cacheTime) {
+        return getOrRefresh(if (source.sourceType == 1) Long.MAX_VALUE else cacheTime) {
 
+            val url = when (source.sourceType) {
+                0 -> source.url
+                1 -> source.url // 本地文件直接使用url
+                2 -> getXtreamUrl(source)
+                else -> throw IllegalArgumentException("不支持的订阅源类型: ${source.sourceType}")
+            }
 
             log.d("获取订阅源: $source")
 
             try {
-                source.url.request({ builder ->
+                url.request({ builder ->
                     source.httpUserAgent?.let { builder.addHeader("User-Agent", it) }
                     builder
                 }) { body -> body.string() } ?: ""
@@ -148,7 +154,12 @@ private class IptvRawRepository(private val source: IptvSource) : FileCacheRepos
     }
 
     override suspend fun clearCache() {
-        if (source.isLocal) return
+        if (source.sourceType == 1) return
         super.clearCache()
     }
+}
+
+private fun getXtreamUrl(source: IptvSource): String {
+    return "${source.url}/get.php?username=${source.userName}&password=${source.password}" + if (source.format.isNullOrBlank()) "" else "&type=${source.format}"
+        .also { Logger.create("IptvRepository").d("获取xtream订阅源URL: $it") }
 }

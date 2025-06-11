@@ -40,6 +40,7 @@
                                         <template #input>
                                             <van-radio-group direction="horizontal" v-model="iptvSource.type">
                                                 <van-radio name="url">远程</van-radio>
+                                                <van-radio name="xtream">Xtream</van-radio>
                                                 <van-radio name="file">文件</van-radio>
                                                 <van-radio name="content">静态</van-radio>
                                             </van-radio-group>
@@ -50,7 +51,7 @@
                                         v-model="iptvSource.name"></van-field>
 
                                     <van-field class="!pl-0" input-align="right" label="链接" placeholder="订阅源链接"
-                                        v-if="iptvSource.type === 'url'" v-model="iptvSource.url"></van-field>
+                                        v-if="iptvSource.type === 'url' || iptvSource.type === 'xtream'" v-model="iptvSource.url"></van-field>
 
                                     <van-field class="!pl-0" input-align="right" label="文件路径" placeholder="订阅源文件路径"
                                         v-else-if="iptvSource.type === 'file'"
@@ -69,8 +70,18 @@
                                         </van-field>
                                     </template>
 
+                                    <template v-if="iptvSource.type === 'xtream'">
+                                        <van-field class="!pl-0" input-align="right" label="用户名" placeholder="用户名"
+                                            v-model="iptvSource.userName"></van-field>
+                                    
+                                        <van-field class="!pl-0" input-align="right" label="密码" placeholder="密码" v-model="iptvSource.password"></van-field>
+                                    
+                                        <van-field class="!pl-0" input-align="right" label="输出类型" placeholder="输出类型"
+                                            v-model="iptvSource.format"></van-field>
+                                    </template>
+
                                     <van-field class="!pl-0" input-align="right" label="UA" placeholder="UA"
-                                    v-if="iptvSource.type === 'url'" v-model="iptvSource.httpUserAgent"></van-field>
+                                    v-if="iptvSource.type === 'url' || iptvSource.type === 'xtream'" v-model="iptvSource.httpUserAgent"></van-field>
 
                                     <div class="flex justify-end">
                                         <van-button @click="pushIptvSource" size="small" type="primary">

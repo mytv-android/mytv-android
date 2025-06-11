@@ -51,7 +51,7 @@ fun SettingsIptvScreen(
                     ) {
                         if (!currentIptvSource.name.isNullOrEmpty()) {
                             Tag(
-                                if (currentIptvSource.isLocal) "本地" else "远程",
+                                currentIptvSource.TagName(),
                                 colors = TagDefaults.colors(
                                     containerColor = LocalContentColor.current.copy(0.1f)
                                 ),

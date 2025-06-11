@@ -21,7 +21,7 @@ data class IptvSourceList(
                 IptvSource(
                     name = "测试订阅源2",
                     url = "/path/Download/tv.txt",
-                    isLocal = true,
+                    sourceType = 1,
                 )
             )
         )

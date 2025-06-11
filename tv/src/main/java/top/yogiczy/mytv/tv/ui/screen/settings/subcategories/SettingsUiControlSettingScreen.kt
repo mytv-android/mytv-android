@@ -29,10 +29,13 @@ import androidx.tv.material3.MaterialTheme
 import androidx.tv.material3.Text
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
+import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.ui.utils.ifElse
+import top.yogiczy.mytv.tv.ui.utils.saveFocusRestorer
 import top.yogiczy.mytv.core.data.entities.actions.KeyDownAction
 import top.yogiczy.mytv.tv.ui.material.SimplePopup
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
@@ -264,6 +267,7 @@ fun SettingsUiControlSettingSubMenu(
     onValueChanged: (KeyDownAction) -> Unit = {},
 ) {
     val currentValue = valueProvider()
+
     val valueList = listOf(
         KeyDownAction.ChangeCurrentChannelToPrev,
         KeyDownAction.ChangeCurrentChannelToNext,
@@ -277,13 +281,17 @@ fun SettingsUiControlSettingSubMenu(
         KeyDownAction.ToVideoPlayerControllerScreen
     )
     val childPadding = rememberChildPadding()
+    val firstItemFocusRequester = remember { FocusRequester() }
 
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         LazyVerticalGrid(
-            modifier = Modifier,
+            modifier = Modifier.ifElse(
+                settingsVM.uiFocusOptimize,
+                Modifier.saveFocusRestorer { firstItemFocusRequester },
+            ),
             contentPadding = childPadding.copy(top = 10.dp).paddingValues,
             columns = GridCells.Fixed(4),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -292,7 +300,11 @@ fun SettingsUiControlSettingSubMenu(
             items(valueList) { value ->
                 ListItem(
                     modifier = Modifier
-                        .handleKeyEvents(onSelect = { onValueChanged(value) }),
+                        .handleKeyEvents(onSelect = { onValueChanged(value) })
+                        .ifElse(
+                            currentValue == value,
+                            Modifier.focusRequester(firstItemFocusRequester)
+                        ),
                     headlineContent = {
                         Text(
                             value.label,
