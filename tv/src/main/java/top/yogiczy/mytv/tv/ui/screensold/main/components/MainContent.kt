@@ -135,10 +135,10 @@ fun MainContent(
             )
             .handleDragGestures(
                 onSwipeDown = {
-                    getKeyDownEvent(settingsViewModel.keyDownEventUp, settingsViewModel, mainContentState, isLoading)
+                    getKeyDownEvent(settingsViewModel.keyDownEventDown, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeUp = {
-                    getKeyDownEvent(settingsViewModel.keyDownEventDown, settingsViewModel, mainContentState, isLoading)
+                    getKeyDownEvent(settingsViewModel.keyDownEventUp, settingsViewModel, mainContentState, isLoading)
                 },
                 onSwipeRight = {
                     getKeyDownEvent(settingsViewModel.keyDownEventRight, settingsViewModel, mainContentState, isLoading)
