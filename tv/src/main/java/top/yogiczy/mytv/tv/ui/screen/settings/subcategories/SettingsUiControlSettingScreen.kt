@@ -300,11 +300,12 @@ fun SettingsUiControlSettingSubMenu(
             items(valueList) { value ->
                 ListItem(
                     modifier = Modifier
-                        .handleKeyEvents(onSelect = { onValueChanged(value) })
                         .ifElse(
                             currentValue == value,
                             Modifier.focusRequester(firstItemFocusRequester)
-                        ),
+                        )
+                        .handleKeyEvents(onSelect = { onValueChanged(value) }),
+                        
                     headlineContent = {
                         Text(
                             value.label,

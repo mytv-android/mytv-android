@@ -21,7 +21,20 @@ class M3uIptvParser : IptvParser {
             val channelList = mutableListOf<IptvParser.ChannelItem>()
             var globalPlaybackType: Int? = null
             var globalPlaybackFormat: String? = null
-            var addedChannels: List<IptvParser.ChannelItem> = listOf()
+            var groupNameList = listOf<String>()
+            var addedChannel = IptvParser.ChannelItem(
+                name = "",
+                epgName = "",
+                groupName = "",
+                url = "",
+                logo = null,
+                httpUserAgent = null,
+                httpReferrer = null,
+                httpOrigin = null,
+                httpCookie = null,
+                playbackType = null,
+                playbackFormat = null,
+            )
             lines.forEach { line ->
                 if (line.isBlank()) return@forEach
                 if (line.startsWith("#EXTM3U")) {
@@ -92,55 +105,52 @@ class M3uIptvParser : IptvParser {
                     // 记录解析结果
                     logger.i("解析结果: name=$name, epgName=$epgName, groupNames=$groupNames, logo=$logo, httpUserAgent=$httpUserAgent, httpReferrer=$httpReferrer, httpOrigin=$httpOrigin, httpCookie=$httpCookie, playbackType=$playbackType, playbackFormat=$playbackFormat")
 
-                    addedChannels = groupNames.map { groupName ->
-                        IptvParser.ChannelItem(
-                            name = name,
-                            epgName = epgName,
-                            groupName = groupName,
-                            url = "",
-                            logo = logo,
-                            httpUserAgent = httpUserAgent,
-                            httpReferrer = httpReferrer,
-                            httpOrigin = httpOrigin,
-                            httpCookie = httpCookie,
-                            playbackType = playbackType,
-                            playbackFormat = playbackFormat,
-                        )
-                    }
+                    groupNameList = groupNames
+                    addedChannel = addedChannel.copy(
+                        name = name,
+                        epgName = epgName,
+                        groupName = "其他",
+                        logo = logo,
+                        httpUserAgent = httpUserAgent ?: addedChannel.httpUserAgent,
+                        httpReferrer = httpReferrer ?: addedChannel.httpReferrer,
+                        httpOrigin = httpOrigin ?: addedChannel.httpOrigin,
+                        httpCookie = httpCookie ?: addedChannel.httpCookie,
+                        playbackType = playbackType,
+                        playbackFormat = playbackFormat
+                    )
                 } else {
                     if (line.startsWith("#KODIPROP:inputstream.adaptive.manifest_type")) {
-                        addedChannels =
-                            addedChannels.map { it.copy(manifestType = line.split("=").last()) }
+                        addedChannel = addedChannel.copy( manifestType = line.split("=").last())
                     } else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_type")) {
-                        addedChannels =
-                            addedChannels.map { it.copy(licenseType = line.split("=").last()) }
+                        addedChannel =
+                            addedChannel.copy(licenseType = line.split("=").last())
                     } else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key")) {
-                        addedChannels =
-                            addedChannels.map { it.copy(licenseKey = line.split("=").last()) }
+                        addedChannel =
+                            addedChannel.copy(licenseKey = line.split("=").last())
                     } else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Cookie=")){
-                        addedChannels =
-                            addedChannels.map { it.copy(httpCookie = line.split("=").last()) }
+                        addedChannel =
+                            addedChannel.copy(httpCookie = line.split("=").last())
                     }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Cookie%3d")){
-                        addedChannels =
-                            addedChannels.map { it.copy(httpCookie = line.split(".stream_headers=Cookie%3d").last()) }
+                        addedChannel =
+                            addedChannel.copy(httpCookie = line.split(".stream_headers=Cookie%3d").last())
                     }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=User-Agent=")){
-                        addedChannels =
-                            addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }
+                        addedChannel =
+                            addedChannel.copy(httpUserAgent = line.split("=").last())
                     }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Referer=")){
-                        addedChannels =
-                            addedChannels.map { it.copy(httpReferrer = line.split("=").last()) }
+                        addedChannel =
+                            addedChannel.copy(httpReferrer = line.split("=").last())
                     }else if (line.startsWith("#EXTVLCOPT:http-origin")) {
-                        addedChannels =
-                            addedChannels.map { it.copy(httpOrigin = line.split("=").last()) }
+                        addedChannel =
+                            addedChannel.copy(httpOrigin = line.split("=").last())
                     } else if (line.startsWith("#EXTVLCOPT:http-referrer")) {
-                        addedChannels =
-                            addedChannels.map { it.copy(httpReferrer = line.split("=").last()) }
+                        addedChannel =
+                            addedChannel.copy(httpReferrer = line.split("=").last())
                     } else if (line.startsWith("#EXTVLCOPT:http-user-agent")) {
-                        addedChannels =
-                            addedChannels.map { it.copy(httpUserAgent = line.split("=").last()) }                      
+                        addedChannel =
+                            addedChannel.copy(httpUserAgent = line.split("=").last())
                     } else if (line.startsWith("#EXTVLCOPT:http-cookie")) {
-                        addedChannels =
-                            addedChannels.map { it.copy(httpCookie = line.split("=").last()) }                      
+                        addedChannel =
+                            addedChannel.copy(httpCookie = line.split("=").last())
                     } else if (line.startsWith("#") || line.startsWith("//")) {
                         return@forEach
                     } else{
@@ -152,16 +162,36 @@ class M3uIptvParser : IptvParser {
                         if (trimmedUrl.startsWith("webview://")) {
                             logger.i("检测到WebView链接: $trimmedUrl")
                             logger.i("将URL的hybridType设置为WebView")
-                            channelList.addAll(addedChannels.map { 
-                                it.copy(
-                                    url = trimmedUrl, 
+                            channelList.addAll(groupNameList.map { groupName ->
+                                addedChannel.copy(
+                                    groupName = groupName,
+                                    url = trimmedUrl.removePrefix("webview://"),
                                     hybridType = IptvParser.ChannelItem.HybridType.WebView
-                                ) 
+                                )
                             })
                         } else {
                             logger.i("普通URL: $trimmedUrl, hybridType=None")
-                            channelList.addAll(addedChannels.map { it.copy(url = trimmedUrl) })
+                            channelList.addAll(groupNameList.map { groupName ->
+                                addedChannel.copy(
+                                    groupName = groupName,
+                                    url = trimmedUrl,
+                                    hybridType = IptvParser.ChannelItem.HybridType.None
+                                )
+                            })
                         }
+                        addedChannel = IptvParser.ChannelItem(
+                            name = "",
+                            epgName = "",
+                            groupName = "",
+                            url = "",
+                            logo = null,
+                            httpUserAgent = null,
+                            httpReferrer = null,
+                            httpOrigin = null,
+                            httpCookie = null,
+                            playbackType = null,
+                            playbackFormat = null,
+                        )
                     }
                 }
             }
