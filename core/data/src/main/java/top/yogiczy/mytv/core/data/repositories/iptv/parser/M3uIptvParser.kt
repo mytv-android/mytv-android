@@ -127,16 +127,16 @@ class M3uIptvParser : IptvParser {
                     } else if (line.startsWith("#KODIPROP:inputstream.adaptive.license_key")) {
                         addedChannel =
                             addedChannel.copy(licenseKey = line.split("=").last())
-                    } else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Cookie=")){
+                    } else if(line.startsWith("#KODIPROP:inputstream.adaptive.stream_headers=Cookie=")){
                         addedChannel =
                             addedChannel.copy(httpCookie = line.split("=").last())
-                    }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Cookie%3d")){
+                    }else if(line.startsWith("#KODIPROP:inputstream.adaptive.stream_headers=Cookie%3d")){
                         addedChannel =
                             addedChannel.copy(httpCookie = line.split(".stream_headers=Cookie%3d").last())
-                    }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=User-Agent=")){
+                    }else if(line.startsWith("#KODIPROP:inputstream.adaptive.stream_headers=User-Agent=")){
                         addedChannel =
                             addedChannel.copy(httpUserAgent = line.split("=").last())
-                    }else if(line.startsWith("KODIPROP:inputstream.adaptive.stream_headers=Referer=")){
+                    }else if(line.startsWith("#KODIPROP:inputstream.adaptive.stream_headers=Referer=")){
                         addedChannel =
                             addedChannel.copy(httpReferrer = line.split("=").last())
                     }else if (line.startsWith("#EXTVLCOPT:http-origin")) {
