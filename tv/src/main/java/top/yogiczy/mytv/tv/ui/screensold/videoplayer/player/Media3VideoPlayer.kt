@@ -313,6 +313,24 @@ class Media3VideoPlayer(
                                         .build(drmCallback)
                                     setDrmSessionManagerProvider { drmSessionManager }
                                 }
+                                currentChannelLine.licenseType?.contains("playready", true) == true -?{
+                                    val drmCallback = if (currentChannelLine.licenseKey!!.startsWith("http")) {
+                                        HttpMediaDrmCallback(
+                                            currentChannelLine.licenseKey,
+                                            dataSourceFactory
+                                        )
+                                    } else {
+                                        LocalMediaDrmCallback((currentChannelLine.licenseKey ?: "").toByteArray())
+                                    }
+                                    val drmSessionManager = DefaultDrmSessionManager.Builder()
+                                        .setMultiSession(true)
+                                        .setUuidAndExoMediaDrmProvider(
+                                            C.PLAYREADY_UUID,
+                                            FrameworkMediaDrm.DEFAULT_PROVIDER
+                                        )
+                                        .build(drmCallback)
+                                    setDrmSessionManagerProvider { drmSessionManager }
+                                }
                                 else -> {
                                     triggerError(
                                         PlaybackException(
