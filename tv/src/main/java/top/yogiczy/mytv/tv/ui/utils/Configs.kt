@@ -254,6 +254,9 @@ object Configs {
         /** 播放器 支持 TS 高级特性 */
         VIDEO_PLAYER_SUPPORT_TS_HIGH_PROFILE,
         
+        /** 播放器 支持在链接中提取 Header 信息 */
+        VIDEO_PLAYER_EXTRACT_HEADER_FROM_LINK,
+        
         /** 播放器音量均衡 */
         VIDEO_PLAYER_VOLUME_NORMALIZATION,
 
@@ -738,6 +741,11 @@ object Configs {
         get() = SP.getBoolean(KEY.VIDEO_PLAYER_SUPPORT_TS_HIGH_PROFILE.name, false)
         set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_SUPPORT_TS_HIGH_PROFILE.name, value)
 
+    /** 播放器 支持在链接中提取 Header 信息 */
+    var videoPlayerExtractHeaderFromLink: Boolean
+        get() = SP.getBoolean(KEY.VIDEO_PLAYER_EXTRACT_HEADER_FROM_LINK.name, false)
+        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_EXTRACT_HEADER_FROM_LINK.name, value)
+
     /** 播放器音量均衡 */
     var videoPlayerVolumeNormalization: Boolean
         get() = SP.getBoolean(KEY.VIDEO_PLAYER_VOLUME_NORMALIZATION.name, false)
@@ -982,6 +990,7 @@ object Configs {
             videoPlayerStopPreviousMediaItem = videoPlayerStopPreviousMediaItem,
             videoPlayerSkipMultipleFramesOnSameVSync = videoPlayerSkipMultipleFramesOnSameVSync,
             videoPlayerSupportTSHighProfile = videoPlayerSupportTSHighProfile,
+            videoPlayerExtractHeaderFromLink = videoPlayerExtractHeaderFromLink,
             videoPlayerVolumeNormalization = videoPlayerVolumeNormalization,
             themeAppCurrent = themeAppCurrent,
             cloudSyncAutoPull = cloudSyncAutoPull,
@@ -1075,6 +1084,7 @@ object Configs {
         configs.videoPlayerStopPreviousMediaItem?.let { videoPlayerStopPreviousMediaItem = it }
         configs.videoPlayerSkipMultipleFramesOnSameVSync?.let { videoPlayerSkipMultipleFramesOnSameVSync = it }
         configs.videoPlayerSupportTSHighProfile?.let { videoPlayerSupportTSHighProfile = it }
+        configs.videoPlayerExtractHeaderFromLink?.let { videoPlayerExtractHeaderFromLink = it }
         configs.videoPlayerVolumeNormalization?.let { videoPlayerVolumeNormalization = it }
         configs.themeAppCurrent?.let { themeAppCurrent = it }
         configs.cloudSyncAutoPull?.let { cloudSyncAutoPull = it }
@@ -1166,6 +1176,7 @@ object Configs {
         val videoPlayerStopPreviousMediaItem: Boolean? = null,
         val videoPlayerSkipMultipleFramesOnSameVSync: Boolean? = null,
         val videoPlayerSupportTSHighProfile: Boolean? = null,
+        val videoPlayerExtractHeaderFromLink: Boolean? = null,
         val videoPlayerVolumeNormalization : Boolean? = null,
         val themeAppCurrent: AppThemeDef? = null,
         val cloudSyncAutoPull: Boolean? = null,

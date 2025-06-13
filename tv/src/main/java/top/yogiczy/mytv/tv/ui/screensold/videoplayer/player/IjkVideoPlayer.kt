@@ -19,6 +19,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import top.yogiczy.mytv.core.data.utils.Logger
 import top.yogiczy.mytv.core.data.utils.Loggable
 import kotlin.math.max
+import kotlin.text.Regex
 
 class IjkVideoPlayer(
     private val context: Context,
@@ -89,19 +90,37 @@ class IjkVideoPlayer(
 
     override fun prepare(line: ChannelLine) {
         player.reset()
+        var uri = line.playableUrl
+        var header: Map<String, String> = emptyMap()
+        if(Configs.videoPlayerExtractHeaderFromLink){
+            val regex = Regex("""^([^|]+)\|([^|=]*=[^|=]*(\|[^|=]*=[^|=]*)*)$""")
+            val match = regex.find(uri.toString())
+            if (match != null) {
+                val realUrl = match.groupValues[1]
+                val headerStr = match.groupValues[2]
+                uri = realUrl
+                // 解析header
+                header = headerStr.split("|")
+                    .mapNotNull {
+                        val idx = it.indexOf("=")
+                        if (idx > 0) it.substring(0, idx) to it.substring(idx + 1) else null
+                    }
+                    .toMap()
+            }
+        }
         val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
             "User-Agent" to (line.httpUserAgent ?: Configs.videoPlayerUserAgent),
             "Referer" to (line.httpReferrer ?: ""),
             "Origin" to (line.httpOrigin ?: ""),
             "Cookie" to (line.httpCookie ?: ""),
-        ).filterValues { it.isNotEmpty() }
+        ).filterValues { it.isNotEmpty() } + header
         
         // 使用应用内日志系统
-        logger.i("播放地址: ${line.playableUrl}")
+        logger.i("播放地址: ${uri.toString()}")
         logger.i("请求头: $headers")
         
         player.setDataSource(
-            line.playableUrl,
+            uri,
             headers
         )
         setOption()

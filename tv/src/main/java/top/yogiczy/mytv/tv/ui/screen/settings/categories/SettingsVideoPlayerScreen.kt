@@ -107,6 +107,20 @@ fun SettingsVideoPlayerScreen(
             )
         }
 
+        item{
+            SettingsListItem(
+                headlineContent = "在链接中提取 Header",
+                supportingContent = "支持在链接中提取 以|分隔的 Header 信息",
+                trailingContent = {
+                    Switch(settingsViewModel.videoPlayerExtractHeaderFromLink, null)
+                },
+                onSelect = {
+                    settingsViewModel.videoPlayerExtractHeaderFromLink =
+                        !settingsViewModel.videoPlayerExtractHeaderFromLink
+                },
+            )
+        }
+
         item {
             SettingsListItem(
                 headlineContent = "全局显示模式",

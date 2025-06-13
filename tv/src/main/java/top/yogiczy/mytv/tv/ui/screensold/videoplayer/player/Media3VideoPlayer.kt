@@ -51,7 +51,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.max
-
+import kotlin.text.Regex
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.util.utils.toHeaders
 import top.yogiczy.mytv.tv.ui.utils.Configs
@@ -148,17 +148,16 @@ class Media3VideoPlayer(
         prepare()
     }
 
-    private fun getDataSourceFactory(): DefaultDataSource.Factory {
+    private fun getDataSourceFactory(header: Map<String, String>): DefaultDataSource.Factory {
         val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
             "Referer" to (currentChannelLine.httpReferrer ?: "")
             ).filterValues { it.isNotEmpty() } + mapOf(
                 "Origin" to (currentChannelLine.httpOrigin ?: "")
                 ).filterValues { it.isNotEmpty() } + mapOf(
                 "Cookie" to (currentChannelLine.httpCookie ?: "")
-                ).filterValues { it.isNotEmpty() }
+                ).filterValues { it.isNotEmpty() } + header
         
         // 使用应用内日志系统
-        logger.i("播放地址: ${currentChannelLine.playableUrl}")
         logger.i("请求头: $headers")
         logger.i("User-Agent: ${currentChannelLine.httpUserAgent ?: Configs.videoPlayerUserAgent}")
         
@@ -177,9 +176,27 @@ class Media3VideoPlayer(
 
 
     private fun getMediaSource(contentType: Int? = null): MediaSource? {
-        val uri = Uri.parse(currentChannelLine.playableUrl)
+        var uri = Uri.parse(currentChannelLine.playableUrl)
+        var headers: Map<String, String> = emptyMap()
+        if(Configs.videoPlayerExtractHeaderFromLink){
+            val regex = Regex("""^([^|]+)\|([^|=]*=[^|=]*(\|[^|=]*=[^|=]*)*)$""")
+            val match = regex.find(currentChannelLine.playableUrl)
+            if (match != null) {
+                val realUrl = match.groupValues[1]
+                val headerStr = match.groupValues[2]
+                uri = Uri.parse(realUrl)
+                // 解析header
+                headers = headerStr.split("|")
+                    .mapNotNull {
+                        val idx = it.indexOf("=")
+                        if (idx > 0) it.substring(0, idx) to it.substring(idx + 1) else null
+                    }
+                    .toMap()
+            }
+        }
+        logger.i("播放地址: ${uri}")
         val mediaItem = MediaItem.fromUri(uri)
-        val dataSourceFactory = getDataSourceFactory()
+        val dataSourceFactory = getDataSourceFactory(headers)
 
         if (!uri.toString().startsWith("rtmp://")){
             var mimeType = if (uri.toString().startsWith("rtp://") || uri.toString().startsWith("rtsp://")) {
