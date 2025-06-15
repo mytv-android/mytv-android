@@ -352,4 +352,8 @@
     <string name="ui_channel_info_timeout">Timeout</string>
     <string name="iptv_source_local">Local</string>
     <string name="iptv_source_remote">Remote</string>
+    <string name="ui_epg_item_today">Today</string>
+    <string name="ui_epg_item_tomorrow">Tom.</string>
+    <string name="ui_epg_item_day_after_tomorrow">Overmorrow</string>
+
 </resources>

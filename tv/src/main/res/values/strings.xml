@@ -352,4 +352,7 @@
     <string name="ui_channel_info_timeout">超时</string>
     <string name="iptv_source_local">本地</string>
     <string name="iptv_source_remote">远程</string>
+    <string name="ui_epg_item_today">今天</string>
+    <string name="ui_epg_item_tomorrow">明天</string>
+    <string name="ui_epg_item_day_after_tomorrow">后天</string>
 </resources>

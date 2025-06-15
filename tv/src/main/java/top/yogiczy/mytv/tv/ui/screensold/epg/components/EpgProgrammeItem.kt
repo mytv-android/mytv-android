@@ -77,6 +77,9 @@ fun EpgProgrammeItem(
                 else Text(stringResource(R.string.ui_channel_info_reserve))
             }
         },
+        supportingContent = {
+            Text(programme.description, maxLines = if (isFocused) Int.MAX_VALUE else 1)
+        }
     )
 }
 

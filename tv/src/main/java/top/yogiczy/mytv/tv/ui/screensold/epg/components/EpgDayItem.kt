@@ -17,6 +17,8 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import java.text.SimpleDateFormat
 import java.util.Locale
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun EpgDayItem(
@@ -48,9 +50,9 @@ fun EpgDayItem(
 
             Text(
                 when (day) {
-                    today -> "今天"
-                    tomorrow -> "明天"
-                    dayAfterTomorrow -> "后天"
+                    today -> stringResource(R.string.ui_epg_item_today)
+                    tomorrow -> stringResource(R.string.ui_epg_item_tomorrow)
+                    dayAfterTomorrow -> stringResource(R.string.ui_epg_item_day_after_tomorrow)
                     else -> lines[0]
                 },
                 modifier = Modifier.fillMaxWidth(),

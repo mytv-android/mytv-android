@@ -24,6 +24,11 @@ data class EpgProgramme(
      * 节目名称
      */
     val title: String = "",
+
+    /**
+     * 节目简介
+     */
+    val description: String = "",
 ) {
     companion object {
         /**

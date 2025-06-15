@@ -32,6 +32,7 @@ object EpgParser : Loggable("EpgParser") {
         val start: Long,
         val end: Long,
         val title: String,
+        val description: String = "",
     )
 
     private suspend fun parse(inputStream: InputStream) = withContext(Dispatchers.IO) {
@@ -88,13 +89,19 @@ object EpgParser : Loggable("EpgParser") {
                                         val stop = parser.getAttributeValue(null, "stop")
                                         parser.nextTag()
                                         val title = parser.nextText()
-
+                                        parser.nextTag()
+                                        val description = if (parser.name == "desc") {
+                                            parser.nextText()
+                                        } else {
+                                            ""
+                                        }
                                         programmeList.add(
                                             ProgrammeItem(
                                                 channel,
                                                 parseTime(start),
                                                 parseTime(stop),
-                                                title
+                                                title,
+                                                description
                                             )
                                         )
                                     }
@@ -125,7 +132,7 @@ object EpgParser : Loggable("EpgParser") {
                     logo = channel.icon,
                     programmeList = EpgProgrammeList(
                         programmesByChannel[channel.id]?.map { programme ->
-                            EpgProgramme(programme.start, programme.end, programme.title)
+                            EpgProgramme(programme.start, programme.end, programme.title, programme.description)
                         } ?: emptyList()
                     ),
                 )
