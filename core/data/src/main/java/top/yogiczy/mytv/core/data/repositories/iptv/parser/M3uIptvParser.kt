@@ -35,8 +35,29 @@ class M3uIptvParser : IptvParser {
                 playbackType = null,
                 playbackFormat = null,
             )
+            var acceptNewConfig = true
             lines.forEach { line ->
                 if (line.isBlank()) return@forEach
+                if(!acceptNewConfig && (
+                    line.startsWith("#EXTINF") 
+                    || line.startsWith("#EXTM3U") 
+                    || line.startsWith("#EXTVLCOPT") 
+                    || line.startsWith("#KODIPROP"))){
+                    addedChannel = IptvParser.ChannelItem(
+                        name = "",
+                        epgName = "",
+                        groupName = "",
+                        url = "",
+                        logo = null,
+                        httpUserAgent = null,
+                        httpReferrer = null,
+                        httpOrigin = null,
+                        httpCookie = null,
+                        playbackType = null,
+                        playbackFormat = null,
+                    )
+                    acceptNewConfig = true
+                }
                 if (line.startsWith("#EXTM3U")) {
                     // 解析扩展信息
                     val playbackTypeString =
@@ -181,19 +202,7 @@ class M3uIptvParser : IptvParser {
                                 )
                             })
                         }
-                        addedChannel = IptvParser.ChannelItem(
-                            name = "",
-                            epgName = "",
-                            groupName = "",
-                            url = "",
-                            logo = null,
-                            httpUserAgent = null,
-                            httpReferrer = null,
-                            httpOrigin = null,
-                            httpCookie = null,
-                            playbackType = null,
-                            playbackFormat = null,
-                        )
+                        acceptNewConfig = false
                     }
                 }
             }
