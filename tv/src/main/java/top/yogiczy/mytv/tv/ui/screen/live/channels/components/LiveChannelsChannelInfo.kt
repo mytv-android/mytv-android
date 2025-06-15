@@ -360,36 +360,55 @@ private fun LiveChannelsChannelInfoEpgProgramme(
             modifier = Modifier.alpha(0.8f),
             maxLines = 1,
         )
-
-        if (showProgress) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.Start,
+        ) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = modifier,
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ProgressBar(
-                    process = programme.progress(),
-                    modifier = Modifier.size(60.dp, 5.dp),
-                    colors = ProgressBarColors(
-                        barColor = MaterialTheme.colorScheme.onSurface.copy(0.2f),
-                        progressColor = MaterialTheme.colorScheme.onSurface,
-                    ),
-                )
+                if (showProgress) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        ProgressBar(
+                            process = programme.progress(),
+                            modifier = Modifier.size(60.dp, 5.dp),
+                            colors = ProgressBarColors(
+                                barColor = MaterialTheme.colorScheme.onSurface.copy(0.2f),
+                                progressColor = MaterialTheme.colorScheme.onSurface,
+                            ),
+                        )
 
+                        Text(
+                            "${programme.remainingMinutes()}${stringResource(R.string.ui_minutes)}",
+                            style = MaterialTheme.typography.labelLarge,
+                            modifier = Modifier.alpha(0.8f),
+                        )
+                    }
+                }
                 Text(
-                    "${programme.remainingMinutes()}${stringResource(R.string.ui_minutes)}",
-                    style = MaterialTheme.typography.labelLarge,
+                    programme.title,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.alpha(0.8f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            if(!programme.description.isEmpty()) {
+                Text(
+                    programme.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.alpha(0.8f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
-
-        Text(
-            programme.title,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.alpha(0.8f),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
     }
 }
 
