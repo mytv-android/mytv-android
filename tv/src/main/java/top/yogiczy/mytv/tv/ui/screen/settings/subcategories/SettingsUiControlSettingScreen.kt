@@ -39,6 +39,8 @@ import top.yogiczy.mytv.tv.ui.utils.saveFocusRestorer
 import top.yogiczy.mytv.core.data.entities.actions.KeyDownAction
 import top.yogiczy.mytv.tv.ui.material.SimplePopup
 import top.yogiczy.mytv.tv.ui.rememberChildPadding
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsUiControlSettingScreen(
@@ -68,15 +70,27 @@ fun SettingsUiControlSettingScreen(
     
     var visible by remember { mutableStateOf(false) }
     var popupConfig by remember { mutableStateOf<KeyActionConfig>(KeyActionConfig()) }
-
+    val upTitle = stringResource(R.string.ui_control_up)
+    val downTitle = stringResource(R.string.ui_control_down)
+    val leftTitle = stringResource(R.string.ui_control_left)
+    val rightTitle = stringResource(R.string.ui_control_right)
+    val selectTitle = stringResource(R.string.ui_control_select)
+    val longSelectTitle = stringResource(R.string.ui_control_long_select)
+    val longUpTitle = stringResource(R.string.ui_control_long_up)
+    val longDownTitle = stringResource(R.string.ui_control_long_down)
+    val longLeftTitle = stringResource(R.string.ui_control_long_left)
+    val longRightTitle = stringResource(R.string.ui_control_long_right)
+    
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 控制 / 按键（手势）行为") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_control)} / ${stringResource(R.string.ui_control_action_settings)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
+        
+
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"上键/上滑"},
+                titleProvider = { upTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventUpProvider,
                 onValueChanged = {
@@ -91,7 +105,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"下键/下滑"},
+                titleProvider = { downTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventDownProvider,
                 onValueChanged = {
@@ -106,7 +120,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"左键/左滑"},
+                titleProvider = { leftTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventLeftProvider,
                 onValueChanged = {
@@ -121,7 +135,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"右键/右滑"},
+                titleProvider = { rightTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventRightProvider,
                 onValueChanged = {
@@ -136,7 +150,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"选择键"},
+                titleProvider = { selectTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventSelectProvider,
                 onValueChanged = {
@@ -151,7 +165,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"长按选择键"},
+                titleProvider = { longSelectTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventLongSelectProvider,
                 onValueChanged = {
@@ -166,7 +180,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"长按上键"},
+                titleProvider = { longUpTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventLongUpProvider,
                 onValueChanged = {
@@ -181,7 +195,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"长按下键"},
+                titleProvider = { longDownTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventLongDownProvider,
                 onValueChanged = {
@@ -196,7 +210,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"长按左键"},
+                titleProvider = { longLeftTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventLongLeftProvider,
                 onValueChanged = {
@@ -211,7 +225,7 @@ fun SettingsUiControlSettingScreen(
 
         item {
             SettingsUiControlSettingItem(
-                titleProvider = {"长按右键"},
+                titleProvider = { longRightTitle },
                 firstItemFocusRequester = firstItemFocusRequester,
                 valueProvider = keyDownEventLongRightProvider,
                 onValueChanged = {
@@ -331,7 +345,21 @@ fun SettingsUiControlSettingSubMenu(
         }
     }
 }
-
+@get:Composable
+val KeyDownAction.label: String
+    get() = when (this) {
+        KeyDownAction.ChangeCurrentChannelToPrev -> stringResource(R.string.ui_keydown_action_previous_channel)
+        KeyDownAction.ChangeCurrentChannelToNext -> stringResource(R.string.ui_keydown_action_next_channel)
+        KeyDownAction.ChangeCurrentChannelLineIdxToPrev -> stringResource(R.string.ui_keydown_action_previous_line)
+        KeyDownAction.ChangeCurrentChannelLineIdxToNext -> stringResource(R.string.ui_keydown_action_next_line)
+        KeyDownAction.ToIptvSourceScreen -> stringResource(R.string.ui_keydown_action_manage_sources)
+        KeyDownAction.ToChannelScreen -> stringResource(R.string.ui_keydown_action_channel_list)
+        KeyDownAction.ToQuickOpScreen -> stringResource(R.string.ui_keydown_action_quick_settings)
+        KeyDownAction.ToEpgScreen -> stringResource(R.string.ui_keydown_action_program_list)
+        KeyDownAction.ToChannelLineScreen -> stringResource(R.string.ui_keydown_action_line_list)
+        KeyDownAction.ToVideoPlayerControllerScreen -> stringResource(R.string.ui_keydown_action_playback_control)
+        else -> ""
+    }
 data class KeyActionConfig(
     val provider: () -> KeyDownAction = { KeyDownAction.ChangeCurrentChannelLineIdxToNext },
     val onValueChanged: (KeyDownAction) -> Unit = {}

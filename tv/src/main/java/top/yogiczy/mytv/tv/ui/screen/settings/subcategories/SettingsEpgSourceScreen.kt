@@ -56,7 +56,8 @@ import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
 import top.yogiczy.mytv.tv.ui.utils.saveFocusRestorer
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingsEpgSourceScreen(
@@ -77,7 +78,7 @@ fun SettingsEpgSourceScreen(
 
     AppScreen(
         modifier = modifier,
-        header = { Text("设置 / 节目单 / 自定义节目单") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_epg)} / ${stringResource(R.string.ui_epg_source_custom)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -116,7 +117,7 @@ fun SettingsEpgSourceScreen(
 
                 ListItem(
                     modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("添加其他节目单") },
+                    headlineContent = { Text(stringResource(R.string.ui_add_other_playlists)) },
                     selected = false,
                     onClick = {},
                 )
@@ -236,7 +237,7 @@ private fun SettingsEpgSourceActions(
         ) {
             item {
                 SettingsEpgSourceActionItem(
-                    title = "设为当前",
+                    title = stringResource(R.string.ui_channel_view_set_current),
                     imageVector = Icons.Outlined.Add,
                     onSelected = onSetCurrent,
                     disabled = currentEpgSource == epgSource,
@@ -246,7 +247,7 @@ private fun SettingsEpgSourceActions(
 
             item {
                 SettingsEpgSourceActionItem(
-                    title = "删除",
+                    title = stringResource(R.string.ui_channel_view_delete),
                     imageVector = Icons.Outlined.DeleteOutline,
                     onSelected = onDelete,
                 )
@@ -254,7 +255,7 @@ private fun SettingsEpgSourceActions(
 
             item {
                 SettingsEpgSourceActionItem(
-                    title = "清除缓存",
+                    title = stringResource(R.string.ui_channel_view_clear_cache),
                     imageVector = Icons.Outlined.ClearAll,
                     onSelected = onClearCache,
                 )
@@ -262,7 +263,7 @@ private fun SettingsEpgSourceActions(
 
             item {
                 SettingsEpgSourceActionItem(
-                    title = "返回",
+                    title = stringResource(R.string.ui_return),
                     imageVector = Icons.Outlined.ArrowBackIosNew,
                     onSelected = onDismissRequest,
                 )

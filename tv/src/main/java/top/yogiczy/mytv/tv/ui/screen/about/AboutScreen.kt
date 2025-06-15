@@ -33,6 +33,7 @@ import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.screen.components.QrcodePopup
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun AboutScreen(
@@ -45,7 +46,7 @@ fun AboutScreen(
 
     AppScreen(
         modifier = modifier,
-        header = { Text("关于") },
+        header = { Text(stringResource(R.string.ui_dashboard_module_about)) },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -55,218 +56,218 @@ fun AboutScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {
-                ListItem(
-                    headlineContent = { Text("应用标识") },
-                    trailingContent = {
-                        Text(
-                            listOf(
-                                BuildConfig.APPLICATION_ID,
-                                BuildConfig.FLAVOR,
-                                BuildConfig.BUILD_TYPE,
-                                "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})",
-                            ).joinToString("_")
-                        )
-                    },
-                    selected = false,
-                    onClick = {},
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.ui_about_app_id)) },
+                trailingContent = {
+                Text(
+                    listOf(
+                    BuildConfig.APPLICATION_ID,
+                    BuildConfig.FLAVOR,
+                    BuildConfig.BUILD_TYPE,
+                    "${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE})",
+                    ).joinToString("_")
                 )
+                },
+                selected = false,
+                onClick = {},
+            )
             }
 
             item {
-                var visible by remember { mutableStateOf(false) }
-                ListItem(
-                    modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("本项目代码仓库") },
-                    trailingContent = {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(Constants.APP_REPO)
-
-                            Icon(
-                                Icons.AutoMirrored.Default.OpenInNew,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        }
-                    },
-                    selected = false,
-                    onClick = {},
-                )
-
-                QrcodePopup(
-                    visibleProvider = { visible },
-                    onDismissRequest = { visible = false },
-                    text = Constants.APP_REPO,
-                    description = "扫码前往代码仓库",
-                )
-            }
-
-            item {
-                var visible by remember { mutableStateOf(false) }
-
-                ListItem(
-                    modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("讨论交流 Telegram") },
-                    trailingContent = {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(Constants.GROUP_TELEGRAM)
-
-                            Icon(
-                                Icons.AutoMirrored.Default.OpenInNew,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        }
-                    },
-                    selected = false,
-                    onClick = {},
-                )
-
-                QrcodePopup(
-                    visibleProvider = { visible },
-                    onDismissRequest = { visible = false },
-                    text = Constants.GROUP_TELEGRAM,
-                )
-            }
-
-            item {
-                ListItem(
-                    headlineContent = { Text("设备名称") },
-                    trailingContent = { Text(Globals.deviceName) },
-                    selected = false,
-                    onClick = {},
-                )
-            }
-
-            item {
-                var visible by remember { mutableStateOf(false) }
-
-                ListItem(
-                    modifier = Modifier.handleKeyEvents(onSelect = {
-                        visible = true
-                    }),
-                    headlineContent = { Text("设备ID") },
-                    trailingContent = {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(Globals.deviceId)
-
-                            Icon(
-                                Icons.AutoMirrored.Default.OpenInNew,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        }
-                    },
-                    selected = false,
-                    onClick = {},
-                )
-
-                QrcodePopup(
-                    visibleProvider = { visible },
-                    onDismissRequest = { visible = false },
-                    text = Globals.deviceId,
-                )
-            }
-            item {
-                var visible by remember { mutableStateOf(false) }
-                ListItem(
-                    modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("天光云影仓库") },
-                    trailingContent = {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(Constants.ORIGIN_APP_REPO)
-
-                            Icon(
-                                Icons.AutoMirrored.Default.OpenInNew,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        }
-                    },
-                    selected = false,
-                    onClick = {},
-                )
-
-                QrcodePopup(
-                    visibleProvider = { visible },
-                    onDismissRequest = { visible = false },
-                    text = Constants.ORIGIN_APP_REPO,
-                    description = "本项目的诞生离不开天光云影项目，扫码以前往",
-                )
-            }
-            item {
-                var visible by remember { mutableStateOf(false) }
-
-                ListItem(
-                    modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                    headlineContent = { Text("向天光云影作者赞赏") },
-                    supportingContent = { Text("仅支持微信赞赏码") },
-                    trailingContent = {
-                        Icon(
-                            Icons.AutoMirrored.Default.OpenInNew,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                        )
-                    },
-                    selected = false,
-                    onClick = {},
-                )
-
-                SimplePopup(
-                    visibleProvider = { visible },
-                    onDismissRequest = { visible = false },
+            var visible by remember { mutableStateOf(false) }
+            ListItem(
+                modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
+                headlineContent = { Text(stringResource(R.string.ui_about_repo)) },
+                trailingContent = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val painter = painterResource(R.drawable.mm_reward_qrcode)
+                    Text(Constants.APP_REPO)
 
-                    Image(
-                        painter,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(300.dp),
+                    Icon(
+                    Icons.AutoMirrored.Default.OpenInNew,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
                     )
                 }
+                },
+                selected = false,
+                onClick = {},
+            )
+
+            QrcodePopup(
+                visibleProvider = { visible },
+                onDismissRequest = { visible = false },
+                text = Constants.APP_REPO,
+                description = stringResource(R.string.ui_about_repo_qrcode_desc),
+            )
             }
 
             item {
-                ListItem(
-                    modifier = Modifier.handleKeyEvents(onSelect = toUpdateScreen),
-                    headlineContent = { Text("检查更新") },
-                    trailingContent = {
-                        val currentVersion = BuildConfig.VERSION_NAME
-                        val latestVersion = latestVersionProvider().ifBlank { currentVersion }
+            var visible by remember { mutableStateOf(false) }
 
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            if (latestVersion.compareVersion(currentVersion) > 0) {
-                                Text("新版本: $latestVersion")
-                            } else {
-                                Text("无更新")
-                            }
+            ListItem(
+                modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
+                headlineContent = { Text(stringResource(R.string.ui_about_telegram)) },
+                trailingContent = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(Constants.GROUP_TELEGRAM)
 
-                            Icon(
-                                Icons.Default.ChevronRight,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                            )
-                        }
-                    },
-                    selected = false,
-                    onClick = {},
+                    Icon(
+                    Icons.AutoMirrored.Default.OpenInNew,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    )
+                }
+                },
+                selected = false,
+                onClick = {},
+            )
+
+            QrcodePopup(
+                visibleProvider = { visible },
+                onDismissRequest = { visible = false },
+                text = Constants.GROUP_TELEGRAM,
+            )
+            }
+
+            item {
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.ui_about_device_name)) },
+                trailingContent = { Text(Globals.deviceName) },
+                selected = false,
+                onClick = {},
+            )
+            }
+
+            item {
+            var visible by remember { mutableStateOf(false) }
+
+            ListItem(
+                modifier = Modifier.handleKeyEvents(onSelect = {
+                visible = true
+                }),
+                headlineContent = { Text(stringResource(R.string.ui_about_device_id)) },
+                trailingContent = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(Globals.deviceId)
+
+                    Icon(
+                    Icons.AutoMirrored.Default.OpenInNew,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    )
+                }
+                },
+                selected = false,
+                onClick = {},
+            )
+
+            QrcodePopup(
+                visibleProvider = { visible },
+                onDismissRequest = { visible = false },
+                text = Globals.deviceId,
+            )
+            }
+            item {
+            var visible by remember { mutableStateOf(false) }
+            ListItem(
+                modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
+                headlineContent = { Text(stringResource(R.string.ui_about_origin_repo)) },
+                trailingContent = {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(Constants.ORIGIN_APP_REPO)
+
+                    Icon(
+                    Icons.AutoMirrored.Default.OpenInNew,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    )
+                }
+                },
+                selected = false,
+                onClick = {},
+            )
+
+            QrcodePopup(
+                visibleProvider = { visible },
+                onDismissRequest = { visible = false },
+                text = Constants.ORIGIN_APP_REPO,
+                description = stringResource(R.string.ui_about_origin_repo_qrcode_desc),
+            )
+            }
+            item {
+            var visible by remember { mutableStateOf(false) }
+
+            ListItem(
+                modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
+                headlineContent = { Text(stringResource(R.string.ui_about_origin_reward)) },
+                supportingContent = { Text(stringResource(R.string.ui_about_origin_reward_support)) },
+                trailingContent = {
+                Icon(
+                    Icons.AutoMirrored.Default.OpenInNew,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
                 )
+                },
+                selected = false,
+                onClick = {},
+            )
+
+            SimplePopup(
+                visibleProvider = { visible },
+                onDismissRequest = { visible = false },
+            ) {
+                val painter = painterResource(R.drawable.mm_reward_qrcode)
+
+                Image(
+                painter,
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(300.dp),
+                )
+            }
+            }
+
+            item {
+            ListItem(
+                modifier = Modifier.handleKeyEvents(onSelect = toUpdateScreen),
+                headlineContent = { Text(stringResource(R.string.ui_about_check_update)) },
+                trailingContent = {
+                val currentVersion = BuildConfig.VERSION_NAME
+                val latestVersion = latestVersionProvider().ifBlank { currentVersion }
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (latestVersion.compareVersion(currentVersion) > 0) {
+                    Text(stringResource(R.string.ui_about_update_new, latestVersion))
+                    } else {
+                    Text(stringResource(R.string.ui_about_update_none))
+                    }
+
+                    Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp),
+                    )
+                }
+                },
+                selected = false,
+                onClick = {},
+            )
             }
         }
     }

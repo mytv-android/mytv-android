@@ -26,7 +26,8 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import java.text.SimpleDateFormat
 import java.util.Locale
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun CrashHandlerScreen(
     modifier: Modifier = Modifier,
@@ -47,26 +48,28 @@ fun CrashHandlerScreen(
 
     AppScreen(
         modifier = modifier.padding(childPaddings.copy(top = 10.dp).paddingValues),
-        header = { Text(text = "应用崩溃了") },
+        header = { Text(text = stringResource(R.string.ui_crash_handler_app_crashed)) },
         headerExtra = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                val crashLogLabel = stringResource(R.string.ui_crash_handler_crash_log)
+                val crashLogCopiedMsg = stringResource(R.string.ui_crash_handler_crash_log_copied)
                 AppScaffoldHeaderBtn(
-                    title = "复制日志",
+                    title = stringResource(R.string.ui_crash_handler_copy_log),
                     imageVector = Icons.Default.ContentCopy,
                     onSelect = {
                         // 复制崩溃日志到剪贴板
                         val clipboardManager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clipData = ClipData.newPlainText("崩溃日志", fullCrashLog)
+                        val clipData = ClipData.newPlainText(crashLogLabel, fullCrashLog)
                         clipboardManager.setPrimaryClip(clipData)
-                        Toast.makeText(context, "崩溃日志已复制到剪贴板", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, crashLogCopiedMsg, Toast.LENGTH_SHORT).show()
                     },
                 )
                 AppScaffoldHeaderBtn(
                     modifier = Modifier.focusOnLaunched(),
-                    title = "重启",
+                    title = stringResource(R.string.ui_crash_handler_restart),
                     imageVector = Icons.Default.RestartAlt,
                     onSelect = onRestart,
                 )
@@ -95,7 +98,7 @@ fun CrashHandlerScreen(
             
             item { 
                 Text(
-                    text = "提示：您可以点击上方的\"复制日志\"按钮复制完整崩溃信息，以便报告问题。",
+                    text = stringResource(R.string.ui_crash_handler_tip),
                     modifier = Modifier.padding(top = 16.dp)
                 ) 
             }

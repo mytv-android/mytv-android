@@ -23,6 +23,8 @@ import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.VideoPlayerDisplayMode
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsVideoPlayerDisplayModeScreen(
@@ -36,7 +38,7 @@ fun SettingsVideoPlayerDisplayModeScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 播放器 / 全局显示模式") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_player)} / ${stringResource(R.string.ui_player_view_display_mode)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {

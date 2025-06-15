@@ -17,6 +17,8 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
 import top.yogiczy.mytv.tv.ui.utils.backHandler
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunchedSaveable
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun VideoPlayerControllerScreen(
@@ -34,7 +36,7 @@ fun VideoPlayerControllerScreen(
         modifier = modifier.backHandler { onClose() },
         onDismissRequest = onClose,
         position = DrawerPosition.Bottom,
-        header = { Text("播放控制") },
+        header = { Text(stringResource(R.string.ui_channel_view_playback_control)) },
     ) {
         Row(
             modifier = Modifier.padding(top = 10.dp),

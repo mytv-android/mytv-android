@@ -2,6 +2,9 @@
     <h1>电视直播<sup>TV</sup></h1>
 <div align="center">
 
+<p align="right">
+  <a href="README.md">🇨🇳 中文</a> | <a href="README_EN.md">🇺🇸 English</a>
+</p>
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/mytv-android/mytv-android)
 ![GitHub all releases](https://img.shields.io/github/downloads/mytv-android/mytv-android/total)

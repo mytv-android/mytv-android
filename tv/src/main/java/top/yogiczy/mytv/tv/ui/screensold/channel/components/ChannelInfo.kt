@@ -25,6 +25,9 @@ import top.yogiczy.mytv.core.util.utils.isIPv6
 import top.yogiczy.mytv.tv.ui.material.Tag
 import top.yogiczy.mytv.tv.ui.material.TagDefaults
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.ui.utils.getHybridWebViewUrlTagName
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ChannelInfo(
@@ -65,11 +68,11 @@ fun ChannelInfo(
                 )
 
                 if (isInTimeShift) {
-                    Tag("时移", colors = tagColors)
+                    Tag(stringResource(R.string.ui_channel_info_time_shift), colors = tagColors)
                 }
 
                 if (currentPlaybackEpgProgramme != null) {
-                    Tag("回放", colors = tagColors)
+                    Tag(stringResource(R.string.ui_channel_info_replay), colors = tagColors)
                 }
 
                 if (channel.lineList.size > 1) {
@@ -77,7 +80,10 @@ fun ChannelInfo(
                 }
 
                 if (line.hybridType == ChannelLine.HybridType.WebView) {
-                    Tag(ChannelUtil.getHybridWebViewUrlProvider(line.url), colors = tagColors)
+                    Tag(
+                        getHybridWebViewUrlTagName(ChannelUtil.getHybridWebViewUrlProvider(line.url)),
+                        colors = tagColors
+                    )
                 } else {
                     Tag(if (line.url.isIPv6()) "IPV6" else "IPV4", colors = tagColors)
                 }
@@ -89,10 +95,10 @@ fun ChannelInfo(
             LocalContentColor provides LocalContentColor.current.copy(alpha = 0.8f),
         ) {
             if (currentPlaybackEpgProgramme == null) {
-                Text("正在播放：${recentEpgProgramme?.now?.title ?: "精彩节目"}", maxLines = 1)
-                Text("稍后播放：${recentEpgProgramme?.next?.title ?: "精彩节目"}", maxLines = 1)
+                Text(stringResource(R.string.ui_channel_info_now_play) + ": ${recentEpgProgramme?.now?.title ?: stringResource(R.string.ui_excellent_program)}", maxLines = 1)
+                Text(stringResource(R.string.ui_channel_info_next_play) + ": ${recentEpgProgramme?.next?.title ?: stringResource(R.string.ui_excellent_program)}", maxLines = 1)
             } else {
-                Text("正在回放：${currentPlaybackEpgProgramme.title}", maxLines = 1)
+                Text(stringResource(R.string.ui_channel_info_now_replay) + ": ${currentPlaybackEpgProgramme.title}", maxLines = 1)
             }
         }
     }

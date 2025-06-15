@@ -68,7 +68,8 @@ import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import kotlin.math.max
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.utils.Configs
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ClassicChannelScreen(
@@ -102,17 +103,21 @@ fun ClassicChannelScreen(
     val channelFavoriteListVisible = remember { channelFavoriteListVisibleProvider() }
     val coroutineScope = rememberCoroutineScope()
     val settings = settingsVM
-
+    val channel_empty_string = stringResource(R.string.ui_channel_empty)
+    val all_channels_string = stringResource(R.string.ui_dashboard_module_all_channels)
+    val channel_favorite_string = stringResource(R.string.ui_dashboard_module_favorites)
     var previewIptvSource by remember { mutableStateOf(currentIptvSourceProvider()) }
     var previewChannelGroupList by remember { mutableStateOf(channelGroupList) }
     val emptyChannelGroup = remember {
-        ChannelGroup(name = "尚未加载列表")
+        ChannelGroup(name = channel_empty_string)
     }
+    val ClassicPanelScreenFavoriteChannelGroup = ChannelGroup(name = channel_favorite_string)
+
     var allChannelsGroup by remember(settings.uiClassicShowAllChannels, previewIptvSource) {
         mutableStateOf(
             if (settings.uiClassicShowAllChannels) {
                 ChannelGroup(
-                    name = "全部频道",
+                    name = all_channels_string,
                     channelList = ChannelList(channelGroupList.channelList)
                 )
             } else {
@@ -403,7 +408,7 @@ private fun ClassicPanelScreenShowEpgTip(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        "向右查看节目单".map {
+        stringResource(R.string.ui_channel_view_schedule).map {
             Text(text = it.toString(), style = MaterialTheme.typography.labelSmall)
         }
     }
@@ -423,13 +428,11 @@ private fun ClassicPanelScreenShowSourceTip(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        "向左查看订阅源".map {
+        stringResource(R.string.ui_channel_view_subscription_left).map {
             Text(text = it.toString(), style = MaterialTheme.typography.labelSmall)
         }
     }
 }
-
-val ClassicPanelScreenFavoriteChannelGroup = ChannelGroup(name = "我的收藏")
 
 @Preview(device = "id:Android TV (720p)")
 @Composable

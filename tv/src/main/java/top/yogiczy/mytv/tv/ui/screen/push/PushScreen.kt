@@ -23,7 +23,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.clickableNoIndication
 import top.yogiczy.mytv.tv.utlis.HttpServer
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun PushScreen(
     modifier: Modifier = Modifier,
@@ -39,7 +40,7 @@ fun PushScreen(
 
     AppScreen(
         modifier = modifier,
-        header = { Text("数据推送") },
+        header = { Text(stringResource(R.string.ui_dashboard_module_push)) },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -66,8 +67,8 @@ fun PushContent(modifier: Modifier = Modifier) {
             )
 
             Spacer(Modifier.height(20.dp))
-            Text("服务已启动：${serverUrl}")
-            Text("请扫描二维码或输入IP地址进行连接")
+            Text("${stringResource(R.string.ui_push_service_started)}${serverUrl}")
+            Text(stringResource(R.string.ui_push_scan_qr))
         }
     }
 }

@@ -48,7 +48,8 @@ import top.yogiczy.mytv.tv.ui.material.LazyRow
 import top.yogiczy.mytv.tv.ui.material.Visibility
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import androidx.compose.ui.focus.focusRequester
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun QuickOpBtnList(
     modifier: Modifier = Modifier,
@@ -76,6 +77,8 @@ fun QuickOpBtnList(
     var currentVideoTrack = ""
     var currentAudioTrack = ""
     var currentSubtitleTrack = ""
+    val string_channel_line = stringResource(R.string.ui_channel_view_route)
+
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }.distinctUntilChanged()
             .collect {
@@ -95,7 +98,7 @@ fun QuickOpBtnList(
                     .focusOnLaunched()
                     .focusRequester(runtime.firstItemFocusRequester)
                     .handleKeyEvents(onLeft = { runtime.scrollToLast()}),
-                title = "订阅源",
+                title = stringResource(R.string.ui_channel_view_source),
                 imageVector = Icons.Filled.LiveTv,
                 onSelect = onShowIptvSource,
             )
@@ -103,7 +106,7 @@ fun QuickOpBtnList(
 
         item {
             QuickOpBtn(
-                title = "节目单",
+                title = stringResource(R.string.ui_channel_view_epg),
                 imageVector = Icons.AutoMirrored.Filled.LibraryBooks,
                 onSelect = onShowEpg,
             )
@@ -113,7 +116,7 @@ fun QuickOpBtnList(
             val lineName by remember {
                 derivedStateOf {
                     channelProvider().lineList.getOrNull(channelLineIdxProvider())?.name
-                        ?: "线路%d".format(channelLineIdxProvider() + 1)
+                        ?: "${string_channel_line}%d".format(channelLineIdxProvider() + 1)
                 }
             }
 
@@ -126,7 +129,7 @@ fun QuickOpBtnList(
         if(videoPlayerIndicatorProvider()){
             item {
                 QuickOpBtn(
-                    title = "播放控制",
+                    title = stringResource(R.string.ui_channel_view_playback_control),
                     imageVector = Icons.Filled.ControlCamera,
                     onSelect = onShowVideoPlayerController,
                 )
@@ -142,7 +145,7 @@ fun QuickOpBtnList(
         
             item {
                 QuickOpBtn(
-                    title = "播放器："+settingsViewModel.videoPlayerCore.label,
+                    title = "${stringResource(R.string.ui_channel_view_player1)}${settingsViewModel.videoPlayerCore.label}",
                     imageVector = Icons.Filled.SmartDisplay,
                     onSelect = {
                         settingsViewModel.videoPlayerCore = when (settingsViewModel.videoPlayerCore) {
@@ -169,7 +172,7 @@ fun QuickOpBtnList(
             if (playerMetadata.videoTracks.isNotEmpty()) {
                 item {
                     QuickOpBtn(
-                        title = playerMetadataProvider().video?.shortLabel ?: "视轨",
+                        title = playerMetadataProvider().video?.shortLabel ?: stringResource(R.string.ui_channel_view_video_track),
                         imageVector = Icons.Filled.VideoLibrary,
                         onSelect = onShowVideoTracks,
                     )
@@ -179,7 +182,7 @@ fun QuickOpBtnList(
             if (playerMetadata.audioTracks.isNotEmpty()) {
                 item {
                     QuickOpBtn(
-                        title = playerMetadataProvider().audio?.shortLabel ?: "音轨",
+                        title = playerMetadataProvider().audio?.shortLabel ?: stringResource(R.string.ui_channel_view_audio_track),
                         imageVector = Icons.Filled.MusicNote,
                         onSelect = onShowAudioTracks,
                     )
@@ -189,7 +192,7 @@ fun QuickOpBtnList(
             if (playerMetadata.subtitleTracks.isNotEmpty()) {
                 item {
                     QuickOpBtn(
-                        title = playerMetadataProvider().subtitle?.shortLabel ?: "字幕",
+                        title = playerMetadataProvider().subtitle?.shortLabel ?: stringResource(R.string.ui_channel_view_subtitle),
                         imageVector = Icons.Filled.Subtitles,
                         onSelect = onShowSubtitleTracks,
                     )
@@ -199,7 +202,7 @@ fun QuickOpBtnList(
 
         item {
             QuickOpBtn(
-                title = "清除缓存",
+                title = stringResource(R.string.ui_channel_view_clear_cache),
                 imageVector = Icons.Filled.ClearAll,
                 onSelect = onClearCache,
             )
@@ -207,7 +210,7 @@ fun QuickOpBtnList(
 
         item{
             QuickOpBtn(
-                title = "主页",
+                title = stringResource(R.string.ui_channel_view_home),
                 imageVector = Icons.Filled.Home,
                 onSelect = onShowDashboardScreen,
             )
@@ -218,19 +221,19 @@ fun QuickOpBtnList(
                 modifier = Modifier
                     .focusRequester(runtime.lastItemFocusRequester)
                     .handleKeyEvents(onRight = { runtime.scrollToFirst() }),
-                title = "设置",
+                title = stringResource(R.string.ui_dashboard_module_settings),
                 imageVector = Icons.Filled.Settings,
                 onSelect = onShowMoreSettings,
             )
         }
     }
 }
-
+@Composable
 fun ForceDecodeLabel(forceDecode: Boolean): String {
     return if (forceDecode) {
-        "强制软解"
+        stringResource(R.string.ui_channel_view_force_soft_decode)
     } else {
-        "自动解码"
+        stringResource(R.string.ui_channel_view_auto_decode)
     }
 }
 @Preview

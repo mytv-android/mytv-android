@@ -52,11 +52,13 @@ import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
+import top.yogiczy.mytv.tv.ui.utils.getHybridWebViewUrlTagName
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.roundToInt
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun LiveChannelsChannelInfo(
     modifier: Modifier = Modifier,
@@ -165,11 +167,11 @@ private fun LiveChannelsChannelInfoTags(
         )
 
         if (isInTimeShift) {
-            Tag("时移", colors = tagColors)
+            Tag(stringResource(R.string.ui_channel_info_time_shift), colors = tagColors)
         }
 
         if (line.playbackType != null || currentPlaybackEpgProgramme != null) {
-            Tag("回放", colors = tagColors)
+            Tag(stringResource(R.string.ui_channel_info_replay), colors = tagColors)
         }
 
         if (channel.lineList.size > 1) {
@@ -177,7 +179,10 @@ private fun LiveChannelsChannelInfoTags(
         }
 
         if (line.hybridType == ChannelLine.HybridType.WebView) {
-            Tag(ChannelUtil.getHybridWebViewUrlProvider(line.url), colors = tagColors)
+            Tag(
+                getHybridWebViewUrlTagName(ChannelUtil.getHybridWebViewUrlProvider(line.url)),
+                colors = tagColors
+            )
         } else {
             if (line.url.isIPv6()) Tag("IPv6", colors = tagColors)
         }
@@ -333,7 +338,7 @@ private fun LiveChannelsChannelInfoEpgProgramme(
                 )
 
                 Text(
-                    "精彩节目",
+                    stringResource(R.string.ui_excellent_program),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.alpha(0.8f),
                     maxLines = 1,
@@ -371,7 +376,7 @@ private fun LiveChannelsChannelInfoEpgProgramme(
                 )
 
                 Text(
-                    "${programme.remainingMinutes()}分钟",
+                    "${programme.remainingMinutes()}${stringResource(R.string.ui_minutes)}",
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.alpha(0.8f),
                 )

@@ -12,7 +12,10 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.ui.utils.Configs
 import java.text.DecimalFormat
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsUiScreen(
@@ -27,109 +30,109 @@ fun SettingsUiScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 界面") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_interface)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
             SettingsListItem(
-                modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "节目进度",
-                supportingContent = "在频道底部显示当前节目进度条",
-                trailingContent = { Switch(settingsViewModel.uiShowEpgProgrammeProgress, null) },
-                onSelect = {
-                    settingsViewModel.uiShowEpgProgrammeProgress = !settingsViewModel.uiShowEpgProgrammeProgress
-                },
+            modifier = Modifier.focusRequester(firstItemFocusRequester),
+            headlineContent = stringResource(R.string.ui_show_epg_programme_progress),
+            supportingContent = stringResource(R.string.ui_show_epg_programme_progress_desc),
+            trailingContent = { Switch(settingsViewModel.uiShowEpgProgrammeProgress, null) },
+            onSelect = {
+                settingsViewModel.uiShowEpgProgrammeProgress = !settingsViewModel.uiShowEpgProgrammeProgress
+            },
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "常驻节目进度",
-                supportingContent = "在播放器底部显示当前节目进度条",
-                trailingContent = {
-                    Switch(settingsViewModel.uiShowEpgProgrammePermanentProgress, null)
-                },
-                onSelect = {
-                    settingsViewModel.uiShowEpgProgrammePermanentProgress = !settingsViewModel.uiShowEpgProgrammePermanentProgress
-                },
+            headlineContent = stringResource(R.string.ui_show_epg_programme_permanent_progress),
+            supportingContent = stringResource(R.string.ui_show_epg_programme_permanent_progress_desc),
+            trailingContent = {
+                Switch(settingsViewModel.uiShowEpgProgrammePermanentProgress, null)
+            },
+            onSelect = {
+                settingsViewModel.uiShowEpgProgrammePermanentProgress = !settingsViewModel.uiShowEpgProgrammePermanentProgress
+            },
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "台标显示",
-                trailingContent = {
-                    Switch(settingsViewModel.uiShowChannelLogo, null)
-                },
-                onSelect = {
-                    settingsViewModel.uiShowChannelLogo = !settingsViewModel.uiShowChannelLogo
-                },
+            headlineContent = stringResource(R.string.ui_show_channel_logo),
+            trailingContent = {
+                Switch(settingsViewModel.uiShowChannelLogo, null)
+            },
+            onSelect = {
+                settingsViewModel.uiShowChannelLogo = !settingsViewModel.uiShowChannelLogo
+            },
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "频道预览",
-                trailingContent = {
-                    Switch(settingsViewModel.uiShowChannelPreview, null)
-                },
-                onSelect = {
-                    settingsViewModel.uiShowChannelPreview = !settingsViewModel.uiShowChannelPreview
-                },
+            headlineContent = stringResource(R.string.ui_show_channel_preview),
+            trailingContent = {
+                Switch(settingsViewModel.uiShowChannelPreview, null)
+            },
+            onSelect = {
+                settingsViewModel.uiShowChannelPreview = !settingsViewModel.uiShowChannelPreview
+            },
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "经典选台界面",
-                supportingContent = "将选台界面替换为经典三段式结构",
-                trailingContent = {
-                    Switch(settingsViewModel.uiUseClassicPanelScreen, null)
-                },
-                onSelect = {
-                    settingsViewModel.uiUseClassicPanelScreen = !settingsViewModel.uiUseClassicPanelScreen
-                },
+            headlineContent = stringResource(R.string.ui_use_classic_panel_screen),
+            supportingContent = stringResource(R.string.ui_use_classic_panel_screen_desc),
+            trailingContent = {
+                Switch(settingsViewModel.uiUseClassicPanelScreen, null)
+            },
+            onSelect = {
+                settingsViewModel.uiUseClassicPanelScreen = !settingsViewModel.uiUseClassicPanelScreen
+            },
             )
         }
 
         if (settingsViewModel.uiUseClassicPanelScreen) {
             item {
-                SettingsListItem(
-                    headlineContent = "显示订阅源列表",
-                    supportingContent = "在经典选台界面中启用\"向左查看订阅源\"功能",
-                    trailingContent = {
-                        Switch(settingsViewModel.uiClassicShowSourceList, null)
-                    },
-                    onSelect = {
-                        settingsViewModel.uiClassicShowSourceList = !settingsViewModel.uiClassicShowSourceList
-                    },
-                )
+            SettingsListItem(
+                headlineContent = stringResource(R.string.ui_classic_show_source_list),
+                supportingContent = stringResource(R.string.ui_classic_show_source_list_desc),
+                trailingContent = {
+                Switch(settingsViewModel.uiClassicShowSourceList, null)
+                },
+                onSelect = {
+                settingsViewModel.uiClassicShowSourceList = !settingsViewModel.uiClassicShowSourceList
+                },
+            )
             }
 
             item {
-                SettingsListItem(
-                    headlineContent = "显示频道信息",
-                    supportingContent = "在经典选台界面中显示当前频道的详细信息",
-                    trailingContent = {
-                        Switch(settingsViewModel.uiClassicShowChannelInfo, null)
-                    },
-                    onSelect = {
-                        settingsViewModel.uiClassicShowChannelInfo = !settingsViewModel.uiClassicShowChannelInfo
-                    },
-                )
+            SettingsListItem(
+                headlineContent = stringResource(R.string.ui_classic_show_channel_info),
+                supportingContent = stringResource(R.string.ui_classic_show_channel_info_desc),
+                trailingContent = {
+                Switch(settingsViewModel.uiClassicShowChannelInfo, null)
+                },
+                onSelect = {
+                settingsViewModel.uiClassicShowChannelInfo = !settingsViewModel.uiClassicShowChannelInfo
+                },
+            )
             }
 
             item {
-                SettingsListItem(
-                    headlineContent = "显示全部频道",
-                    supportingContent = "是否显示当前订阅源全部频道列表",
-                    trailingContent = {
-                        Switch(settingsViewModel.uiClassicShowAllChannels, null)
-                    },
-                    onSelect = {
-                        settingsViewModel.uiClassicShowAllChannels = !settingsViewModel.uiClassicShowAllChannels
-                    },
-                )
+            SettingsListItem(
+                headlineContent = stringResource(R.string.ui_classic_show_all_channels),
+                supportingContent = stringResource(R.string.ui_classic_show_all_channels_desc),
+                trailingContent = {
+                Switch(settingsViewModel.uiClassicShowAllChannels, null)
+                },
+                onSelect = {
+                settingsViewModel.uiClassicShowAllChannels = !settingsViewModel.uiClassicShowAllChannels
+                },
+            )
             }
         }
 
@@ -137,10 +140,18 @@ fun SettingsUiScreen(
             val timeShowMode = settingsViewModel.uiTimeShowMode
 
             SettingsListItem(
-                headlineContent = "时间显示",
-                trailingContent = { Text(timeShowMode.label) },
-                onSelect = toUiTimeShowModeScreen,
-                link = true,
+            headlineContent = stringResource(R.string.ui_time_show_mode),
+            trailingContent = { 
+                Text(when (timeShowMode) {
+                    Configs.UiTimeShowMode.HIDDEN -> stringResource(R.string.ui_time_shows_hidden)
+                    Configs.UiTimeShowMode.ALWAYS -> stringResource(R.string.ui_time_shows_always)
+                    Configs.UiTimeShowMode.EVERY_HOUR -> stringResource(R.string.ui_time_shows_every_hour)
+                    Configs.UiTimeShowMode.HALF_HOUR -> stringResource(R.string.ui_time_shows_half_hour)
+                    else -> "E"
+                })
+            },
+            onSelect = toUiTimeShowModeScreen,
+            link = true,
             )
         }
 
@@ -148,13 +159,13 @@ fun SettingsUiScreen(
             val delay = settingsViewModel.uiScreenAutoCloseDelay
 
             SettingsListItem(
-                headlineContent = "超时自动关闭界面",
-                trailingContent = when (delay) {
-                    Long.MAX_VALUE -> "不关闭"
-                    else -> delay.humanizeMs()
-                },
-                onSelect = toUiScreenAutoCloseDelayScreen,
-                link = true,
+            headlineContent = stringResource(R.string.ui_screen_auto_close_delay),
+            trailingContent = when (delay) {
+                Long.MAX_VALUE -> stringResource(R.string.ui_screen_auto_close_delay_never)
+                else -> delay.humanizeMs()
+            },
+            onSelect = toUiScreenAutoCloseDelayScreen,
+            link = true,
             )
         }
 
@@ -162,13 +173,13 @@ fun SettingsUiScreen(
             val scaleRatio = settingsViewModel.uiDensityScaleRatio
 
             SettingsListItem(
-                headlineContent = "界面整体缩放比例",
-                trailingContent = when (scaleRatio) {
-                    0f -> "自适应"
-                    else -> "×${DecimalFormat("#.#").format(scaleRatio)}"
-                },
-                onSelect = toUiDensityScaleRatioScreen,
-                link = true,
+            headlineContent = stringResource(R.string.ui_density_scale_ratio),
+            trailingContent = when (scaleRatio) {
+                0f -> stringResource(R.string.ui_density_scale_ratio_auto)
+                else -> "×${DecimalFormat("#.#").format(scaleRatio)}"
+            },
+            onSelect = toUiDensityScaleRatioScreen,
+            link = true,
             )
         }
 
@@ -176,45 +187,45 @@ fun SettingsUiScreen(
             val scaleRatio = settingsViewModel.uiFontScaleRatio
 
             SettingsListItem(
-                headlineContent = "界面字体缩放比例",
-                trailingContent = "×${DecimalFormat("#.#").format(scaleRatio)}",
-                onSelect = toUiFontScaleRatioScreen,
-                link = true,
+            headlineContent = stringResource(R.string.ui_font_scale_ratio),
+            trailingContent = "×${DecimalFormat("#.#").format(scaleRatio)}",
+            onSelect = toUiFontScaleRatioScreen,
+            link = true,
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "字幕设置",
-                supportingContent = "字幕样式调整",
-                onSelect = toUiVideoPlayerSubtitleSettingsScreen,
-                link = true,
+            headlineContent = stringResource(R.string.ui_video_player_subtitle_settings),
+            supportingContent = stringResource(R.string.ui_video_player_subtitle_settings_desc),
+            onSelect = toUiVideoPlayerSubtitleSettingsScreen,
+            link = true,
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "焦点优化",
-                supportingContent = "关闭后可解决触摸设备在部分场景下闪退",
-                trailingContent = {
-                    Switch(settingsViewModel.uiFocusOptimize, null)
-                },
-                onSelect = {
-                    settingsViewModel.uiFocusOptimize = !settingsViewModel.uiFocusOptimize
-                },
+            headlineContent = stringResource(R.string.ui_focus_optimize),
+            supportingContent = stringResource(R.string.ui_focus_optimize_desc),
+            trailingContent = {
+                Switch(settingsViewModel.uiFocusOptimize, null)
+            },
+            onSelect = {
+                settingsViewModel.uiFocusOptimize = !settingsViewModel.uiFocusOptimize
+            },
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "启用收藏",
-                supportingContent = "是否显示当前订阅源频道收藏列表",
-                trailingContent = {
-                    Switch(settingsViewModel.iptvChannelFavoriteEnable, null)
-                },
-                onSelect = {
-                    settingsViewModel.iptvChannelFavoriteEnable = !settingsViewModel.iptvChannelFavoriteEnable
-                },
+            headlineContent = stringResource(R.string.iptv_channel_favorite_enable),
+            supportingContent = stringResource(R.string.iptv_channel_favorite_enable_desc),
+            trailingContent = {
+                Switch(settingsViewModel.iptvChannelFavoriteEnable, null)
+            },
+            onSelect = {
+                settingsViewModel.iptvChannelFavoriteEnable = !settingsViewModel.iptvChannelFavoriteEnable
+            },
             )
         }
 

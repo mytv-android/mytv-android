@@ -11,6 +11,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsNetworkScreen(
@@ -22,27 +24,27 @@ fun SettingsNetworkScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 网络") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_network)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
             SettingsListItem(
-                modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "HTTP请求重试次数",
-                supportingContent = "影响订阅源、节目单数据获取",
-                trailingContent = settingsViewModel.networkRetryCount.toString(),
-                onSelect = toNetworkRetryCountScreen,
-                link = true,
+            modifier = Modifier.focusRequester(firstItemFocusRequester),
+            headlineContent = stringResource(R.string.ui_network_retry_count),
+            supportingContent = stringResource(R.string.ui_network_retry_count_desc),
+            trailingContent = settingsViewModel.networkRetryCount.toString(),
+            onSelect = toNetworkRetryCountScreen,
+            link = true,
             )
         }
 
         item {
             SettingsListItem(
-                headlineContent = "HTTP请求重试间隔时间",
-                supportingContent = "影响订阅源、节目单数据获取",
-                trailingContent = settingsViewModel.networkRetryInterval.humanizeMs(),
-                onSelect = toNetworkRetryIntervalScreen,
-                link = true,
+            headlineContent = stringResource(R.string.ui_network_retry_interval),
+            supportingContent = stringResource(R.string.ui_network_retry_interval_desc),
+            trailingContent = settingsViewModel.networkRetryInterval.humanizeMs(),
+            onSelect = toNetworkRetryIntervalScreen,
+            link = true,
             )
         }
     }

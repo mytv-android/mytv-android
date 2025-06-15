@@ -15,6 +15,8 @@ import top.yogiczy.mytv.tv.ui.screensold.components.rememberScreenAutoCloseState
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
 import top.yogiczy.mytv.tv.ui.utils.backHandler
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ChannelLineScreen(
@@ -30,7 +32,7 @@ fun ChannelLineScreen(
         modifier = modifier.backHandler { onClose() },
         onDismissRequest = onClose,
         position = DrawerPosition.End,
-        header = { Text("源线路") },
+        header = { Text(stringResource(R.string.ui_channel_view_route)) },
     ) {
         ChannelLineItemList(
             modifier = Modifier.width(268.dp),

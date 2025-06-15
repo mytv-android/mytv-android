@@ -23,6 +23,8 @@ import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsIptvSourceCacheTimeScreen(
@@ -40,7 +42,7 @@ fun SettingsIptvSourceCacheTimeScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 订阅源 / 缓存时间") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_source)} / ${stringResource(R.string.ui_subscription_source_cache_time)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -57,8 +59,8 @@ fun SettingsIptvSourceCacheTimeScreen(
                     headlineContent = {
                         Text(
                             text = when (cacheTime) {
-                                0L -> "不缓存"
-                                Long.MAX_VALUE -> "永久"
+                                0L -> stringResource(R.string.ui_subscription_source_cache_time_none)
+                                Long.MAX_VALUE -> stringResource(R.string.ui_subscription_source_cache_time_forever)
                                 else -> cacheTime.humanizeMs()
                             },
                             modifier = Modifier.fillMaxWidth(),

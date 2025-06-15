@@ -125,7 +125,7 @@ private fun SelectDialogPreview() {
                         when (it) {
                             0L -> "不缓存"
                             Long.MAX_VALUE -> "永久"
-                            else -> it.humanizeMs()
+                            else -> ""
                         }
                     },
                 )

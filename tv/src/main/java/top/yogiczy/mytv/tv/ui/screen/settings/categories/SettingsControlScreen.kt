@@ -11,6 +11,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsControlScreen(
@@ -21,7 +23,7 @@ fun SettingsControlScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 控制") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_control)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
@@ -29,8 +31,8 @@ fun SettingsControlScreen(
 
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "数字选台",
-                supportingContent = "通过数字键选择频道",
+                headlineContent = stringResource(R.string.ui_channel_no_select),
+                supportingContent = stringResource(R.string.ui_channel_no_select_desc),
                 trailingContent = {
                     Switch(enable, null)
                 },
@@ -44,8 +46,8 @@ fun SettingsControlScreen(
             val loop = settingsViewModel.iptvChannelChangeListLoop
 
             SettingsListItem(
-                headlineContent = "频道列表首尾循环",
-                supportingContent = "启用后，到达列表首尾时将循环切换到另一端",
+                headlineContent = stringResource(R.string.ui_channel_list_loop),
+                supportingContent = stringResource(R.string.ui_channel_list_loop_desc),
                 trailingContent = {
                     Switch(loop, null)
                 },
@@ -59,8 +61,8 @@ fun SettingsControlScreen(
             val crossGroup = settingsViewModel.iptvChannelChangeCrossGroup
 
             SettingsListItem(
-                headlineContent = "频道切换跨分组",
-                supportingContent = "启用后，上下键可在所有频道间切换；关闭则仅在当前分组内切换",
+                headlineContent = stringResource(R.string.ui_channel_change_cross_group),
+                supportingContent = stringResource(R.string.ui_channel_change_cross_group_desc),
                 trailingContent = {
                     Switch(crossGroup, null)
                 },
@@ -72,8 +74,8 @@ fun SettingsControlScreen(
         
         item {
             SettingsListItem(
-                headlineContent = "按键（手势）行为",
-                supportingContent = "自定义播放界面的按键/手势行为",
+                headlineContent = stringResource(R.string.ui_control_action_settings),
+                supportingContent = stringResource(R.string.ui_control_action_settings_desc),
                 onSelect = toUiControlActionSettingsScreen,
                 link = true,
             )

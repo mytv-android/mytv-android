@@ -58,6 +58,8 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import kotlin.math.roundToInt
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun AppScreen(
@@ -149,7 +151,7 @@ private fun AppScaffoldTopBar(
                 if (canBack) {
                     AppScaffoldHeaderBtn(
                         modifier = Modifier.focusOnLaunched(),
-                        title = "返回",
+                        title = stringResource(R.string.ui_return),
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         onSelect = onBackPressed
                     )

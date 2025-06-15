@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.ViewCozy
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import top.yogiczy.mytv.tv.ui.material.LazyRow
@@ -23,6 +24,7 @@ import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
 
 @Composable
 fun DashboardModuleList(
@@ -49,7 +51,7 @@ fun DashboardModuleList(
                     .focusRequester(runtime.firstItemFocusRequester)
                     .handleKeyEvents(onLeft = { runtime.scrollToLast() }),
                 imageVector = Icons.Outlined.Tv,
-                title = "直播",
+                title = stringResource(R.string.ui_dashboard_module_live),
                 onSelected = toLiveScreen,
             )
         }
@@ -57,7 +59,7 @@ fun DashboardModuleList(
         item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.GridView,
-                title = "全部频道",
+                title = stringResource(R.string.ui_dashboard_module_all_channels),
                 onSelected = toChannelsScreen,
             )
         }
@@ -65,7 +67,7 @@ fun DashboardModuleList(
         item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.FavoriteBorder,
-                title = "收藏",
+                title = stringResource(R.string.ui_dashboard_module_favorites),
                 onSelected = toFavoritesScreen,
             )
         }
@@ -73,7 +75,7 @@ fun DashboardModuleList(
         item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.Search,
-                title = "搜索",
+                title = stringResource(R.string.ui_dashboard_module_search),
                 onSelected = toSearchScreen,
             )
         }
@@ -81,7 +83,7 @@ fun DashboardModuleList(
         item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.ViewCozy,
-                title = "多屏同播",
+                title = stringResource(R.string.ui_dashboard_module_multi_view),
                 onSelected = toMultiViewScreen,
             )
         }
@@ -89,7 +91,7 @@ fun DashboardModuleList(
         item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.CloudUpload,
-                title = "推送",
+                title = stringResource(R.string.ui_dashboard_module_push),
                 onSelected = toPushScreen,
             )
         }
@@ -97,7 +99,7 @@ fun DashboardModuleList(
         item {
             DashboardModuleItem(
                 imageVector = Icons.Outlined.Settings,
-                title = "设置",
+                title = stringResource(R.string.ui_dashboard_module_settings),
                 onSelected = toSettingsScreen,
             )
         }
@@ -108,7 +110,7 @@ fun DashboardModuleList(
                     .focusRequester(runtime.lastItemFocusRequester)
                     .handleKeyEvents(onRight = { runtime.scrollToFirst() }),
                 imageVector = Icons.Outlined.Info,
-                title = "关于",
+                title = stringResource(R.string.ui_dashboard_module_about),
                 onSelected = toAboutScreen,
             )
         }

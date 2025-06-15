@@ -13,6 +13,8 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.ifElse
 import java.text.SimpleDateFormat
 import java.util.Locale
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsLogScreen(
@@ -24,7 +26,7 @@ fun SettingsLogScreen(
 
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 日志") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_log)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         itemsIndexed(historyItemList.reversed()) { index, log ->

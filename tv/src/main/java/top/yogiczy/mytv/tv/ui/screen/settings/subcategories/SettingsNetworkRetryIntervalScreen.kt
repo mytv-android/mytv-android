@@ -23,6 +23,8 @@ import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsNetworkRetryIntervalScreen(
@@ -38,7 +40,7 @@ fun SettingsNetworkRetryIntervalScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 网络 / HTTP请求重试间隔时间") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_network)} / ${stringResource(R.string.ui_network_retry_interval)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {

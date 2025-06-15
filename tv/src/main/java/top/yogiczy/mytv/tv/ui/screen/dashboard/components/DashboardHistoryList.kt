@@ -22,7 +22,8 @@ import top.yogiczy.mytv.tv.ui.screen.channels.components.ChannelsChannelItem
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun DashboardHistoryList(
     modifier: Modifier = Modifier,
@@ -39,7 +40,7 @@ fun DashboardHistoryList(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Text(
-            "最近观看",
+            text = stringResource(R.string.ui_dashboard_module_recently_watched),
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(horizontal = childPadding.start),
         )

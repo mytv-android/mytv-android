@@ -13,6 +13,7 @@ import java.net.URL
 import java.util.concurrent.Executors
 import android.os.Build
 import android.widget.Toast;
+import top.yogiczy.mytv.tv.R
 
 
 class X5CorePreLoadService : JobIntentService() {
@@ -21,9 +22,9 @@ class X5CorePreLoadService : JobIntentService() {
         override fun onViewInitFinished(success: Boolean) {
             // 初始化完成回调
             val result = if (success) {
-                "X5内核加载成功,重启应用以生效"
+                this@X5CorePreLoadService.getString(R.string.ui_x5_core_preload_success)
             } else {
-                "X5Webview内核加载失败"
+                this@X5CorePreLoadService.getString(R.string.ui_x5_core_preload_failure)
             }
             Toast.makeText(this@X5CorePreLoadService, result, Toast.LENGTH_LONG).show()
             log.i("$TAG onViewInitFinished: $success")
@@ -74,7 +75,7 @@ class X5CorePreLoadService : JobIntentService() {
                 }else{
                     log.i("开始下载 Core APK: $downloadUrl")
                     runOnUiThread {
-                        Toast.makeText(this@X5CorePreLoadService, "正在远程下载X5Core，下载完成前请不要关闭应用", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@X5CorePreLoadService, this@X5CorePreLoadService.getString(R.string.ui_x5_core_preload_downloading), Toast.LENGTH_LONG).show()
                     }
                     val url = URL(downloadUrl)
                     val connection = url.openConnection()
@@ -84,7 +85,7 @@ class X5CorePreLoadService : JobIntentService() {
                         inputStream.copyTo(outputStream)
                     }
                     runOnUiThread {
-                        Toast.makeText(this@X5CorePreLoadService, "下载X5Core成功！", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@X5CorePreLoadService, this@X5CorePreLoadService.getString(R.string.ui_x5_core_preload_download_success), Toast.LENGTH_SHORT).show()
                     }
                     log.i("Core APK 下载完成: $apkPath")
                 }
@@ -95,13 +96,13 @@ class X5CorePreLoadService : JobIntentService() {
             } catch (e: Exception) {
                 log.e("Core APK 下载或加载失败: ${e.message}")
                 runOnUiThread {
-                    Toast.makeText(this@X5CorePreLoadService, "获取X5Core失败，请使用系统WebView内核", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@X5CorePreLoadService, this@X5CorePreLoadService.getString(R.string.ui_x5_core_preload_download_failure), Toast.LENGTH_LONG).show()
                 }
             }
         } else {
             log.e("不支持的架构: $arch")
             runOnUiThread {
-                Toast.makeText(this@X5CorePreLoadService, "X5不支持架构$arch", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@X5CorePreLoadService, this@X5CorePreLoadService.getString(R.string.ui_x5_core_preload_arch_not_supported, arch), Toast.LENGTH_SHORT).show()
             }
         }
     }

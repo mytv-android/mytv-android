@@ -52,6 +52,8 @@ import top.yogiczy.mytv.tv.ui.screen.update.UpdateScreen
 import top.yogiczy.mytv.tv.ui.screen.update.UpdateViewModel
 import top.yogiczy.mytv.tv.ui.screen.update.updateVM
 import top.yogiczy.mytv.tv.ui.utils.navigateSingleTop
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun MainScreen(
@@ -76,7 +78,7 @@ fun MainScreen(
     val favoriteChannelListProvider = {
         ChannelList(settingsViewModel.iptvChannelFavoriteList.map { it.channel.copy(index = -1) })
     }
-
+    val context = LocalContext.current
     val navController = rememberNavController()
 
     var isLoading by remember { mutableStateOf(false) }
@@ -100,6 +102,7 @@ fun MainScreen(
     }
 
     fun onChannelFavoriteToggle(channel: Channel) {
+        
         if (!settingsViewModel.iptvChannelFavoriteEnable) return
         if (settingsViewModel.iptvChannelFavoriteList.any { it.channel == channel }) {
             settingsViewModel.iptvChannelFavoriteList =
@@ -107,7 +110,7 @@ fun MainScreen(
                     it.channel != channel
                 })
 
-            Snackbar.show("取消收藏：${channel.name}")
+            Snackbar.show("${context.getString(R.string.ui_channel_info_favorite_cancel)}${channel.name}")
         } else {
             val favoriteChannel = ChannelFavorite(
                 channel = channel,
@@ -118,27 +121,26 @@ fun MainScreen(
             settingsViewModel.iptvChannelFavoriteList =
                 ChannelFavoriteList(settingsViewModel.iptvChannelFavoriteList + favoriteChannel)
 
-            Snackbar.show("已收藏：${channel.name}")
+            Snackbar.show("${context.getString(R.string.ui_channel_info_favorite_add)}${channel.name}")
         }
     }
 
     fun onChannelFavoriteClear() {
         if (!settingsViewModel.iptvChannelFavoriteEnable) return
-
         settingsViewModel.iptvChannelFavoriteList = ChannelFavoriteList()
-        Snackbar.show("已清空所有收藏")
+        Snackbar.show("${context.getString(R.string.ui_channel_info_favorite_clear)}")
     }
 
     fun checkUpdate(quiet: Boolean = true) {
         coroutineScope.launch {
-            if (!quiet) Snackbar.show("正在检查更新...", leadingLoading = true, duration = 5000)
+            if (!quiet) Snackbar.show("${context.getString(R.string.ui_channel_info_update_checking)}", leadingLoading = true, duration = 5000)
 
             delay(3000)
             updateViewModel.checkUpdate(BuildConfig.VERSION_NAME, settingsViewModel.updateChannel)
 
             if (!quiet) {
-                if (updateViewModel.isUpdateAvailable) Snackbar.show("发现新版本: v${updateViewModel.latestRelease.version}")
-                else Snackbar.show("当前已是最新版本")
+                if (updateViewModel.isUpdateAvailable) Snackbar.show("${context.getString(R.string.ui_channel_info_update_found)}v${updateViewModel.latestRelease.version}")
+                else Snackbar.show("${context.getString(R.string.ui_channel_info_update_latest)}")
             }
 
             if (!updateViewModel.isUpdateAvailable) return@launch
@@ -148,7 +150,7 @@ fun MainScreen(
             if (settingsViewModel.updateForceRemind) {
                 navController.navigateSingleTop(Screens.Update())
             } else {
-                if (quiet) Snackbar.show("发现新版本: v${updateViewModel.latestRelease.version}")
+                if (quiet) Snackbar.show("${context.getString(R.string.ui_channel_info_update_found)}v${updateViewModel.latestRelease.version}")
             }
         }
     }
@@ -243,7 +245,7 @@ fun MainScreen(
                                     navController.navigateUp()
                                 } else {
                                     doubleBackPressedExitState.backPress()
-                                    Snackbar.show("再按一次退出直播")
+                                    Snackbar.show("${context.getString(R.string.ui_channel_info_exit_live)}")
                                 }
                             }
                         },

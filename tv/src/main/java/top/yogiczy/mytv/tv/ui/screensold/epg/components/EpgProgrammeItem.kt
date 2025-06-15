@@ -27,6 +27,8 @@ import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
 import java.text.SimpleDateFormat
 import java.util.Locale
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun EpgProgrammeItem(
@@ -67,12 +69,12 @@ fun EpgProgrammeItem(
             if (programme.isLive()) {
                 Icon(Icons.Default.PlayArrow, contentDescription = null)
             } else if (isPlaybackProvider()) {
-                Text("正在回放")
+                Text(stringResource(R.string.ui_channel_info_now_replay))
             } else if (programme.endAt < System.currentTimeMillis() && supportPlaybackProvider()) {
-                Text("回放")
+                Text(stringResource(R.string.ui_channel_info_replay))
             } else if (programme.startAt > System.currentTimeMillis()) {
-                if (hasReservedProvider()) Text("已预约")
-                else Text("预约")
+                if (hasReservedProvider()) Text(stringResource(R.string.ui_channel_info_reserved))
+                else Text(stringResource(R.string.ui_channel_info_reserve))
             }
         },
     )

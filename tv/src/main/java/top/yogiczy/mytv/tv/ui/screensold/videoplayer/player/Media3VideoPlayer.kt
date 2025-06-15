@@ -313,7 +313,7 @@ class Media3VideoPlayer(
                                         .build(drmCallback)
                                     setDrmSessionManagerProvider { drmSessionManager }
                                 }
-                                currentChannelLine.licenseType?.contains("playready", true) == true -?{
+                                currentChannelLine.licenseType?.contains("playready", true) == true -> {
                                     val drmCallback = if (currentChannelLine.licenseKey!!.startsWith("http")) {
                                         HttpMediaDrmCallback(
                                             currentChannelLine.licenseKey,

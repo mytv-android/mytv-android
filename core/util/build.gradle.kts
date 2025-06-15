@@ -39,7 +39,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
 
     implementation(libs.okhttp)
-
+    implementation(libs.androidx.compose.foundation.base)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

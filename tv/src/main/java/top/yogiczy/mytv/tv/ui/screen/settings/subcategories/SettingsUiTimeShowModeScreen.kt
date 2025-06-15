@@ -22,6 +22,8 @@ import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsUiTimeShowModeScreen(
@@ -36,7 +38,7 @@ fun SettingsUiTimeShowModeScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 1.dp),
-        header = { Text("设置 / 界面 / 时间显示") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_interface)} / ${stringResource(R.string.ui_time_show_mode)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -51,14 +53,29 @@ fun SettingsUiTimeShowModeScreen(
                 ListItem(
                     modifier = Modifier
                         .handleKeyEvents(onSelect = { onTimeShowModeChanged(mode) }),
-                    headlineContent = { Text(mode.label) },
+                    headlineContent = {
+                        Text(
+                            when (mode) {
+                                Configs.UiTimeShowMode.HIDDEN -> stringResource(R.string.ui_time_shows_hidden)
+                                Configs.UiTimeShowMode.ALWAYS -> stringResource(R.string.ui_time_shows_always)
+                                Configs.UiTimeShowMode.EVERY_HOUR -> stringResource(R.string.ui_time_shows_every_hour)
+                                Configs.UiTimeShowMode.HALF_HOUR -> stringResource(R.string.ui_time_shows_half_hour)
+                            }
+                        )
+                    },
                     supportingContent = {
                         Text(
                             when (mode) {
-                                Configs.UiTimeShowMode.HIDDEN -> "不显示时间"
-                                Configs.UiTimeShowMode.ALWAYS -> "总是显示时间"
-                                Configs.UiTimeShowMode.EVERY_HOUR -> "整点前后${timeShowRangeSeconds}s显示时间"
-                                Configs.UiTimeShowMode.HALF_HOUR -> "半点前后${timeShowRangeSeconds}s显示时间"
+                                Configs.UiTimeShowMode.HIDDEN -> stringResource(R.string.ui_time_show_hidden)
+                                Configs.UiTimeShowMode.ALWAYS -> stringResource(R.string.ui_time_show_always)
+                                Configs.UiTimeShowMode.EVERY_HOUR -> stringResource(
+                                    R.string.ui_time_show_every_hour,
+                                    timeShowRangeSeconds
+                                )
+                                Configs.UiTimeShowMode.HALF_HOUR -> stringResource(
+                                    R.string.ui_time_show_half_hour,
+                                    timeShowRangeSeconds
+                                )
                             }
                         )
                     },

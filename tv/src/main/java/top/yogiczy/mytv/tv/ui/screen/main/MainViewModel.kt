@@ -39,10 +39,11 @@ import top.yogiczy.mytv.tv.ui.material.Snackbar
 import top.yogiczy.mytv.tv.ui.material.SnackbarType
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import java.util.Calendar
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.platform.LocalContext
 class MainViewModel : ViewModel() {
     private val log = Logger.create("MainViewModel")
-
+    var context: android.content.Context? = null
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
@@ -71,8 +72,9 @@ class MainViewModel : ViewModel() {
 
     private suspend fun pullCloudSyncData() {
         if (!Configs.cloudSyncAutoPull) return
-
-        _uiState.value = MainUiState.Loading("拉取云端数据")
+        _uiState.value = MainUiState.Loading(
+            context?.getString(R.string.ui_cloud_sync_pull) ?: "拉取云端数据"
+        )
         runCatching {
             val syncData = CloudSync.pull()
 
@@ -84,7 +86,9 @@ class MainViewModel : ViewModel() {
     }
 
     private suspend fun refreshChannel() {
-        _uiState.value = MainUiState.Loading("加载订阅源")
+        _uiState.value = MainUiState.Loading(
+            context?.getString(R.string.ui_iptv_source_loading) ?: ""
+        )
 
         flow {
             emit(
@@ -97,7 +101,7 @@ class MainViewModel : ViewModel() {
                 if (e !is HttpException) return@retryWhen false
 
                 _uiState.value =
-                    MainUiState.Loading("加载订阅源(${attempt + 1}/${Configs.networkRetryCount})...")
+                    MainUiState.Loading("${context?.getString(R.string.ui_iptv_source_loading)  ?: ""}(${attempt + 1}/${Configs.networkRetryCount})...")
                 delay(Configs.networkRetryInterval)
                 true
             }
@@ -123,8 +127,7 @@ class MainViewModel : ViewModel() {
     private suspend fun mergeSimilarChannel(channelGroupList: ChannelGroupList): ChannelGroupList =
         withContext(Dispatchers.Default) {
             if (!Configs.iptvSimilarChannelMerge) return@withContext channelGroupList
-
-            _uiState.value = MainUiState.Loading("合并相似频道")
+            _uiState.value = MainUiState.Loading(context?.getString(R.string.ui_iptv_channel_merge) ?: "")
 
             return@withContext ChannelGroupList(channelGroupList.map { group ->
                 group.copy(
@@ -159,7 +162,7 @@ class MainViewModel : ViewModel() {
     private suspend fun hybridChannel(channelGroupList: ChannelGroupList) =
         withContext(Dispatchers.Default) {
             if (Configs.iptvHybridMode != Configs.IptvHybridMode.DISABLE) {
-                _uiState.value = MainUiState.Loading("匹配可用的网页源")
+                _uiState.value = MainUiState.Loading(context?.getString(R.string.ui_iptv_channel_hybrid) ?: "")
             }
 
             return@withContext when (Configs.iptvHybridMode) {
@@ -203,7 +206,7 @@ class MainViewModel : ViewModel() {
         if (_uiState.value is MainUiState.Ready) {
             EpgList.clearCache()
             val channelGroupList = (_uiState.value as MainUiState.Ready).channelGroupList
-
+            
             flow {
                 val epgSource = Configs.epgSourceFollowIptv
                     .takeIf { it }
@@ -228,7 +231,7 @@ class MainViewModel : ViewModel() {
                 }
                 .catch {
                     emit(EpgList())
-                    Snackbar.show("节目单获取失败，请检查网络连接", type = SnackbarType.ERROR)
+                    Snackbar.show(context?.getString(R.string.ui_iptv_channel_epg_failed) ?: "", type = SnackbarType.ERROR)
                 }
                 .map { epgList ->
                     withContext(Dispatchers.Default) {
@@ -317,4 +320,5 @@ sealed interface MainUiState {
 val mainVM: MainViewModel
     @Composable get() = MainViewModel.instance ?: viewModel<MainViewModel>().also {
         MainViewModel.instance = it
+        it.context = LocalContext.current
     }

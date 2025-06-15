@@ -15,6 +15,8 @@ import top.yogiczy.mytv.tv.ui.material.Snackbar
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.screen.multiview.components.MultiViewItem
 import top.yogiczy.mytv.tv.ui.screen.multiview.components.MultiViewLayout
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun MultiViewScreen(
@@ -28,7 +30,7 @@ fun MultiViewScreen(
             mutableStateListOf(channelGroupListProvider().channelFirstOrNull() ?: Channel.EMPTY)
         }
     var zoomInIndex by remember { mutableStateOf<Int?>(null) }
-
+    val context = LocalContext.current
     AppScreen(
         modifier = modifier,
         onBackPressed = onBackPressed,
@@ -47,12 +49,12 @@ fun MultiViewScreen(
                 zoomInIndexProvider = { zoomInIndex },
                 onAddChannel = {
                     if (channelList.size >= MULTI_VIEW_MAX_COUNT) {
-                        Snackbar.show("最多只能添加${MULTI_VIEW_MAX_COUNT}个频道")
+                        Snackbar.show("${context.getString(R.string.ui_multi_view_max_count_exceeded)}${MULTI_VIEW_MAX_COUNT}")
                         return@MultiViewItem
                     }
 
                     if (channelList.contains(it)) {
-                        Snackbar.show("已存在该频道")
+                        Snackbar.show(context.getString(R.string.ui_multi_view_channel_exists))
                         return@MultiViewItem
                     }
 
@@ -60,7 +62,7 @@ fun MultiViewScreen(
                 },
                 onRemoveChannel = {
                     if (channelList.size == 1) {
-                        Snackbar.show("至少保留一个频道")
+                        Snackbar.show(context.getString(R.string.ui_multi_view_channel_minimum))
                         return@MultiViewItem
                     }
 
@@ -71,7 +73,7 @@ fun MultiViewScreen(
                 },
                 onChangeChannel = {
                     if (channelList.contains(it)) {
-                        Snackbar.show("已存在该频道")
+                        Snackbar.show(context.getString(R.string.ui_multi_view_channel_exists))
                         return@MultiViewItem
                     }
 

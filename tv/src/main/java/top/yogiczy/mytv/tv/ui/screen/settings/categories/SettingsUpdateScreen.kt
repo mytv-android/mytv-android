@@ -11,6 +11,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsUpdateScreen(
@@ -21,23 +23,23 @@ fun SettingsUpdateScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 系统") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_update)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
             val channel = settingsViewModel.updateChannel
 
             SettingsListItem(
-                modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "更新通道",
-                trailingContent = when (channel) {
-                    "stable" -> "稳定版"
-                    "beta" -> "测试版"
-                    "dev" -> "开发版"
-                    else -> channel
-                },
-                onSelect = toUpdateChannelScreen,
-                link = true,
+            modifier = Modifier.focusRequester(firstItemFocusRequester),
+            headlineContent = stringResource(R.string.ui_channel_view_update_channel),
+            trailingContent = when (channel) {
+                "stable" -> stringResource(R.string.ui_channel_view_stable)
+                "beta" -> stringResource(R.string.ui_channel_view_beta)
+                "dev" -> stringResource(R.string.ui_channel_view_dev)
+                else -> channel
+            },
+            onSelect = toUpdateChannelScreen,
+            link = true,
             )
         }
 
@@ -45,15 +47,17 @@ fun SettingsUpdateScreen(
             val forceRemind = settingsViewModel.updateForceRemind
 
             SettingsListItem(
-                headlineContent = "更新强提醒",
-                supportingContent = if (forceRemind) "检测到新版本时会全屏提醒"
-                else "检测到新版本时仅消息提示",
-                trailingContent = {
-                    Switch(forceRemind, null)
-                },
-                onSelect = {
-                    settingsViewModel.updateForceRemind = !settingsViewModel.updateForceRemind
-                },
+            headlineContent = stringResource(R.string.ui_channel_view_force_remind),
+            supportingContent = if (forceRemind)
+                stringResource(R.string.ui_channel_view_force_remind_on)
+            else
+                stringResource(R.string.ui_channel_view_force_remind_off),
+            trailingContent = {
+                Switch(forceRemind, null)
+            },
+            onSelect = {
+                settingsViewModel.updateForceRemind = !settingsViewModel.updateForceRemind
+            },
             )
         }
     }

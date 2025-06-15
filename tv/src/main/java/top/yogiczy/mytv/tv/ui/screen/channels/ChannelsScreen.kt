@@ -22,6 +22,8 @@ import top.yogiczy.mytv.tv.ui.screen.channels.components.ChannelsChannelGrid
 import top.yogiczy.mytv.tv.ui.screen.channels.components.ChannelsChannelGroupList
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ChannelsScreen(
@@ -39,7 +41,7 @@ fun ChannelsScreen(
 
     AppScreen(
         modifier = modifier,
-        header = { Text("全部频道") },
+        header = { Text(stringResource(R.string.ui_dashboard_module_all_channels)) },
         canBack = true,
         enableTopBarHidden = true,
         onBackPressed = onBackPressed,

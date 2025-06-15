@@ -839,18 +839,18 @@ object Configs {
         get() = SP.getString("classicPanelLastSelectedGroupName", "").ifBlank { null }
         set(value) = SP.putString("classicPanelLastSelectedGroupName", value ?: "")
 
-    enum class UiTimeShowMode(val value: Int, val label: String) {
+    enum class UiTimeShowMode(val value: Int) {
         /** 隐藏 */
-        HIDDEN(0, "隐藏"),
+        HIDDEN(0),
 
         /** 常显 */
-        ALWAYS(1, "常显"),
+        ALWAYS(1),
 
         /** 整点 */
-        EVERY_HOUR(2, "整点"),
+        EVERY_HOUR(2),
 
         /** 半点 */
-        HALF_HOUR(3, "半点");
+        HALF_HOUR(3);
 
         companion object {
             fun fromValue(value: Int): UiTimeShowMode {
@@ -859,15 +859,15 @@ object Configs {
         }
     }
 
-    enum class IptvHybridMode(val value: Int, val label: String) {
+    enum class IptvHybridMode(val value: Int) {
         /** 禁用 */
-        DISABLE(0, "禁用"),
+        DISABLE(0),
 
         /** 订阅源优先 */
-        IPTV_FIRST(1, "订阅源优先"),
+        IPTV_FIRST(1),
 
         /** 网页源优先 */
-        HYBRID_FIRST(2, "网页源优先");
+        HYBRID_FIRST(2);
 
         companion object {
             fun fromValue(value: Int): IptvHybridMode {

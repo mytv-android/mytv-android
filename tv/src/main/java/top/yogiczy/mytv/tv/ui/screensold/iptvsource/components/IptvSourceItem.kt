@@ -64,8 +64,12 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.ui.utils.TagName
 import top.yogiczy.mytv.tv.ui.utils.ifElse
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.IptvSourceDetail
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
+
 @Composable
 fun IptvSourceItem(
     modifier: Modifier = Modifier,
@@ -85,7 +89,7 @@ fun IptvSourceItem(
             .handleKeyEvents(onSelect = onSelected),
         selected = false,
         onClick = {},
-        headlineContent = { Text(line.name ?: "订阅源${lineIdx + 1}", maxLines = 1) },
+        headlineContent = { Text(line.name ?: "${stringResource(R.string.ui_channel_view_source)}${lineIdx + 1}", maxLines = 1) },
         overlineContent = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -100,7 +104,7 @@ fun IptvSourceItem(
 
                 if (!line.transformJs.isNullOrEmpty()) {
                     Tag(
-                        "转换JS",
+                        stringResource(R.string.ui_convert_js),
                         colors = TagDefaults.colors(
                             containerColor = LocalContentColor.current.copy(0.1f)
                         ),
@@ -112,11 +116,12 @@ fun IptvSourceItem(
             Text(line.url, maxLines = 1, overflow = TextOverflow.Ellipsis)
             if (iptvSourceDetail is IptvSourceDetail.Ready) {
                 Text(
-                    listOf(
-                        "共${iptvSourceDetail.channelGroupCount}个分组",
-                        "${iptvSourceDetail.channelCount}个频道",
-                        "${iptvSourceDetail.lineCount}条源"
-                    ).joinToString("，")
+                    stringResource(
+                        R.string.ui_iptv_source_info,
+                        iptvSourceDetail.channelGroupCount,
+                        iptvSourceDetail.channelCount,
+                        iptvSourceDetail.lineCount
+                    ),
                 )
             }
         },

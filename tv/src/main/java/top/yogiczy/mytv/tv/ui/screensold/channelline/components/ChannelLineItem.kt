@@ -32,8 +32,11 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunchedSaveable
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
+import top.yogiczy.mytv.tv.ui.utils.getHybridWebViewUrlTagName
 import java.io.IOException
 import kotlin.system.measureTimeMillis
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun ChannelLineItem(
@@ -55,17 +58,17 @@ fun ChannelLineItem(
             .handleKeyEvents(onSelect = onSelected),
         selected = false,
         onClick = {},
-        headlineContent = { Text(line.name ?: "线路${lineIdx + 1}", maxLines = 1) },
+        headlineContent = { Text(line.name ?: "${stringResource(R.string.ui_channel_view_route)}${lineIdx + 1}", maxLines = 1) },
         overlineContent = {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (line.playbackType != null || ChannelUtil.urlSupportPlayback(line.url)) Tag("回放")
+                if (line.playbackType != null || ChannelUtil.urlSupportPlayback(line.url))
+                    Tag(stringResource(R.string.ui_channel_info_replay))
                 if (line.hybridType == ChannelLine.HybridType.WebView) {
-                    Tag("网页")
-                    Tag(ChannelUtil.getHybridWebViewUrlProvider(line.url))
-                    
+                    Tag(stringResource(R.string.ui_hybrid_type))
+                    Tag(getHybridWebViewUrlTagName(ChannelUtil.getHybridWebViewUrlProvider(line.url)))
                 } else {
                     Tag(if (line.url.isIPv6()) "IPv6" else "IPv4")
                     if (lineDelay > 0L) {
@@ -79,7 +82,7 @@ fun ChannelLineItem(
                         }
                     } else if (lineDelay < 0L) {
                         Tag(
-                            "超时",
+                            stringResource(R.string.ui_channel_info_timeout),
                             colors = TagDefaults.colors(containerColor = MaterialTheme.colorScheme.error),
                         )
                     }
@@ -109,6 +112,7 @@ private fun rememberLineDelay(line: ChannelLine): Long {
                                     line.httpUserAgent?.let { header("User-Agent", it) }
                                     line.httpReferrer?.let { header("Referer", it) } // 添加 Referer 请求头
                                     line.httpOrigin?.let { header("Origin", it) } // 添加 Origin 请求头
+                                    line.httpCookie?.let { header("Cookie", it) } // 添加 Cookie 请求头
                                 }
                         }) { body -> body.string() }
                     } catch (_: IOException) {

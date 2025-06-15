@@ -21,7 +21,8 @@ import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun SettingsWebViewCoreScreen(
     modifier: Modifier = Modifier,
@@ -33,7 +34,7 @@ fun SettingsWebViewCoreScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 播放器 / WebView内核") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_player)} / ${stringResource(R.string.ui_player_view_webview_core)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -52,8 +53,8 @@ fun SettingsWebViewCoreScreen(
                     supportingContent = {
                         Text(
                             when (core) {
-                                Configs.WebViewCore.SYSTEM -> "系统自带内核"
-                                Configs.WebViewCore.X5 -> "腾讯X5内核"
+                                Configs.WebViewCore.SYSTEM -> stringResource(R.string.ui_video_player_webview_core_system_desc)
+                                Configs.WebViewCore.X5 -> stringResource(R.string.ui_video_player_webview_core_x5_desc)
                             }
                         )
                     },

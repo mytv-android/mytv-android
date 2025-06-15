@@ -16,6 +16,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsVideoPlayerScreen(
@@ -31,13 +33,13 @@ fun SettingsVideoPlayerScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 播放器") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_player)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "视频播放器内核",
+                headlineContent = stringResource(R.string.ui_player_view_player_core),
                 trailingContent = settingsViewModel.videoPlayerCore.label,
                 onSelect = toVideoPlayerCoreScreen,
                 link = true,
@@ -46,7 +48,7 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "渲染方式",
+                headlineContent = stringResource(R.string.ui_player_view_render_mode),
                 trailingContent = settingsViewModel.videoPlayerRenderMode.label,
                 onSelect = toVideoPlayerRenderModeScreen,
                 link = true,
@@ -55,8 +57,8 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "强制软解",
-                supportingContent = "对于Media3，使用设备和扩展软解码器\n对于IJK，将禁用MediaCodec解码（使用ffmpeg）",
+                headlineContent = stringResource(R.string.ui_player_view_force_soft_decode),
+                supportingContent = stringResource(R.string.ui_player_view_force_soft_decode_desc),
                 trailingContent = {
                     Switch(settingsViewModel.videoPlayerForceSoftDecode, null)
                 },
@@ -69,7 +71,7 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "停止上一媒体项",
+                headlineContent = stringResource(R.string.ui_player_view_stop_previous_media_item),
                 trailingContent = {
                     Switch(settingsViewModel.videoPlayerStopPreviousMediaItem, null)
                 },
@@ -82,7 +84,7 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "跳过多帧渲染",
+                headlineContent = stringResource(R.string.ui_player_view_skip_multiple_frames_on_same_vsync),
                 trailingContent = {
                     Switch(settingsViewModel.videoPlayerSkipMultipleFramesOnSameVSync, null)
                 },
@@ -93,10 +95,10 @@ fun SettingsVideoPlayerScreen(
             )
         }
 
-        item{
+        item {
             SettingsListItem(
-                headlineContent = "支持 Media TS 高复杂度解析",
-                supportingContent = "支持在某些设备上使用 Media3 播放缺少 AUD 或 IDR 关键帧的 MPEG-TS 文件，启用该选项可能导致意外错误",
+                headlineContent = stringResource(R.string.ui_player_view_support_ts_high_profile),
+                supportingContent = stringResource(R.string.ui_player_view_support_ts_high_profile_desc),
                 trailingContent = {
                     Switch(settingsViewModel.videoPlayerSupportTSHighProfile, null)
                 },
@@ -107,10 +109,10 @@ fun SettingsVideoPlayerScreen(
             )
         }
 
-        item{
+        item {
             SettingsListItem(
-                headlineContent = "在链接中提取 Header",
-                supportingContent = "支持在链接中提取 以|分隔的 Header 信息",
+                headlineContent = stringResource(R.string.ui_player_view_extract_header_from_link),
+                supportingContent = stringResource(R.string.ui_player_view_extract_header_from_link_desc),
                 trailingContent = {
                     Switch(settingsViewModel.videoPlayerExtractHeaderFromLink, null)
                 },
@@ -123,7 +125,7 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "全局显示模式",
+                headlineContent = stringResource(R.string.ui_player_view_display_mode),
                 trailingContent = settingsViewModel.videoPlayerDisplayMode.label,
                 onSelect = toVideoPlayerDisplayModeScreen,
                 link = true,
@@ -132,7 +134,7 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "WebView内核",
+                headlineContent = stringResource(R.string.ui_player_view_webview_core),
                 trailingContent = settingsViewModel.webViewCore.label,
                 onSelect = toWebviewCoreScreen,
                 link = true,
@@ -141,8 +143,8 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "加载超时",
-                supportingContent = "影响超时换源、断线重连",
+                headlineContent = stringResource(R.string.ui_player_view_load_timeout),
+                supportingContent = stringResource(R.string.ui_player_view_load_timeout_desc),
                 trailingContent = settingsViewModel.videoPlayerLoadTimeout.humanizeMs(),
                 onSelect = toVideoPlayerLoadTimeoutScreen,
                 link = true,
@@ -151,8 +153,8 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "播放缓冲",
-                supportingContent = "对于Media3，为播放前的最小缓存加载时间（秒）\n对于Ijk，为播放前的最小缓存加载帧（f）",
+                headlineContent = stringResource(R.string.ui_player_view_buffer_time),
+                supportingContent = stringResource(R.string.ui_player_view_buffer_time_desc),
                 trailingContent = settingsViewModel.videoPlayerBufferTime.humanizeBufferNum(),
                 onSelect = toVideoPlayerBufferTimeScreen,
                 link = true,
@@ -161,7 +163,7 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "全局UA",
+                headlineContent = stringResource(R.string.ui_player_view_user_agent),
                 trailingContent = settingsViewModel.videoPlayerUserAgent,
                 remoteConfig = true,
             )
@@ -171,7 +173,7 @@ fun SettingsVideoPlayerScreen(
             val isValid = settingsViewModel.videoPlayerHeaders.headersValid()
 
             SettingsListItem(
-                headlineContent = "自定义headers",
+                headlineContent = stringResource(R.string.ui_player_view_custom_headers),
                 supportingContent = settingsViewModel.videoPlayerHeaders,
                 remoteConfig = true,
                 trailingIcon = if (!isValid) Icons.Default.ErrorOutline else null,
@@ -180,8 +182,8 @@ fun SettingsVideoPlayerScreen(
 
         // item {
         //     SettingsListItem(
-        //         headlineContent = "音量平衡",
-        //         supportingContent = "启用后，将统一均衡输出播放音量，解决订阅源音量大小不一致的情况；仅支持Media3播放器",
+        //         headlineContent = stringResource(R.string.ui_player_view_volume_normalization),
+        //         supportingContent = stringResource(R.string.ui_player_view_volume_normalization_desc),
         //         trailingContent = {
         //             Switch(settingsViewModel.videoPlayerVolumeNormalization, null)
         //         },

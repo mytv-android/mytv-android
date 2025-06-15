@@ -22,6 +22,8 @@ import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsEpgRefreshTimeThresholdScreen(
@@ -37,7 +39,7 @@ fun SettingsEpgRefreshTimeThresholdScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 节目单 / 刷新时间阈值") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_epg)} / ${stringResource(R.string.ui_epg_refresh_time_threshold)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {

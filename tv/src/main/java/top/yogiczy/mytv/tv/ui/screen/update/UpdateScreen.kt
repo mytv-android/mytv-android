@@ -34,6 +34,8 @@ import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.rememberCanRequestPackageInstallsPermission
 import java.io.File
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun UpdateScreen(
@@ -58,7 +60,6 @@ fun UpdateScreen(
         if (hasPermission) ApkInstaller.installApk(context, latestFile.path)
         else requestPermission()
     }
-
     AppScreen(modifier = modifier,
         onBackPressed = onBackPressed,
     ) {
@@ -76,7 +77,7 @@ fun UpdateScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Text(
-                        "最新版本: v${latestRelease.version}",
+                        stringResource(R.string.ui_update_latest_version, latestRelease.version),
                         style = MaterialTheme.typography.headlineMedium,
                     )
 
@@ -96,12 +97,12 @@ fun UpdateScreen(
                         if (updateViewModel.isUpdating) {
                             UpdateActionBtn(
                                 modifier = Modifier.focusOnLaunched(),
-                                title = "更新中，请勿关闭页面",
+                                title = stringResource(R.string.ui_update_updating),
                             )
                         } else {
                             UpdateActionBtn(
                                 modifier = Modifier.focusOnLaunched(),
-                                title = "立即更新",
+                                title = stringResource(R.string.ui_update_now),
                                 onSelected = {
                                     coroutineScope.launch(Dispatchers.IO) {
                                         updateViewModel.downloadAndUpdate(latestFile)
@@ -111,13 +112,13 @@ fun UpdateScreen(
                         }
 
                         UpdateActionBtn(
-                            title = "忽略并返回",
+                            title = stringResource(R.string.ui_update_ignore_and_back),
                             onSelected = onBackPressed,
                         )
                     }
                     else {
                         UpdateActionBtn(
-                            title = "当前为最新版本（点击以返回）",
+                            title = stringResource(R.string.ui_update_is_latest),
                             onSelected = onBackPressed,
                         )
                     }

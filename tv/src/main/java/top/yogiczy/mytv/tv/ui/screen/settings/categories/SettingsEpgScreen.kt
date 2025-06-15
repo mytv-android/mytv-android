@@ -11,6 +11,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsEpgScreen(
@@ -22,14 +24,14 @@ fun SettingsEpgScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 节目单") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_epg)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "节目单启用",
-                supportingContent = "首次加载时可能会较为缓慢",
+                headlineContent = stringResource(R.string.ui_epg_enable),
+                supportingContent = stringResource(R.string.ui_epg_enable_desc),
                 trailingContent = { Switch(settingsViewModel.epgEnable, null) },
                 onSelect = { settingsViewModel.epgEnable = !settingsViewModel.epgEnable },
             )
@@ -37,8 +39,8 @@ fun SettingsEpgScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "跟随订阅源",
-                supportingContent = "优先使用订阅源中定义的节目单",
+                headlineContent = stringResource(R.string.ui_epg_source_follow_iptv),
+                supportingContent = stringResource(R.string.ui_epg_source_follow_iptv_desc),
                 trailingContent = { Switch(settingsViewModel.epgSourceFollowIptv, null) },
                 onSelect = {
                     settingsViewModel.epgSourceFollowIptv = !settingsViewModel.epgSourceFollowIptv
@@ -50,7 +52,7 @@ fun SettingsEpgScreen(
             val currentEpgSource = settingsViewModel.epgSourceCurrent
 
             SettingsListItem(
-                headlineContent = "自定义节目单",
+                headlineContent = stringResource(R.string.ui_epg_source_custom),
                 trailingContent = { Text(currentEpgSource.name) },
                 onSelect = toEpgSourceScreen,
                 link = true,
@@ -61,9 +63,9 @@ fun SettingsEpgScreen(
             val epgRefreshTimeThreshold = settingsViewModel.epgRefreshTimeThreshold
 
             SettingsListItem(
-                headlineContent = "刷新时间阈值",
+                headlineContent = stringResource(R.string.ui_epg_refresh_time_threshold),
                 trailingContent = { Text("${epgRefreshTimeThreshold}:00") },
-                supportingContent = "时间不到${epgRefreshTimeThreshold}:00节目单将不会刷新",
+                supportingContent = stringResource(R.string.ui_epg_refresh_time_threshold_desc, epgRefreshTimeThreshold),
                 onSelect = toEpgRefreshTimeThresholdScreen,
                 link = true,
             )

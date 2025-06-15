@@ -276,7 +276,7 @@ object ChannelUtil {
             ?: emptyList())
     }
 
-    fun getHybridWebViewUrlProvider(url: String): String {
+    fun getHybridWebViewUrlProvider(url: String): Int {
         val specificUrls = arrayOf(
             "brtn.cn",
             "jstv.com",
@@ -316,14 +316,14 @@ object ChannelUtil {
             
             val host = URL(processedUrl).host
             return when {
-                host.contains("cctv.com") -> "官网"
-                host.contains("yangshipin.cn") -> "央视频"
-                specificUrls.any { host.contains(it) } -> "官网"
-                else -> "其它"
+                host.contains("cctv.com") -> 1
+                host.contains("yangshipin.cn") -> 2
+                specificUrls.any { host.contains(it) } -> 3
+                else -> 0
             }
         } catch (e: Exception) {
             Logger.create("ChannelUtil").e("解析URL失败: $url, ${e.message}")
-            return "未知"
+            return -1
         }
     }
 

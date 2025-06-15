@@ -55,6 +55,8 @@ import top.yogiczy.mytv.tv.ui.utils.Configs
 import androidx.compose.foundation.lazy.LazyColumn
 
 import java.text.DecimalFormat
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsUiVideoPlayerSubtitleSettingsScreen(
@@ -74,7 +76,8 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
     val backgroundColor = remember { mutableStateOf(currentSubtitleSettings.style.backgroundColor) }
     val edgeColor = remember { mutableStateOf(currentSubtitleSettings.style.edgeColor) }
     val windowColor = remember { mutableStateOf(currentSubtitleSettings.style.windowColor) }
-
+    val demoText = stringResource(R.string.ui_video_player_subtitle_example)
+    
     fun updateSubtitleSettings() {
         currentSubtitleSettings = VideoPlayerSubtitleStyle(
             useSystemDefault = useSystemDefault.value,
@@ -94,7 +97,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
 
     AppScreen(
         modifier = Modifier.padding(top = 10.dp),
-        header = { Text("设置 / 界面 / 字幕设置") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_interface)} / ${stringResource(R.string.ui_video_player_subtitle_settings)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -110,8 +113,8 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 item{
                     SettingsListItem(
                         modifier = Modifier.fillMaxWidth(),
-                        headlineContent = "使用系统样式",
-                        supportingContent = "使用Android系统（设置-无障碍）中设置的字体样式",
+                        headlineContent = stringResource(R.string.ui_video_player_subtitle_use_system_style),
+                        supportingContent = stringResource(R.string.ui_video_player_subtitle_use_system_style_desc),
                         trailingContent = {
                             Switch(useSystemDefault.value, null)
                         },
@@ -124,8 +127,8 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 item {
                     SettingsListItem(
                         modifier = Modifier.fillMaxWidth(),
-                        headlineContent = "跟随源嵌入样式",
-                        supportingContent = "使用视频源中嵌入的字幕样式",
+                        headlineContent = stringResource(R.string.ui_video_player_subtitle_follow_embedded_style),
+                        supportingContent = stringResource(R.string.ui_video_player_subtitle_follow_embedded_style_desc),
                         trailingContent = {
                             Switch(isApplyEmbeddedStyles.value, null)
                         },
@@ -138,7 +141,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 item {
                     ColorPickerSection(
                         modifier = Modifier.fillMaxWidth(),
-                        title = "字体颜色",
+                        title = stringResource(R.string.ui_video_player_subtitle_foreground_color),
                         selectedColor = foregroundColor.value,
                         onColorSelected = { color ->
                             foregroundColor.value = color
@@ -149,7 +152,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 item {
                     ColorPickerSection(
                         modifier = modifier.fillMaxWidth(),
-                        title = "背景颜色",
+                        title = stringResource(R.string.ui_video_player_subtitle_background_color),
                         selectedColor = backgroundColor.value,
                         onColorSelected = { color ->
                             backgroundColor.value = color
@@ -160,7 +163,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 item {
                     ColorPickerSection(
                         modifier = modifier.fillMaxWidth(),
-                        title = "边框颜色",
+                        title = stringResource(R.string.ui_video_player_subtitle_edge_color),
                         selectedColor = edgeColor.value,
                         onColorSelected = { color ->
                             edgeColor.value = color
@@ -171,7 +174,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 item {
                     ColorPickerSection(
                         modifier = modifier.fillMaxWidth(),
-                        title = "窗口颜色",
+                        title = stringResource(R.string.ui_video_player_subtitle_window_color),
                         selectedColor = windowColor.value,
                         onColorSelected = { color ->
                             windowColor.value = color
@@ -182,7 +185,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 item {
                     SizePickerSection(
                         modifier = modifier.fillMaxWidth(),
-                        title = "字体大小",
+                        title = stringResource(R.string.ui_video_player_subtitle_text_size),
                         selectedSize = textSize.value,
                         onSizeSelected = { size ->
                             textSize.value = size
@@ -195,7 +198,7 @@ fun SettingsUiVideoPlayerSubtitleSettingsScreen(
                 factory = { SubtitleView(it) },
                 update = { subtitleView ->
                     val exampleCue = Cue.Builder()
-                        .setText("示例字幕") // 设置字幕内容
+                        .setText(demoText) // 设置字幕内容
                         .build()
                     subtitleView.setCues(listOf(exampleCue))
                     if (useSystemDefault.value) {

@@ -21,6 +21,8 @@ import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsVideoPlayerCoreScreen(
@@ -33,7 +35,7 @@ fun SettingsVideoPlayerCoreScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 播放器 / 视频播放器内核") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_player)} / ${stringResource(R.string.ui_player_view_player_core)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -52,8 +54,8 @@ fun SettingsVideoPlayerCoreScreen(
                     supportingContent = {
                         Text(
                             when (core) {
-                                Configs.VideoPlayerCore.MEDIA3 -> "除RTSP单播以外基本支持全部功能"
-                                Configs.VideoPlayerCore.IJK -> "部分功能可能无法正常使用，仅支持armeabi-v7a、arm64-v8a"
+                                Configs.VideoPlayerCore.MEDIA3 -> stringResource(R.string.ui_video_player_core_media3_desc)
+                                Configs.VideoPlayerCore.IJK -> stringResource(R.string.ui_video_player_core_ijk_desc)
                             }
                         )
                     },

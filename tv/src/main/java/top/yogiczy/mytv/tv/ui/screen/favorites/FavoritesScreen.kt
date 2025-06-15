@@ -26,7 +26,8 @@ import top.yogiczy.mytv.tv.ui.screen.channels.components.ChannelsChannelGroupLis
 import top.yogiczy.mytv.tv.ui.screen.components.AppScaffoldHeaderBtn
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
@@ -40,7 +41,7 @@ fun FavoritesScreen(
     val channelFavoriteGroupList =
         ChannelGroupList(channelFavoriteListProvider().let { channelFavoriteList ->
             val groupAll = ChannelGroup(
-                name = "全部",
+                name = stringResource(R.string.ui_channel_group_all),
                 channelList = ChannelList(channelFavoriteList.map { it.channel.copy(index = -1) })
             )
 
@@ -61,10 +62,10 @@ fun FavoritesScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("我的收藏") },
+        header = { Text(stringResource(R.string.ui_dashboard_module_favorites)) },
         headerExtra = {
             AppScaffoldHeaderBtn(
-                title = "清空",
+                title = stringResource(R.string.ui_favorites_clear),
                 imageVector = Icons.Outlined.DeleteOutline,
                 onSelect = onChannelFavoriteClear,
             )

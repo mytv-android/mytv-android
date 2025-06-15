@@ -26,7 +26,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun SettingsAppScreen(
     modifier: Modifier = Modifier,
@@ -35,17 +36,18 @@ fun SettingsAppScreen(
     onBackPressed: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-
+    val string_cacheCleared = stringResource(R.string.ui_cache_cleared)
+    val string_inited = stringResource(R.string.ui_channel_view_restore_initialization_support)
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 通用") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_general)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "开机自启",
-                supportingContent = "请确保当前设备支持该功能",
+                headlineContent = stringResource(R.string.ui_channel_view_boot_start),
+                supportingContent = stringResource(R.string.ui_channel_view_boot_start_support),
                 trailingContent = {
                     Switch(settingsViewModel.appBootLaunch, null)
                 },
@@ -57,7 +59,7 @@ fun SettingsAppScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "打开直接进入直播",
+                headlineContent = stringResource(R.string.ui_channel_view_boot_start_live),
                 trailingContent = {
                     Switch(settingsViewModel.appStartupScreen == Screens.Live.name, null)
                 },
@@ -71,7 +73,7 @@ fun SettingsAppScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "画中画",
+                headlineContent = stringResource(R.string.ui_channel_view_picture_in_picture),
                 trailingContent = {
                     Switch(settingsViewModel.appPipEnable, null)
                 },
@@ -88,8 +90,8 @@ fun SettingsAppScreen(
             }
 
             SettingsListItem(
-                headlineContent = "清除缓存",
-                trailingContent = "约 ${totalSize.humanizeBytes()}",
+                headlineContent = stringResource(R.string.ui_channel_view_clear_cache),
+                trailingContent = "${stringResource(R.string.ui_channel_view_clear_cache_support)} ${totalSize.humanizeBytes()}",
                 onSelect = {
                     settingsViewModel.iptvChannelLinePlayableHostList = emptySet()
                     settingsViewModel.iptvChannelLinePlayableUrlList = emptySet()
@@ -97,7 +99,7 @@ fun SettingsAppScreen(
                         IptvRepository.clearAllCache()
                         EpgRepository.clearAllCache()
 
-                        Snackbar.show("缓存已清除")
+                        Snackbar.show(string_cacheCleared)
                         onReload()
                     }
                 },
@@ -106,10 +108,10 @@ fun SettingsAppScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "恢复初始化",
+                headlineContent = stringResource(R.string.ui_channel_view_restore_initialization),
                 onSelect = {
                     SP.clear()
-                    Snackbar.show("已恢复初始化")
+                    Snackbar.show(string_inited)
                     onReload()
                 },
             )

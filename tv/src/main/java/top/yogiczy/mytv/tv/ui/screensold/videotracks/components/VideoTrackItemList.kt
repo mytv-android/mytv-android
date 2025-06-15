@@ -21,6 +21,8 @@ import top.yogiczy.mytv.tv.ui.utils.focusOnLaunchedSaveable
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
 import kotlin.math.max
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun VideoTrackItemList(
@@ -56,7 +58,7 @@ fun VideoTrackItemList(
                     .handleKeyEvents(onSelect = { onSelected(null) }),
                 selected = false,
                 onClick = {},
-                headlineContent = { Text("关闭") },
+                headlineContent = { Text(stringResource(R.string.ui_close)) },
                 trailingContent = {
                     RadioButton(selected = trackList.all { it.isSelected != true }, onClick = {})
                 },

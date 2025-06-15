@@ -76,7 +76,7 @@ fun SettingsDecoderInfoScreen(
         modifier = modifier
             .padding(top = 10.dp)
             .focusOnLaunched(),
-        header = { Text("设置 / 开发者选项 / 解码器信息") },
+        header = { Text(stringResource(R.string.ui_dashboard_module_settings) + " / " + stringResource(R.string.ui_channel_view_debug) + " / " + stringResource(R.string.ui_debug_decoder_info)) },
         headerExtra = { null },
         canBack = true,
         onBackPressed = onBackPressed,

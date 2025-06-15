@@ -23,6 +23,8 @@ import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.visible
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsCloudSyncProviderScreen(
@@ -36,7 +38,7 @@ fun SettingsCloudSyncProviderScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 云同步 / 服务商") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_cloud_sync)} / ${stringResource(R.string.cloud_sync_provider)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {

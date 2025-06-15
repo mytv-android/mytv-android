@@ -15,6 +15,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.rememberCanRequestPackageInstallsPermission
 import top.yogiczy.mytv.tv.ui.utils.rememberReadExternalStoragePermission
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsPermissionsScreen(
@@ -23,7 +25,7 @@ fun SettingsPermissionsScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 权限") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_permissions)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
@@ -31,7 +33,7 @@ fun SettingsPermissionsScreen(
 
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "应用内安装其他应用",
+                headlineContent = stringResource(R.string.ui_permission_install_other_apps),
                 trailingContent = {
                     if (hasPermission) {
                         Icon(
@@ -57,7 +59,7 @@ fun SettingsPermissionsScreen(
 
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "读取外部存储/管理全部文件",
+                headlineContent = stringResource(R.string.ui_permission_read_external_storage),
                 trailingContent = {
                     if (hasPermission) {
                         Icon(

@@ -22,6 +22,8 @@ import top.yogiczy.mytv.tv.ui.rememberChildPadding
 import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsUpdateChannelScreen(
@@ -36,7 +38,7 @@ fun SettingsUpdateChannelScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 更新 / 更新通道") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_update)} / ${stringResource(R.string.ui_channel_view_update_channel)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -54,9 +56,9 @@ fun SettingsUpdateChannelScreen(
                     headlineContent = {
                         Text(
                             when (channel) {
-                                "stable" -> "稳定版"
-                                "beta" -> "测试版"
-                                "dev" -> "开发版"
+                                "stable" -> stringResource(R.string.ui_channel_view_stable)
+                                "beta" -> stringResource(R.string.ui_channel_view_beta)
+                                "dev" -> stringResource(R.string.ui_channel_view_dev)
                                 else -> channel
                             },
                             modifier = Modifier.fillMaxWidth(),

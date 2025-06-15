@@ -75,7 +75,25 @@ object HttpServer : Loggable("HttpServer") {
                     handleAssets(response, context, "text/html", "remote-configs/index.html")
                 }
 
+                server.get("/advance_en") { _, response ->
+                    handleAssets(response, context, "text/html", "remote-configs-en/index.html")
+                }
+
                 server.get("/remote-configs/(.*)") { request, response ->
+                    val contentType = when (request.path.split(".").last()) {
+                        "css" -> "text/css"
+                        "js" -> "text/javascript"
+                        "html" -> "text/html"
+                        "json" -> "application/json"
+                        "svg" -> "image/svg+xml"
+                        "png" -> "image/png"
+                        else -> "text/plain"
+                    }
+
+                    handleAssets(response, context, contentType, request.path.removePrefix("/"))
+                }
+
+                server.get("/remote-configs-en/(.*)") { request, response ->
                     val contentType = when (request.path.split(".").last()) {
                         "css" -> "text/css"
                         "js" -> "text/javascript"

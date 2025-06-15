@@ -23,6 +23,8 @@ import top.yogiczy.mytv.tv.ui.screen.components.AppScreen
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import java.text.DecimalFormat
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsUiDensityScaleRatioScreen(
@@ -38,7 +40,7 @@ fun SettingsUiDensityScaleRatioScreen(
 
     AppScreen(
         modifier = Modifier.padding(top = 10.dp),
-        header = { Text("设置 / 界面 / 界面整体缩放比例") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_interface)} / ${stringResource(R.string.ui_density_scale_ratio)}") },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -56,7 +58,7 @@ fun SettingsUiDensityScaleRatioScreen(
                     headlineContent = {
                         Text(
                             text = when (scaleRatio) {
-                                0f -> "自适应"
+                                0f -> stringResource(R.string.ui_Density_Ratio_adaptive)
                                 else -> "×${DecimalFormat("#.#").format(scaleRatio)}"
                             },
                             modifier = Modifier.fillMaxWidth(),

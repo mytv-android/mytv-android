@@ -42,7 +42,8 @@ import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.platform.LocalContext
 @Composable
 fun LoadingScreen(
     modifier: Modifier = Modifier,
@@ -59,11 +60,12 @@ fun LoadingBar(
     mainUiState: MainUiState,
     visibleProvider: () -> Boolean = { true },
 ) {
+    val context = LocalContext.current
     val text = remember(mainUiState) {
         when (mainUiState) {
-            is MainUiState.Ready -> "就绪"
-            is MainUiState.Loading -> mainUiState.message ?: "加载中..."
-            is MainUiState.Error -> mainUiState.message ?: "加载失败"
+            is MainUiState.Ready -> context.getString(R.string.ui_channel_info_ready)
+            is MainUiState.Loading -> mainUiState.message ?: context.getString(R.string.ui_channel_info_loading)
+            is MainUiState.Error -> mainUiState.message ?: context.getString(R.string.ui_channel_info_load_failed)
         }
     }
     val snackbarType = remember(mainUiState) {

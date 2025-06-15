@@ -14,6 +14,8 @@ import androidx.tv.material3.Text
 import top.yogiczy.mytv.core.data.entities.channel.ChannelGroupList
 import top.yogiczy.mytv.core.data.utils.ChannelAlias
 import top.yogiczy.mytv.core.util.utils.humanizeMs
+import top.yogiczy.mytv.tv.ui.utils.Configs
+import top.yogiczy.mytv.tv.ui.utils.TagName
 import top.yogiczy.mytv.tv.ui.material.Tag
 import top.yogiczy.mytv.tv.ui.material.TagDefaults
 import top.yogiczy.mytv.tv.ui.screen.settings.SettingsViewModel
@@ -21,7 +23,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsCategoryScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.components.SettingsListItem
 import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun SettingsIptvScreen(
     modifier: Modifier = Modifier,
@@ -35,7 +38,7 @@ fun SettingsIptvScreen(
 ) {
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 订阅源") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_source)}") },
         onBackPressed = onBackPressed,
     ) { firstItemFocusRequester ->
         item {
@@ -43,7 +46,7 @@ fun SettingsIptvScreen(
 
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "自定义订阅源",
+                headlineContent = stringResource(R.string.ui_custom_subscription_source),
                 trailingContent = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -69,10 +72,10 @@ fun SettingsIptvScreen(
             val cacheTime = settingsViewModel.iptvSourceCacheTime
 
             SettingsListItem(
-                headlineContent = "订阅源缓存时间",
+                headlineContent = stringResource(R.string.ui_subscription_source_cache_time),
                 trailingContent = when (cacheTime) {
-                    0L -> "不缓存"
-                    Long.MAX_VALUE -> "永久"
+                    0L -> stringResource(R.string.ui_subscription_source_cache_time_none)
+                    Long.MAX_VALUE -> stringResource(R.string.ui_subscription_source_cache_time_forever)
                     else -> cacheTime.humanizeMs()
                 },
                 onSelect = toIptvSourceCacheTimeScreen,
@@ -85,12 +88,12 @@ fun SettingsIptvScreen(
             val hiddenCount = settingsViewModel.iptvChannelGroupHiddenList.size
 
             SettingsListItem(
-                headlineContent = "频道分组管理",
+                headlineContent = stringResource(R.string.ui_channel_group_manage),
                 trailingContent = {
                     if (hiddenCount == 0) {
-                        Text("共${allCount}个分组")
+                        Text(stringResource(R.string.ui_channel_group_count, allCount))
                     } else {
-                        Text("共${allCount}个分组，已隐藏${hiddenCount}个分组")
+                        Text(stringResource(R.string.ui_channel_group_count_hidden, allCount, hiddenCount))
                     }
                 },
                 onSelect = toChannelGroupVisibilityScreen,
@@ -102,9 +105,9 @@ fun SettingsIptvScreen(
             val alias = ChannelAlias.aliasMap
 
             SettingsListItem(
-                headlineContent = "频道别名",
+                headlineContent = stringResource(R.string.ui_channel_alias),
                 trailingContent = {
-                    Text("共${alias.size}个频道，${alias.values.sumOf { it.size }}个别名")
+                    Text(stringResource(R.string.ui_channel_alias_count, alias.size, alias.values.sumOf { it.size }))
                 },
                 remoteConfig = true,
             )
@@ -112,8 +115,8 @@ fun SettingsIptvScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "相似频道合并",
-                supportingContent = "相同频道别名将进行合并",
+                headlineContent = stringResource(R.string.ui_similar_channel_merge),
+                supportingContent = stringResource(R.string.ui_similar_channel_merge_desc),
                 trailingContent = {
                     Switch(settingsViewModel.iptvSimilarChannelMerge, null)
                 },
@@ -126,7 +129,7 @@ fun SettingsIptvScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "频道图标提供",
+                headlineContent = stringResource(R.string.ui_channel_logo_provider),
                 trailingContent = settingsViewModel.iptvChannelLogoProvider,
                 remoteConfig = true,
             )
@@ -134,8 +137,8 @@ fun SettingsIptvScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "频道图标覆盖",
-                supportingContent = "使用频道图标提供覆盖订阅源中定义的频道图标",
+                headlineContent = stringResource(R.string.ui_channel_logo_override),
+                supportingContent = stringResource(R.string.ui_channel_logo_override_desc),
                 trailingContent = {
                     Switch(settingsViewModel.iptvChannelLogoOverride, null)
                 },
@@ -148,8 +151,8 @@ fun SettingsIptvScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "PLTV转TVOD",
-                supportingContent = "自动将订阅源链接中的PLTV替换为TVOD以支持回看",
+                headlineContent = stringResource(R.string.ui_iptv_pltv_to_tvod),
+                supportingContent = stringResource(R.string.ui_iptv_pltv_to_tvod_desc),
                 trailingContent = {
                     Switch(settingsViewModel.iptvPLTVToTVOD, null)
                 },
@@ -164,9 +167,16 @@ fun SettingsIptvScreen(
             val hybridMode = settingsViewModel.iptvHybridMode
 
             SettingsListItem(
-                headlineContent = "自动添加网页源",
-                supportingContent = "为订阅源中的频道自动添加对应的网页源线路",
-                trailingContent = { Text(hybridMode.label) },
+                headlineContent = stringResource(R.string.ui_auto_add_web_source),
+                supportingContent = stringResource(R.string.ui_auto_add_web_source_desc),
+                trailingContent = { 
+                    Text(when (hybridMode) {
+                        Configs.IptvHybridMode.DISABLE -> stringResource(R.string.ui_hybrid_mode_disable)
+                        Configs.IptvHybridMode.IPTV_FIRST -> stringResource(R.string.ui_hybrid_mode_to_back)
+                        Configs.IptvHybridMode.HYBRID_FIRST -> stringResource(R.string.ui_hybrid_mode_to_front)
+                        else -> "E"
+                    })
+                },
                 onSelect = toIptvHybridModeScreen,
                 link = true,
             )
@@ -174,8 +184,8 @@ fun SettingsIptvScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "网页源央视频Cookie",
-                supportingContent = "登录到央视频以收看付费频道",
+                headlineContent = stringResource(R.string.ui_iptv_hybrid_yangshipin_cookie),
+                supportingContent = stringResource(R.string.ui_iptv_hybrid_yangshipin_cookie_desc),
                 trailingContent = settingsViewModel.iptvHybridYangshipinCookie.take(50)+"...",
                 remoteConfig = true,
             )

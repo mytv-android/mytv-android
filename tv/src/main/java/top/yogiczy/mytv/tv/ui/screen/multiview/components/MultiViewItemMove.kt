@@ -21,6 +21,8 @@ import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun MultiViewItemMove(
@@ -41,7 +43,7 @@ fun MultiViewItemMove(
         position = DrawerPosition.Center,
         header = {
             Text(
-                "移动屏幕${viewIndex + 1}",
+                stringResource(R.string.ui_multiview_action_move_screen) + "${viewIndex + 1}",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
@@ -70,7 +72,7 @@ fun MultiViewItemMove(
                 enabled = index != viewIndex,
             ) {
                 Text(
-                    "移动至屏幕${index + 1}",
+                    stringResource(R.string.ui_multiview_action_move_to_screen) + "${index + 1}",
                     modifier = Modifier.align(Alignment.Center),
                     style = MaterialTheme.typography.headlineLarge,
                 )

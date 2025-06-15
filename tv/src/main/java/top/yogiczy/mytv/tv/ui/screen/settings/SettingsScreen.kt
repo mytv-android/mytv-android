@@ -59,6 +59,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerL
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerBufferTimeScreen
 import top.yogiczy.mytv.tv.ui.screen.settings.subcategories.SettingsVideoPlayerRenderModeScreen
 import top.yogiczy.mytv.tv.ui.utils.navigateSingleTop
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.platform.LocalContext
 
 object SettingsScreen {
     const val START_DESTINATION = "startDestination"
@@ -82,7 +84,7 @@ fun SettingsScreen(
             delay(1000)
         }
     }
-
+    val context = LocalContext.current
     val navController = rememberNavController()
 
     AppScreen(modifier = modifier, onBackPressed = onBackPressed) {
@@ -262,7 +264,7 @@ fun SettingsScreen(
                         onClearCache = {
                             coroutineScope.launch {
                                 IptvRepository(it).clearCache()
-                                Snackbar.show("缓存已清除")
+                                Snackbar.show("${context.getString(R.string.ui_cache_cleared)}")
                             }
                         },
                         onBackPressed = {
@@ -370,7 +372,7 @@ fun SettingsScreen(
                         onClearCache = {
                             coroutineScope.launch {
                                 EpgRepository(it).clearCache()
-                                Snackbar.show("缓存已清除")
+                                Snackbar.show("${context.getString(R.string.ui_cache_cleared)}")
                             }
                         },
                         onBackPressed = { navController.navigateUp() },

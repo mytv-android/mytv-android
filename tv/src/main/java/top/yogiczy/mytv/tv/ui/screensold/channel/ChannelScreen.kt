@@ -38,7 +38,8 @@ import top.yogiczy.mytv.tv.ui.screensold.videoplayer.player.VideoPlayer
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
 import top.yogiczy.mytv.tv.ui.utils.ifElse
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun ChannelScreen(
     modifier: Modifier = Modifier,
@@ -201,6 +202,9 @@ private fun ChannelScreenBottomChannelItemListAllAndFavorite(
     onChannelFavoriteListVisibleChange: (Boolean) -> Unit = {},
     onUserAction: () -> Unit = {},
 ) {
+    val string_favorites = stringResource(R.string.ui_dashboard_module_favorites)
+    val string_all = stringResource(R.string.ui_channel_group_all)
+    val string_empty = stringResource(R.string.ui_favorites_empty)
     Box(
         modifier = modifier.ifElse(
             showChannelLogoProvider(),
@@ -210,7 +214,7 @@ private fun ChannelScreenBottomChannelItemListAllAndFavorite(
     ) {
         if (channelFavoriteListVisibleProvider()) {
             ChannelItemGrid(
-                title = "收藏",
+                title = string_favorites,
                 channelListProvider = favoriteChannelListProvider,
                 currentChannelProvider = currentChannelProvider,
                 showChannelLogoProvider = showChannelLogoProvider,
@@ -238,14 +242,14 @@ private fun ChannelScreenBottomChannelItemListAllAndFavorite(
                         if (favoriteChannelListProvider().isNotEmpty()) {
                             onChannelFavoriteListVisibleChange(true)
                         } else {
-                            Snackbar.show("没有收藏的频道")
+                            Snackbar.show(string_empty)
                         }
                     },
                     onUserAction = onUserAction,
                 )
             } else {
                 ChannelItemGrid(
-                    title = "全部",
+                    title = string_all,
                     channelListProvider = { channelGroupListProvider().channelList },
                     currentChannelProvider = currentChannelProvider,
                     showChannelLogoProvider = showChannelLogoProvider,
@@ -259,7 +263,7 @@ private fun ChannelScreenBottomChannelItemListAllAndFavorite(
                         if (favoriteChannelListProvider().isNotEmpty()) {
                             onChannelFavoriteListVisibleChange(true)
                         } else {
-                            Snackbar.show("没有收藏的频道")
+                            Snackbar.show(string_empty)
                         }
                     },
                     onUserAction = onUserAction,

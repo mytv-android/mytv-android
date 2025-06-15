@@ -18,6 +18,10 @@ android {
     namespace = "top.yogiczy.mytv.tv"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
+    androidResources {
+        generateLocaleConfig = true
+    }
+    
     defaultConfig {
         applicationId = "com.github.mytv.android"
         minSdk = libs.versions.minSdk.get().toInt()

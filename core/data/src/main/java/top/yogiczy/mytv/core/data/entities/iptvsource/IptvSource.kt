@@ -66,7 +66,4 @@ data class IptvSource(
             return this.sourceType == 1 && !this.url.startsWith(Globals.fileDir.path)
         }
     }
-    fun TagName(): String {
-        return if (sourceType == 1) "本地" else if (sourceType == 2) "XTREAM" else "远程"
-    }
 }

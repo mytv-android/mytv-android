@@ -26,7 +26,8 @@ import top.yogiczy.mytv.tv.ui.screen.search.components.SearchResult
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.tooling.PreviewWithLayoutGrids
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
@@ -43,8 +44,8 @@ fun SearchScreen(
     AppScreen(
         modifier = modifier,
         header = {
-            Text("搜索")
-            Text(key.ifEmpty { "关键词..." })
+            Text(stringResource(R.string.ui_dashboard_module_search))
+            Text(key.ifEmpty { stringResource(R.string.ui_search_keyword_hint) })
         },
         canBack = true,
         onBackPressed = onBackPressed,

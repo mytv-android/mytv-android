@@ -36,7 +36,8 @@ import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import java.text.SimpleDateFormat
 import java.util.Locale
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun SettingsCloudSyncScreen(
     modifier: Modifier = Modifier,
@@ -48,12 +49,15 @@ fun SettingsCloudSyncScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     var syncData by remember { mutableStateOf(debugInitialSyncData) }
-
+    val string_syncFailed = stringResource(R.string.cloud_sync_pull_failed)
+    val string_pushSuccess = stringResource(R.string.cloud_sync_push_success)
+    val string_pushFailed = stringResource(R.string.cloud_sync_push_failed)
+    val string_applySuccess = stringResource(R.string.cloud_sync_apply_success)
     suspend fun pullSyncData() {
         syncData = null
         runCatching { syncData = CloudSync.pull() }
             .onFailure {
-                Snackbar.show("拉取云端失败")
+                Snackbar.show(string_syncFailed)
                 syncData = CloudSyncData.EMPTY
             }
     }
@@ -62,12 +66,12 @@ fun SettingsCloudSyncScreen(
 
     SettingsCategoryScreen(
         modifier = modifier,
-        header = { Text("设置 / 云同步") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_cloud_sync)}") },
         headerExtra = {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 if (settingsViewModel.cloudSyncProvider.supportPull) {
                     AppScaffoldHeaderBtn(
-                        title = "拉取云端",
+                        title = stringResource(R.string.cloud_sync_pull),
                         imageVector = Icons.Outlined.CloudDownload,
                         loading = syncData == null,
                         onSelect = { coroutineScope.launch { pullSyncData() } },
@@ -77,7 +81,7 @@ fun SettingsCloudSyncScreen(
                 if (settingsViewModel.cloudSyncProvider.supportPush) {
                     var pushLoading by remember { mutableStateOf(false) }
                     AppScaffoldHeaderBtn(
-                        title = "推送云端",
+                        title = stringResource(R.string.cloud_sync_push),
                         imageVector = Icons.Outlined.CloudUpload,
                         loading = pushLoading,
                         onSelect = {
@@ -85,10 +89,10 @@ fun SettingsCloudSyncScreen(
                                 pushLoading = true
                                 runCatching { CloudSync.push() }
                                     .onSuccess {
-                                        Snackbar.show("推送云端成功")
+                                        Snackbar.show(string_pushSuccess)
                                         pullSyncData()
                                     }
-                                    .onFailure { Snackbar.show("推送云端失败") }
+                                    .onFailure { Snackbar.show(string_pushFailed) }
                                 pushLoading = false
                             }
                         },
@@ -101,8 +105,8 @@ fun SettingsCloudSyncScreen(
         item {
             SettingsListItem(
                 modifier = Modifier.focusRequester(firstItemFocusRequester),
-                headlineContent = "云端数据",
-                supportingContent = "长按应用当前云端数据",
+                headlineContent = stringResource(R.string.cloud_sync_data),
+                supportingContent = stringResource(R.string.cloud_sync_data_long_press),
                 trailingContent = {
                     if (syncData == null) {
                         return@SettingsListItem CircularProgressIndicator(
@@ -115,18 +119,16 @@ fun SettingsCloudSyncScreen(
 
                     syncData?.let { nnSyncData ->
                         if (nnSyncData == CloudSyncData.EMPTY) {
-                            Text("无云端数据")
+                            Text(stringResource(R.string.cloud_sync_no_data))
                         } else {
                             Column {
-                                Text("云端版本：${nnSyncData.version}")
+                                Text("${stringResource(R.string.cloud_sync_version)}: ${nnSyncData.version}")
 
                                 val timeFormat =
                                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                                Text("推送时间：${timeFormat.format(nnSyncData.syncAt)}")
-
-                                Text("推送设备：${nnSyncData.syncFrom}")
-
-                                nnSyncData.description?.let { Text("备注：$it") }
+                                Text("${stringResource(R.string.cloud_sync_push_time)}: ${timeFormat.format(nnSyncData.syncAt)}")
+                                Text("${stringResource(R.string.cloud_sync_push_device)}: ${nnSyncData.syncFrom}")
+                                nnSyncData.description?.let { Text("${stringResource(R.string.cloud_sync_description)}: $it") }
                             }
                         }
                     }
@@ -137,7 +139,7 @@ fun SettingsCloudSyncScreen(
                             coroutineScope.launch {
                                 nnSyncData.apply()
                                 settingsViewModel.refresh()
-                                Snackbar.show("应用云端数据成功")
+                                Snackbar.show(string_applySuccess)
                                 onReload()
                             }
                         }
@@ -148,8 +150,8 @@ fun SettingsCloudSyncScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "自动拉取",
-                supportingContent = "应用启动时自动拉取云端数据并应用",
+                headlineContent = stringResource(R.string.cloud_sync_auto_pull),
+                supportingContent = stringResource(R.string.cloud_sync_auto_pull_desc),
                 trailingContent = {
                     Switch(settingsViewModel.cloudSyncAutoPull, null)
                 },
@@ -161,7 +163,7 @@ fun SettingsCloudSyncScreen(
 
         item {
             SettingsListItem(
-                headlineContent = "云同步服务商",
+                headlineContent = stringResource(R.string.cloud_sync_provider),
                 trailingContent = settingsViewModel.cloudSyncProvider.label,
                 onSelect = toCloudSyncProviderScreen,
                 link = true,
@@ -172,7 +174,7 @@ fun SettingsCloudSyncScreen(
             CloudSyncProvider.GITHUB_GIST -> {
                 item {
                     SettingsListItem(
-                        headlineContent = "Github Gist Id",
+                        headlineContent = stringResource(R.string.cloud_sync_github_gist_id),
                         trailingContent = settingsViewModel.cloudSyncGithubGistId,
                         remoteConfig = true,
                     )
@@ -180,7 +182,7 @@ fun SettingsCloudSyncScreen(
 
                 item {
                     SettingsListItem(
-                        headlineContent = "Github Gist Token",
+                        headlineContent = stringResource(R.string.cloud_sync_github_gist_token),
                         trailingContent = settingsViewModel.cloudSyncGithubGistToken,
                         remoteConfig = true,
                     )
@@ -190,7 +192,7 @@ fun SettingsCloudSyncScreen(
             CloudSyncProvider.GITEE_GIST -> {
                 item {
                     SettingsListItem(
-                        headlineContent = "Gitee 代码片段 Id",
+                        headlineContent = stringResource(R.string.cloud_sync_gitee_gist_id),
                         trailingContent = settingsViewModel.cloudSyncGiteeGistId,
                         remoteConfig = true,
                     )
@@ -198,7 +200,7 @@ fun SettingsCloudSyncScreen(
 
                 item {
                     SettingsListItem(
-                        headlineContent = "Gitee 代码片段 Token",
+                        headlineContent = stringResource(R.string.cloud_sync_gitee_gist_token),
                         trailingContent = settingsViewModel.cloudSyncGiteeGistToken,
                         remoteConfig = true,
                     )
@@ -208,7 +210,7 @@ fun SettingsCloudSyncScreen(
             CloudSyncProvider.NETWORK_URL -> {
                 item {
                     SettingsListItem(
-                        headlineContent = "网络链接",
+                        headlineContent = stringResource(R.string.cloud_sync_network_url),
                         trailingContent = settingsViewModel.cloudSyncNetworkUrl,
                         remoteConfig = true,
                     )
@@ -218,7 +220,7 @@ fun SettingsCloudSyncScreen(
             CloudSyncProvider.LOCAL_FILE -> {
                 item {
                     SettingsListItem(
-                        headlineContent = "本地文件路径",
+                        headlineContent = stringResource(R.string.cloud_sync_local_file_path),
                         trailingContent = settingsViewModel.cloudSyncLocalFilePath,
                         remoteConfig = true,
                     )
@@ -228,7 +230,7 @@ fun SettingsCloudSyncScreen(
             CloudSyncProvider.WEBDAV -> {
                 item {
                     SettingsListItem(
-                        headlineContent = "WebDAV 地址",
+                        headlineContent = stringResource(R.string.cloud_sync_webdav_url),
                         trailingContent = settingsViewModel.cloudSyncWebDavUrl,
                         remoteConfig = true,
                     )
@@ -236,7 +238,7 @@ fun SettingsCloudSyncScreen(
 
                 item {
                     SettingsListItem(
-                        headlineContent = "WebDAV 用户名",
+                        headlineContent = stringResource(R.string.cloud_sync_webdav_username),
                         trailingContent = settingsViewModel.cloudSyncWebDavUsername,
                         remoteConfig = true,
                     )
@@ -244,7 +246,7 @@ fun SettingsCloudSyncScreen(
 
                 item {
                     SettingsListItem(
-                        headlineContent = "WebDAV 密码",
+                        headlineContent = stringResource(R.string.cloud_sync_webdav_password),
                         trailingContent = settingsViewModel.cloudSyncWebDavPassword,
                         remoteConfig = true,
                     )

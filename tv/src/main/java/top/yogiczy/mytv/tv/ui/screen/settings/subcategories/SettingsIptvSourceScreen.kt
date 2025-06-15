@@ -64,7 +64,9 @@ import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
-
+import top.yogiczy.mytv.tv.ui.utils.TagName
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun SettingsIptvSourceScreen(
     modifier: Modifier = Modifier,
@@ -104,10 +106,10 @@ fun SettingsIptvSourceScreen(
 
     AppScreen(
         modifier = modifier,
-        header = { Text("设置 / 订阅源 / 自定义订阅源") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_source)} / ${stringResource(R.string.ui_custom_subscription_source)}") },
         headerExtra = {
             AppScaffoldHeaderBtn(
-                title = "刷新全部",
+                title = stringResource(R.string.ui_refresh_all),
                 imageVector = Icons.Default.Refresh,
                 onSelect = {
                     coroutineScope.launch {
@@ -167,7 +169,7 @@ private fun SettingsIptvSourceContent(
 
             ListItem(
                 modifier = Modifier.handleKeyEvents(onSelect = { visible = true }),
-                headlineContent = { Text("添加其他订阅源") },
+                headlineContent = { Text(stringResource(R.string.ui_add_other_iptv_sources)) },
                 selected = false,
                 onClick = {},
             )
@@ -232,7 +234,7 @@ private fun IptvSourceItem(
 
                 if (!iptvSource.transformJs.isNullOrEmpty()) {
                     Tag(
-                        "转换JS",
+                        stringResource(R.string.ui_convert_js),
                         colors = TagDefaults.colors(
                             containerColor = LocalContentColor.current.copy(0.1f)
                         ),
@@ -251,13 +253,10 @@ private fun IptvSourceItem(
                 }
 
                 if (iptvSourceDetail is IptvSourceDetail.Ready) {
-                    Text(
-                        listOf(
-                            "共${iptvSourceDetail.channelGroupCount}个分组",
-                            "${iptvSourceDetail.channelCount}个频道",
-                            "${iptvSourceDetail.lineCount}条源"
-                        ).joinToString("，")
-                    )
+                    Text(stringResource(R.string.ui_iptv_source_info, 
+                        iptvSourceDetail.channelGroupCount, 
+                        iptvSourceDetail.channelCount, 
+                        iptvSourceDetail.lineCount))
                 }
             }
         },
@@ -350,7 +349,7 @@ private fun SettingsIptvSourceActions(
         ) {
             item {
                 SettingsIptvSourceActionItem(
-                    title = "设为当前",
+                    title = stringResource(R.string.ui_channel_view_set_current),
                     imageVector = Icons.Outlined.Add,
                     onSelected = onSetCurrent,
                     disabled = currentIptvSource == iptvSource,
@@ -360,7 +359,7 @@ private fun SettingsIptvSourceActions(
 
             item {
                 SettingsIptvSourceActionItem(
-                    title = "删除",
+                    title = stringResource(R.string.ui_channel_view_delete),
                     imageVector = Icons.Outlined.DeleteOutline,
                     onSelected = onDelete,
                 )
@@ -368,7 +367,7 @@ private fun SettingsIptvSourceActions(
 
             item {
                 SettingsIptvSourceActionItem(
-                    title = "清除缓存",
+                    title = stringResource(R.string.ui_channel_view_clear_cache),
                     imageVector = Icons.Outlined.ClearAll,
                     onSelected = onClearCache,
                 )
@@ -376,7 +375,7 @@ private fun SettingsIptvSourceActions(
 
             item {
                 SettingsIptvSourceActionItem(
-                    title = "返回",
+                    title = stringResource(R.string.ui_return),
                     imageVector = Icons.Outlined.ArrowBackIosNew,
                     onSelected = onDismissRequest,
                 )

@@ -65,6 +65,8 @@ import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
 import top.yogiczy.mytv.tv.ui.utils.saveFocusRestorer
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -79,7 +81,7 @@ fun SettingsCategoriesScreen(
         modifier = modifier
             .padding(top = 10.dp)
             .focusOnLaunched(),
-        header = { Text("设置") },
+        header = { Text(stringResource(R.string.ui_dashboard_module_settings)) },
         canBack = true,
         onBackPressed = onBackPressed,
     ) {
@@ -113,7 +115,7 @@ fun SettingsCategoriesScreen(
 @Composable
 private fun SettingsCategoryItem(
     modifier: Modifier = Modifier,
-    title: String,
+    title: Int,
     imageVector: ImageVector,
     onSelected: () -> Unit = {},
 ) {
@@ -140,7 +142,7 @@ private fun SettingsCategoryItem(
         ) {
             Icon(imageVector, contentDescription = null, modifier = Modifier.size(34.dp))
             Spacer(Modifier.height(10.dp))
-            Text(title, style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(title), style = MaterialTheme.typography.titleLarge)
         }
     }
 }
@@ -192,24 +194,23 @@ private fun SettingsCategoryItemThemeBackground() {
 
 enum class SettingsCategories(
     val icon: ImageVector,
-    val title: String,
+    val title: Int,
 ) {
-    APP(Icons.Outlined.Devices, "通用"),
-    IPTV(Icons.Outlined.LiveTv, "订阅源"),
-    EPG(Icons.AutoMirrored.Outlined.LibraryBooks, "节目单"),
-    UI(Icons.Outlined.DisplaySettings, "界面"),
-    THEME(Icons.Outlined.ColorLens, "主题"),
-    CONTROL(Icons.Outlined.ControlCamera, "控制"),
-    VIDEO_PLAYER(Icons.Outlined.SmartDisplay, "播放器"),
-    UPDATE(Icons.Outlined.Update, "更新"),
-
+    APP(Icons.Outlined.Devices, R.string.ui_channel_view_general),
+    IPTV(Icons.Outlined.LiveTv, R.string.ui_channel_view_source),
+    EPG(Icons.AutoMirrored.Outlined.LibraryBooks, R.string.ui_channel_view_epg),
+    UI(Icons.Outlined.DisplaySettings, R.string.ui_channel_view_interface),
+    THEME(Icons.Outlined.ColorLens, R.string.ui_channel_view_theme),
+    CONTROL(Icons.Outlined.ControlCamera, R.string.ui_channel_view_control),
+    VIDEO_PLAYER(Icons.Outlined.SmartDisplay, R.string.ui_channel_view_player),
+    UPDATE(Icons.Outlined.Update, R.string.ui_channel_view_update),
     // FAVORITE(Icons.Outlined.FavoriteBorder, "收藏"),
     // EPG_RESERVE(Icons.Default.BookmarkBorder, "预约"),
-    NETWORK(Icons.Outlined.Wifi, "网络"),
-    CLOUD_SYNC(Icons.Outlined.CloudSync, "云同步"),
-    PERMISSIONS(Icons.Outlined.Shield, "权限"),
-    DEBUG(Icons.Outlined.BugReport, "调试"),
-    LOG(Icons.AutoMirrored.Outlined.FormatListBulleted, "日志"),
+    NETWORK(Icons.Outlined.Wifi, R.string.ui_channel_view_network),
+    CLOUD_SYNC(Icons.Outlined.CloudSync, R.string.ui_channel_view_cloud_sync),
+    PERMISSIONS(Icons.Outlined.Shield, R.string.ui_channel_view_permissions),
+    DEBUG(Icons.Outlined.BugReport, R.string.ui_channel_view_debug),
+    LOG(Icons.AutoMirrored.Outlined.FormatListBulleted, R.string.ui_channel_view_log),
 }
 
 enum class SettingsSubCategories {

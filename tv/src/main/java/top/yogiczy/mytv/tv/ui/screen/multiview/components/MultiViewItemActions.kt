@@ -40,7 +40,8 @@ import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
-
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 @Composable
 fun MultiViewItemActions(
     modifier: Modifier = Modifier,
@@ -71,12 +72,12 @@ fun MultiViewItemActions(
         position = DrawerPosition.Center,
         header = {
             Text(
-                "操作屏幕${viewIndex + 1}",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
+            "${stringResource(R.string.ui_multiview_action_operate_screen)}${viewIndex + 1}",
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
             )
         },
-    ) {
+        ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             contentPadding = PaddingValues(vertical = 10.dp),
@@ -84,94 +85,94 @@ fun MultiViewItemActions(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             item {
+            MultiViewItemActionItem(
+                title = stringResource(R.string.ui_multiview_action_add),
+                imageVector = Icons.Outlined.Add,
+                onSelected = onAddChannel,
+                disabled = viewCount >= MULTI_VIEW_MAX_COUNT,
+                modifier = Modifier.focusOnLaunched(),
+            )
+            }
+
+            item {
+            MultiViewItemActionItem(
+                title = stringResource(R.string.ui_dashboard_module_search),
+                imageVector = Icons.Outlined.Search,
+                onSelected = onSearchAndAddChannel,
+                disabled = viewCount >= MULTI_VIEW_MAX_COUNT,
+            )
+            }
+
+            item {
+            MultiViewItemActionItem(
+                title = stringResource(R.string.ui_multiview_action_switch),
+                imageVector = Icons.Outlined.SyncAlt,
+                onSelected = onChangeChannel,
+            )
+            }
+
+            item {
+            MultiViewItemActionItem(
+                title = stringResource(R.string.ui_multiview_action_delete),
+                imageVector = Icons.Outlined.DeleteOutline,
+                onSelected = onRemoveChannel,
+                disabled = viewCount <= 1,
+            )
+            }
+
+            item {
+            if (isZoomInProvider()) {
                 MultiViewItemActionItem(
-                    title = "添加",
-                    imageVector = Icons.Outlined.Add,
-                    onSelected = onAddChannel,
-                    disabled = viewCount >= MULTI_VIEW_MAX_COUNT,
-                    modifier = Modifier.focusOnLaunched(),
+                title = stringResource(R.string.ui_multiview_action_zoom_out),
+                imageVector = Icons.Outlined.ZoomInMap,
+                onSelected = onViewZoomOut,
+                disabled = viewCount <= 1,
+                )
+            } else {
+                MultiViewItemActionItem(
+                title = stringResource(R.string.ui_multiview_action_zoom_in),
+                imageVector = Icons.Outlined.ZoomOutMap,
+                onSelected = onViewZoomIn,
+                disabled = viewCount <= 1,
                 )
             }
+            }
 
             item {
+            if (isPlayingProvider()) {
                 MultiViewItemActionItem(
-                    title = "搜索",
-                    imageVector = Icons.Outlined.Search,
-                    onSelected = onSearchAndAddChannel,
-                    disabled = viewCount >= MULTI_VIEW_MAX_COUNT,
+                title = stringResource(R.string.ui_multiview_action_pause),
+                imageVector = Icons.Outlined.PauseCircle,
+                onSelected = onVideoPlayerPause,
+                )
+            } else {
+                MultiViewItemActionItem(
+                title = stringResource(R.string.ui_multiview_action_play),
+                imageVector = Icons.Outlined.PlayCircle,
+                onSelected = onVideoPlayerPlay,
                 )
             }
+            }
 
             item {
+            if (isMutedProvider()) {
                 MultiViewItemActionItem(
-                    title = "切换",
-                    imageVector = Icons.Outlined.SyncAlt,
-                    onSelected = onChangeChannel,
+                title = stringResource(R.string.ui_multiview_action_unmute),
+                imageVector = Icons.AutoMirrored.Outlined.VolumeUp,
+                onSelected = onVideoPlayerUnMute,
+                )
+            } else {
+                MultiViewItemActionItem(
+                title = stringResource(R.string.ui_multiview_action_mute),
+                imageVector = Icons.AutoMirrored.Outlined.VolumeOff,
+                onSelected = onVideoPlayerMute,
                 )
             }
-
-            item {
-                MultiViewItemActionItem(
-                    title = "删除",
-                    imageVector = Icons.Outlined.DeleteOutline,
-                    onSelected = onRemoveChannel,
-                    disabled = viewCount <= 1,
-                )
-            }
-
-            item {
-                if (isZoomInProvider()) {
-                    MultiViewItemActionItem(
-                        title = "缩小",
-                        imageVector = Icons.Outlined.ZoomInMap,
-                        onSelected = onViewZoomOut,
-                        disabled = viewCount <= 1,
-                    )
-                } else {
-                    MultiViewItemActionItem(
-                        title = "放大",
-                        imageVector = Icons.Outlined.ZoomOutMap,
-                        onSelected = onViewZoomIn,
-                        disabled = viewCount <= 1,
-                    )
-                }
-            }
-
-            item {
-                if (isPlayingProvider()) {
-                    MultiViewItemActionItem(
-                        title = "暂停",
-                        imageVector = Icons.Outlined.PauseCircle,
-                        onSelected = onVideoPlayerPause,
-                    )
-                } else {
-                    MultiViewItemActionItem(
-                        title = "播放",
-                        imageVector = Icons.Outlined.PlayCircle,
-                        onSelected = onVideoPlayerPlay,
-                    )
-                }
-            }
-
-            item {
-                if (isMutedProvider()) {
-                    MultiViewItemActionItem(
-                        title = "取消静音",
-                        imageVector = Icons.AutoMirrored.Outlined.VolumeUp,
-                        onSelected = onVideoPlayerUnMute,
-                    )
-                } else {
-                    MultiViewItemActionItem(
-                        title = "静音",
-                        imageVector = Icons.AutoMirrored.Outlined.VolumeOff,
-                        onSelected = onVideoPlayerMute,
-                    )
-                }
             }
 
             item {
                 MultiViewItemActionItem(
-                    title = "刷新",
+                    title = stringResource(R.string.ui_channel_view_refresh),
                     imageVector = Icons.Outlined.Refresh,
                     onSelected = onVideoPlayerReload,
                 )
@@ -179,7 +180,7 @@ fun MultiViewItemActions(
 
             item(span = { GridItemSpan(2) }) {
                 MultiViewItemActionItem(
-                    title = "返回",
+                    title = stringResource(R.string.ui_return),
                     imageVector = Icons.Outlined.ArrowBackIosNew,
                     onSelected = onDismissRequest,
                 )

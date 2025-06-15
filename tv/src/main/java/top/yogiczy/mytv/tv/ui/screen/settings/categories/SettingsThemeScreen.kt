@@ -45,6 +45,7 @@ import top.yogiczy.mytv.tv.ui.screen.settings.settingsVM
 import top.yogiczy.mytv.tv.ui.theme.MyTvTheme
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SettingsThemeScreen(
@@ -69,10 +70,10 @@ fun SettingsThemeScreen(
 
     AppScreen(
         modifier = modifier.padding(top = 10.dp),
-        header = { Text("设置 / 主题") },
+        header = { Text("${stringResource(R.string.ui_dashboard_module_settings)} / ${stringResource(R.string.ui_channel_view_theme)}") },
         headerExtra = {
             AppScaffoldHeaderBtn(
-                title = "恢复默认",
+                title = stringResource(R.string.ui_theme_reset_to_default),
                 imageVector = Icons.Default.DoNotDisturb,
                 onSelect = { settingsViewModel.themeAppCurrent = null },
             )

@@ -30,6 +30,8 @@ import top.yogiczy.mytv.tv.ui.utils.focusOnLaunched
 import top.yogiczy.mytv.tv.ui.utils.gridColumns
 import java.text.SimpleDateFormat
 import java.util.Locale
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun EpgScreen(
@@ -55,7 +57,7 @@ fun EpgScreen(
             .focusOnLaunched(),
         onDismissRequest = onClose,
         position = DrawerPosition.Start,
-        header = { Text("节目单") },
+        header = { Text(stringResource(R.string.ui_channel_view_epg)) },
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
