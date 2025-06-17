@@ -52,6 +52,7 @@
     <string name="ui_channel_info_update_found">发现新版本: </string>
     <string name="ui_channel_info_update_latest">当前已是最新版本</string>
     <string name="ui_channel_info_exit_live">再按一次退出直播</string>
+    <string name="ui_app_exit">再按一次退出</string>
     <string name="ui_cache_cleared">缓存已清除</string>
     <string name="ui_cloud_sync_pull">拉取云端数据</string>
     <string name="ui_iptv_source_loading">加载订阅源</string>
@@ -355,4 +356,5 @@
     <string name="ui_epg_item_today">今天</string>
     <string name="ui_epg_item_tomorrow">明天</string>
     <string name="ui_epg_item_day_after_tomorrow">后天</string>
+    <string name="ui_x5_core_preload_not_supported">X5内核不可用，将进行初始化。已切换为系统内核</string>
 </resources>

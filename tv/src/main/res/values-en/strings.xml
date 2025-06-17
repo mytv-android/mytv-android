@@ -52,6 +52,7 @@
     <string name="ui_channel_info_update_found">New version found: </string>
     <string name="ui_channel_info_update_latest">Already the latest version</string>
     <string name="ui_channel_info_exit_live">Press again to exit live</string>
+    <string name="ui_app_exit">Press again to exit</string>
     <string name="ui_cache_cleared">Cache cleared</string>
     <string name="ui_cloud_sync_pull">Pull cloud data</string>
     <string name="ui_iptv_source_loading">Loading subscription source</string>
@@ -355,5 +356,5 @@
     <string name="ui_epg_item_today">Today</string>
     <string name="ui_epg_item_tomorrow">Tom.</string>
     <string name="ui_epg_item_day_after_tomorrow">Overmorrow</string>
-
+    <string name="ui_x5_core_preload_not_supported">X5 Core not available, initializing. Switched to system core.</string>
 </resources>

@@ -164,7 +164,7 @@ fun MainContent(
                         settingsViewModel.webViewCore = Configs.WebViewCore.SYSTEM
                         Toast.makeText(
                             LocalContext.current,
-                            "X5内核不可用，将进行初始化。已切换为系统内核",
+                            LocalContext.current.getString(R.string.ui_x5_core_preload_not_supported),
                             Toast.LENGTH_LONG
                         ).show()
                         preInitX5Core(LocalContext.current)
