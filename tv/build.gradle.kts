@@ -141,6 +141,7 @@ dependencies {
 
     implementation(libs.okhttp)
     implementation(libs.androidasync)
+    implementation(libs.quickjs.kt)
 
     implementation(libs.tinypinyin)
 

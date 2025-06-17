@@ -24,7 +24,7 @@ tvMaterial = "1.1.0-alpha01"
 navigationCompose = "2.9.0"
 android_material = "1.12.0"
 sentry = "5.7.0"
-quickjs = "1.0.0-alpha13"
+quickjs = "3.2.0"
 minSdk = "21"
 targetSdk = "36"
 compileSdk = "36"
@@ -68,7 +68,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 tinypinyin = { module = "io.github.biezhi:TinyPinyin", version.ref = "tinypinyin" }
-quickjs-kt = { module = "io.github.dokar3:quickjs-kt", version.ref = "quickjs" }
+quickjs-kt = { group = "wang.harlon.quickjs", name = "wrapper-android", version.ref = "quickjs" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

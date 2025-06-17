@@ -13,7 +13,9 @@ import top.yogiczy.mytv.core.data.repositories.iptv.parser.IptvParser.ChannelIte
 import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.data.utils.Logger
 import kotlin.time.measureTimedValue
-import com.dokar.quickjs.QuickJs
+import com.whl.quickjs.wrapper.QuickJSArray
+import com.whl.quickjs.wrapper.QuickJSContext
+import com.whl.quickjs.wrapper.QuickJSObject
 /**
  * 订阅源数据获取
  */
@@ -61,7 +63,6 @@ class IptvRepository(private val source: IptvSource) :
     private suspend fun transform(channelList: List<IptvParser.ChannelItem>): List<IptvParser.ChannelItem> =
         withContext(Dispatchers.IO) {
             if (source.transformJs.isNullOrBlank()) return@withContext channelList
-
             val scriptString = """
                     (function() {
                         var channelList = ${Globals.json.encodeToString(channelList)};
@@ -69,19 +70,28 @@ class IptvRepository(private val source: IptvSource) :
                         return JSON.stringify(main(channelList));
                     })();
                     """.trimIndent()
-            val result = runCatching {
-                QuickJs.create(Dispatchers.Default).use { quickJs ->
-                    quickJs.evaluate(scriptString) as String
-                }
+            val context = try {
+                QuickJSContext.create()
+            } catch (e: Exception) {
+                log.e("QuickJSContext.create() 异常: ${e.message}", e)
+                return@withContext channelList
             }
 
+            val result = runCatching {
+                context.evaluate(scriptString) as String
+            }
+            context.destroy()
             if (result.isFailure) {
                 log.e("转换订阅源（${source.name}）错误: ${result.exceptionOrNull()}")
-                // log.e("转换脚本: ${scriptString}")
+                return@withContext channelList
             }
 
-            if (result.isSuccess) Globals.json.decodeFromString(result.getOrNull()!!)
-            else channelList
+            return@withContext try {
+                Globals.json.decodeFromString(result.getOrNull()!!)
+            } catch (e: Exception) {
+                log.e("解析转换结果异常: ${e.message}", e)
+                channelList
+            }
         }
 
     /**

@@ -19,6 +19,7 @@ import top.yogiczy.mytv.core.data.AppData
 import top.yogiczy.mytv.core.data.utils.Globals
 import kotlin.system.exitProcess
 import com.tencent.smtt.sdk.QbSdk
+import com.whl.quickjs.android.QuickJSLoader
 
 class MyTVApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
@@ -26,6 +27,7 @@ class MyTVApplication : Application(), ImageLoaderFactory {
         
         initSentry()
         crashHandle()
+        QuickJSLoader.init()
         AppData.init(applicationContext)
         UnsafeTrustManager.enableUnsafeTrustManager()
         
