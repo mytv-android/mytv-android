@@ -65,6 +65,9 @@ For communication (this group is generally not for bug feedback or suggestions, 
  </picture>
 </a>
 
+[![Stargazers over time](https://starchart.cc/mytv-android/mytv-android.svg?variant=adaptive)](https://starchart.cc/mytv-android/mytv-android)
+
+
 ## Copyright, License Statement, and Acknowledgements
 
 - This software is based on Tianguang Yunying ([https://github.com/yaoxieyoulei/mytv-android/tree/feature/ui](https://github.com/yaoxieyoulei/mytv-android/tree/feature/ui)). Special thanks to the author yaoxieyoulei for their selfless contribution. Tianguang Yunying uses the MIT license, see [Tianguang Yunying License](./LICENSE_ORIGIN). If you copy the software code, please retain this license and the original author's copyright statement.

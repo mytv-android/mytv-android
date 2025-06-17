@@ -54,7 +54,7 @@ fun App(
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val doubleBackPressedExitState = rememberDoubleBackPressedExitState()
-
+    val exitString = stringResource(R.string.ui_app_exit)
     CompositionLocalProvider(
         LocalDensity provides Density(
             density = LocalDensity.current.density * when (settingsViewModel.uiDensityScaleRatio) {
@@ -72,7 +72,7 @@ fun App(
                         onBackPressed()
                     } else {
                         doubleBackPressedExitState.backPress()
-                        Snackbar.show(stringResource(R.string.ui_app_exit))
+                        Snackbar.show(exitString)
                     }
                 },
             )

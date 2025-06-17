@@ -64,6 +64,8 @@ import top.yogiczy.mytv.tv.ui.utils.handleDragGestures
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import top.yogiczy.mytv.tv.X5CorePreLoadService
+import top.yogiczy.mytv.tv.R
+
 @Composable
 fun MainContent(
     modifier: Modifier = Modifier,

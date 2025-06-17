@@ -89,6 +89,9 @@
  </picture>
 </a>
 
+[![Stargazers over time](https://starchart.cc/mytv-android/mytv-android.svg?variant=adaptive)](https://starchart.cc/mytv-android/mytv-android)
+
+
 ## 著作权、许可证声明和致谢
 
 - 本软件基于天光云影（https://github.com/yaoxieyoulei/mytv-android/tree/feature/ui ）进行迭代，在此感谢作者 yaoxieyoulei 的无私奉献。天光云影使用的MIT许可证请参见[天光云影许可证](./LICENSE_ORIGIN)，当你复制软件代码时，请保留此许可证和原作者版权声明。
