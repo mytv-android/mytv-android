@@ -79,6 +79,10 @@ fun ChannelInfo(
                     Tag("${channelLineIdx + 1}/${channel.lineList.size}", colors = tagColors)
                 }
 
+                if (line.hybridType == ChannelLine.HybridType.JavaScript) {
+                    Tag("JS", colors = tagColors)
+                }
+
                 if (line.hybridType == ChannelLine.HybridType.WebView) {
                     Tag(
                         getHybridWebViewUrlTagName(ChannelUtil.getHybridWebViewUrlProvider(line.url)),

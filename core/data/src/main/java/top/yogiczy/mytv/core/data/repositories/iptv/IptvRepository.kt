@@ -13,9 +13,7 @@ import top.yogiczy.mytv.core.data.repositories.iptv.parser.IptvParser.ChannelIte
 import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.data.utils.Logger
 import kotlin.time.measureTimedValue
-import com.whl.quickjs.wrapper.QuickJSArray
-import com.whl.quickjs.wrapper.QuickJSContext
-import com.whl.quickjs.wrapper.QuickJSObject
+import top.yogiczy.mytv.core.data.utils.JSEngine
 /**
  * 订阅源数据获取
  */
@@ -60,38 +58,25 @@ class IptvRepository(private val source: IptvSource) :
         }
     }
 
-    private suspend fun transform(channelList: List<IptvParser.ChannelItem>): List<IptvParser.ChannelItem> =
-        withContext(Dispatchers.IO) {
-            if (source.transformJs.isNullOrBlank()) return@withContext channelList
-            val scriptString = """
-                    (function() {
-                        var channelList = ${Globals.json.encodeToString(channelList)};
-                        ${source.transformJs}
-                        return JSON.stringify(main(channelList));
-                    })();
-                    """.trimIndent()
-            val context = try {
-                QuickJSContext.create()
-            } catch (e: Exception) {
-                log.e("QuickJSContext.create() 异常: ${e.message}", e)
-                return@withContext channelList
-            }
+    private suspend fun transform(channelList: List<IptvParser.ChannelItem>): List<IptvParser.ChannelItem> {
+        if (source.transformJs.isNullOrBlank()) return channelList
+        val scriptString = """
+                (function() {
+                    var channelList = ${Globals.json.encodeToString(channelList)};
+                    ${source.transformJs}
+                    return JSON.stringify(main(channelList));
+                })();
+                """.trimIndent()
 
-            val result = runCatching {
-                context.evaluate(scriptString) as String
-            }
-            context.destroy()
-            if (result.isFailure) {
-                log.e("转换订阅源（${source.name}）错误: ${result.exceptionOrNull()}")
-                return@withContext channelList
-            }
-
-            return@withContext try {
-                Globals.json.decodeFromString(result.getOrNull()!!)
-            } catch (e: Exception) {
-                log.e("解析转换结果异常: ${e.message}", e)
-                channelList
-            }
+        val result = runCatching {
+            JSEngine().executeJSString(scriptString) as String
+        }
+        return try {
+            Globals.json.decodeFromString(result.getOrNull()!!)
+        } catch (e: Exception) {
+            log.e("解析转换结果异常: ${e.message}", e)
+            channelList
+        }
         }
 
     /**

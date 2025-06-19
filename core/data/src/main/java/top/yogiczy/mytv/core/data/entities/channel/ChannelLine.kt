@@ -39,5 +39,6 @@ data class ChannelLine(
     enum class HybridType {
         None,
         WebView,
+        JavaScript,
     }
 }

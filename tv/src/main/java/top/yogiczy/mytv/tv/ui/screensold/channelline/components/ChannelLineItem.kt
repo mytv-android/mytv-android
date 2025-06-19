@@ -66,6 +66,8 @@ fun ChannelLineItem(
             ) {
                 if (line.playbackType != null || ChannelUtil.urlSupportPlayback(line.url))
                     Tag(stringResource(R.string.ui_channel_info_replay))
+                if (line.hybridType == ChannelLine.HybridType.JavaScript)
+                    Tag("JS")
                 if (line.hybridType == ChannelLine.HybridType.WebView) {
                     Tag(stringResource(R.string.ui_hybrid_type))
                     Tag(getHybridWebViewUrlTagName(ChannelUtil.getHybridWebViewUrlProvider(line.url)))

@@ -90,24 +90,11 @@ class IjkVideoPlayer(
 
     override fun prepare(line: ChannelLine) {
         player.reset()
-        var uri = line.playableUrl
-        var header: Map<String, String> = emptyMap()
-        if(Configs.videoPlayerExtractHeaderFromLink){
-            val regex = Regex("""^([^|]+)\|([^|=]*=[^|=]*(\|[^|=]*=[^|=]*)*)$""")
-            val match = regex.find(uri.toString())
-            if (match != null) {
-                val realUrl = match.groupValues[1]
-                val headerStr = match.groupValues[2]
-                uri = realUrl
-                // 解析header
-                header = headerStr.split("|")
-                    .mapNotNull {
-                        val idx = it.indexOf("=")
-                        if (idx > 0) it.substring(0, idx) to it.substring(idx + 1) else null
-                    }
-                    .toMap()
-            }
-        }
+        val playData = getPlayableData(line)
+        if (playData == null)
+            return
+        var uri = playData.url
+        var header: Map<String, String> = playData.headers ?: emptyMap()
         val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
             "User-Agent" to (line.httpUserAgent ?: Configs.videoPlayerUserAgent),
             "Referer" to (line.httpReferrer ?: ""),

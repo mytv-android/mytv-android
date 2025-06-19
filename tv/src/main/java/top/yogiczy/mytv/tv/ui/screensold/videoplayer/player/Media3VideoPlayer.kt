@@ -175,25 +175,10 @@ class Media3VideoPlayer(
     }
 
 
-    private fun getMediaSource(contentType: Int? = null): MediaSource? {
-        var uri = Uri.parse(currentChannelLine.playableUrl)
-        var headers: Map<String, String> = emptyMap()
-        if(Configs.videoPlayerExtractHeaderFromLink){
-            val regex = Regex("""^([^|]+)\|([^|=]*=[^|=]*(\|[^|=]*=[^|=]*)*)$""")
-            val match = regex.find(currentChannelLine.playableUrl)
-            if (match != null) {
-                val realUrl = match.groupValues[1]
-                val headerStr = match.groupValues[2]
-                uri = Uri.parse(realUrl)
-                // 解析header
-                headers = headerStr.split("|")
-                    .mapNotNull {
-                        val idx = it.indexOf("=")
-                        if (idx > 0) it.substring(0, idx) to it.substring(idx + 1) else null
-                    }
-                    .toMap()
-            }
-        }
+    private fun getMediaSource(playData: ExtractedPlayData, contentType: Int? = null): MediaSource? {
+        var uri = Uri.parse(playData.url)
+        var headers: Map<String, String> = playData.headers
+
         logger.i("播放地址: ${uri}")
         val mediaItem = MediaItem.fromUri(uri)
         val dataSourceFactory = getDataSourceFactory(headers)
@@ -392,10 +377,12 @@ class Media3VideoPlayer(
     }
 
     private fun prepare(contentType: Int? = null) {
-        val uri = Uri.parse(currentChannelLine.playableUrl)
-        val mediaSource = getMediaSource(contentType)
+        val playData = getPlayableData(currentChannelLine)
+        if (playData == null)
+            return
+        val mediaSource = getMediaSource(playData, contentType)
         if (mediaSource != null) {
-            contentTypeAttempts[contentType ?: Util.inferContentType(uri)] = true
+            contentTypeAttempts[contentType ?: Util.inferContentType(playData.url)] = true
             videoPlayer.setMediaSource(mediaSource)
             videoPlayer.prepare()
             videoPlayer.play()

@@ -74,6 +74,7 @@ interface IptvParser {
                                             hybridType = when (it.hybridType) {
                                                 HybridType.WebView -> ChannelLine.HybridType.WebView
                                                 HybridType.None -> ChannelLine.HybridType.None
+                                                HybridType.JavaScript -> ChannelLine.HybridType.JavaScript
                                             },
                                             manifestType = it.manifestType,
                                             licenseType = it.licenseType,
@@ -103,6 +104,7 @@ interface IptvParser {
         enum class HybridType {
             None,
             WebView,
+            JavaScript,
         }
     }
 }

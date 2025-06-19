@@ -31,9 +31,16 @@ class TxtIptvParser : IptvParser {
                             IptvParser.ChannelItem(
                                 name = res[0].trim(),
                                 groupName = groupName ?: "其他",
-                                url = url.trim(), 
+                                url = url.trim().removePrefix("webview://"), 
                                 hybridType = IptvParser.ChannelItem.HybridType.WebView,
                             ) 
+                        }else if (url.startsWith("javascript://")) {
+                            IptvParser.ChannelItem(
+                                name = res[0].trim(),
+                                groupName = groupName ?: "其他",
+                                url = url.trim().removePrefix("javascript://"),
+                                hybridType = IptvParser.ChannelItem.HybridType.JavaScript,
+                            )
                         }else{
                             IptvParser.ChannelItem(
                                 name = res[0].trim(),

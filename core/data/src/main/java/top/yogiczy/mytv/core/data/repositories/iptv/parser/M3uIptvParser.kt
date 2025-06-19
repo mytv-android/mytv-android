@@ -192,6 +192,16 @@ class M3uIptvParser : IptvParser {
                                     hybridType = IptvParser.ChannelItem.HybridType.WebView
                                 )
                             })
+                        } else if (trimmedUrl.startsWith("javascript://")) {
+                            logger.i("检测到javascript链接: $trimmedUrl")
+                            logger.i("将URL的hybridType设置为javascript")
+                            channelList.addAll(groupNameList.map { groupName ->
+                                addedChannel.copy(
+                                    groupName = groupName,
+                                    url = trimmedUrl.removePrefix("javascript://"),
+                                    hybridType = IptvParser.ChannelItem.HybridType.JavaScript
+                                )
+                            })
                         } else {
                             logger.i("普通URL: $trimmedUrl, hybridType=None")
                             channelList.addAll(groupNameList.map { groupName ->

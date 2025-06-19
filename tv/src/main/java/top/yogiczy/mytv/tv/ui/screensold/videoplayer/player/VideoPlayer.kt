@@ -3,10 +3,16 @@ package top.yogiczy.mytv.tv.ui.screensold.videoplayer.player
 import android.view.SurfaceView
 import android.view.TextureView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.launch
+import androidx.lifecycle.viewModelScope
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
+import top.yogiczy.mytv.core.data.network.request
+import top.yogiczy.mytv.core.data.utils.JSEngine
 import top.yogiczy.mytv.core.util.utils.humanizeAudioChannels
 import top.yogiczy.mytv.core.util.utils.humanizeBitrate
 import top.yogiczy.mytv.core.util.utils.humanizeLanguage
@@ -24,6 +30,58 @@ abstract class VideoPlayer(
 
     open fun release() {
         clearAllListeners()
+    }
+
+    fun getPlayableData(line: ChannelLine): ExtractedPlayData? {
+        var uri = line.playableUrl
+        var sdata = ""
+        uri.split("?").let { parts ->
+            if (parts.size > 1) {
+                uri = parts[0]
+                sdata = parts[1]
+            }
+        }
+        var headers = emptyMap<String, String>()
+        if (line.hybridType == ChannelLine.HybridType.JavaScript) {
+            // 解析JavaScript链接
+            val jsCode = runBlocking {
+                withContext(Dispatchers.IO) {
+                    uri.request { response, _ ->
+                        response.body?.string() ?: ""
+                    }
+                }
+            }
+            if (jsCode.isBlank()) {
+                triggerError(PlaybackException("JavaScript code is empty", 10087))
+                return null
+            }
+            try {
+                runBlocking {
+                    withContext(Dispatchers.IO) {
+                        uri = JSEngine().executeJSString(jsCode, sdata).trim()
+                    }
+                }
+            } catch (e: Exception) {
+                triggerError(PlaybackException("JavaScript execution failed: ${e.message}", 10088))
+                return null
+            }
+        }
+        if(Configs.videoPlayerExtractHeaderFromLink){
+            val regex = Regex("""^([^|]+)\|([^|=]*=[^|=]*(\|[^|=]*=[^|=]*)*)$""")
+            val match = regex.find(uri)
+            if (match != null) {
+                uri = match.groupValues[1]
+                val headerStr = match.groupValues[2]
+                // 解析header
+                headers = headerStr.split("|")
+                    .mapNotNull {
+                        val idx = it.indexOf("=")
+                        if (idx > 0) it.substring(0, idx) to it.substring(idx + 1) else null
+                    }
+                    .toMap()
+            }
+        }
+        return ExtractedPlayData(url = uri, headers = headers)
     }
 
     abstract fun prepare(line: ChannelLine)
@@ -294,3 +352,8 @@ abstract class VideoPlayer(
         }
     }
 }
+
+data class ExtractedPlayData(
+    val url: String = "",
+    val headers: Map<String, String> = emptyMap(),
+)
