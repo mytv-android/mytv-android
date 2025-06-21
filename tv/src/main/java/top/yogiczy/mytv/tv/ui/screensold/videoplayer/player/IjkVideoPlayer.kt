@@ -89,31 +89,33 @@ class IjkVideoPlayer(
     }
 
     override fun prepare(line: ChannelLine) {
-        player.reset()
-        val playData = getPlayableData(line)
-        if (playData == null)
-            return
-        var uri = playData.url
-        var header: Map<String, String> = playData.headers ?: emptyMap()
-        val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
-            "User-Agent" to (line.httpUserAgent ?: Configs.videoPlayerUserAgent),
-            "Referer" to (line.httpReferrer ?: ""),
-            "Origin" to (line.httpOrigin ?: ""),
+        coroutineScope.launch {
+            player.reset()
+            val playData = getPlayableData(line)
+            if (playData == null)
+                return@launch
+            var uri = playData.url
+            var header: Map<String, String> = playData.headers ?: emptyMap()
+            val headers = Configs.videoPlayerHeaders.toHeaders() + mapOf(
+                "User-Agent" to (line.httpUserAgent ?: Configs.videoPlayerUserAgent),
+                "Referer" to (line.httpReferrer ?: ""),
+                "Origin" to (line.httpOrigin ?: ""),
             "Cookie" to (line.httpCookie ?: ""),
-        ).filterValues { it.isNotEmpty() } + header
+            ).filterValues { it.isNotEmpty() } + header
         
-        // 使用应用内日志系统
-        logger.i("播放地址: ${uri.toString()}")
-        logger.i("请求头: $headers")
-        
-        player.setDataSource(
-            uri,
-            headers
-        )
-        setOption()
-        player.prepareAsync()
+            // 使用应用内日志系统
+            logger.i("播放地址: ${uri.toString()}")
+            logger.i("请求头: $headers")
+            
+            player.setDataSource(
+                uri,
+                headers
+            )
+            setOption()
+            player.prepareAsync()
 
-        triggerPrepared()
+            triggerPrepared()
+        }
     }
 
     override fun play() {

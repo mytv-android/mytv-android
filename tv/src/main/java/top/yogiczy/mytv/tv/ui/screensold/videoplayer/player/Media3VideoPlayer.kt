@@ -377,19 +377,21 @@ class Media3VideoPlayer(
     }
 
     private fun prepare(contentType: Int? = null) {
-        val playData = getPlayableData(currentChannelLine)
-        if (playData == null)
-            return
-        val mediaSource = getMediaSource(playData, contentType)
-        if (mediaSource != null) {
-            contentTypeAttempts[contentType ?: Util.inferContentType(playData.url)] = true
-            videoPlayer.setMediaSource(mediaSource)
-            videoPlayer.prepare()
-            videoPlayer.play()
-            triggerPrepared()
+        coroutineScope.launch {
+            val playData = getPlayableData(currentChannelLine)
+            if (playData == null)
+                return@launch
+            val mediaSource = getMediaSource(playData, contentType)
+            if (mediaSource != null) {
+                contentTypeAttempts[contentType ?: Util.inferContentType(playData.url)] = true
+                videoPlayer.setMediaSource(mediaSource)
+                videoPlayer.prepare()
+                videoPlayer.play()
+                triggerPrepared()
+            }
+            updatePositionJob?.cancel()
+            updatePositionJob = null
         }
-        updatePositionJob?.cancel()
-        updatePositionJob = null
     }
 
     private val playerListener = object : Player.Listener {

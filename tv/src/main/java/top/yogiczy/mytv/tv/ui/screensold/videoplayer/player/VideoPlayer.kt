@@ -9,21 +9,26 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import androidx.lifecycle.viewModelScope
 import top.yogiczy.mytv.core.data.entities.channel.ChannelLine
 import top.yogiczy.mytv.core.data.network.request
 import top.yogiczy.mytv.core.data.utils.JSEngine
+import top.yogiczy.mytv.core.data.utils.Globals
 import top.yogiczy.mytv.core.util.utils.humanizeAudioChannels
 import top.yogiczy.mytv.core.util.utils.humanizeBitrate
 import top.yogiczy.mytv.core.util.utils.humanizeLanguage
 import top.yogiczy.mytv.tv.ui.utils.Configs
 import kotlin.math.roundToInt
+import top.yogiczy.mytv.core.data.utils.Logger
 
 abstract class VideoPlayer(
     private val coroutineScope: CoroutineScope,
 ) {
     protected var metadata = Metadata()
-
+    private val logger = Logger.create("VideoPlayer")
     open fun initialize() {
         clearAllListeners()
     }
@@ -32,7 +37,7 @@ abstract class VideoPlayer(
         clearAllListeners()
     }
 
-    fun getPlayableData(line: ChannelLine): ExtractedPlayData? {
+    suspend fun getPlayableData(line: ChannelLine): ExtractedPlayData? {
         var uri = line.playableUrl
         var sdata = ""
         uri.split("?").let { parts ->
@@ -44,25 +49,45 @@ abstract class VideoPlayer(
         var headers = emptyMap<String, String>()
         if (line.hybridType == ChannelLine.HybridType.JavaScript) {
             // 解析JavaScript链接
-            val jsCode = runBlocking {
+            val jsCode = try {
                 withContext(Dispatchers.IO) {
                     uri.request { response, _ ->
                         response.body?.string() ?: ""
                     }
                 }
+            }catch (e: Exception) {
+                triggerError(PlaybackException("Failed to fetch JavaScript code: ${e.message}", 10086))
+                logger.e("Failed to fetch JavaScript code: ${e.message}", e)
+                return null
             }
             if (jsCode.isBlank()) {
                 triggerError(PlaybackException("JavaScript code is empty", 10087))
+                logger.e("JavaScript code is empty")
                 return null
             }
             try {
-                runBlocking {
-                    withContext(Dispatchers.IO) {
-                        uri = JSEngine().executeJSString(jsCode, sdata).trim()
+                val (newUri, newHeaders) = withContext(Dispatchers.IO) {
+                    val jsonStr = JSEngine().executeJSString(jsCode, sdata).trim()
+                    val json = Globals.json.parseToJsonElement(jsonStr).jsonObject
+                    val url = json.getValue("url").jsonPrimitive.content
+                    val headersStr = json["headers"]?.jsonPrimitive?.content
+                    val headersMap = if (!headersStr.isNullOrBlank()) {
+                        headersStr.split("\n")
+                            .mapNotNull {
+                                val idx = it.indexOf("=")
+                                if (idx > 0) it.substring(0, idx) to it.substring(idx + 1) else null
+                            }
+                            .toMap()
+                    } else {
+                        headers
                     }
+                    url to headersMap
                 }
+                uri = newUri
+                headers = newHeaders
             } catch (e: Exception) {
                 triggerError(PlaybackException("JavaScript execution failed: ${e.message}", 10088))
+                logger.e("JavaScript execution failed: ${e.message}", e)
                 return null
             }
         }
@@ -73,12 +98,12 @@ abstract class VideoPlayer(
                 uri = match.groupValues[1]
                 val headerStr = match.groupValues[2]
                 // 解析header
-                headers = headerStr.split("|")
+                headers = headers + headerStr.split("|")
                     .mapNotNull {
                         val idx = it.indexOf("=")
                         if (idx > 0) it.substring(0, idx) to it.substring(idx + 1) else null
                     }
-                    .toMap()
+                    .toMap() ?: emptyMap()
             }
         }
         return ExtractedPlayData(url = uri, headers = headers)

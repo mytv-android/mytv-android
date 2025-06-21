@@ -3,6 +3,7 @@ package top.yogiczy.mytv.core.data.utils
 import android.text.TextUtils
 import android.util.Base64
 import com.whl.quickjs.wrapper.JSCallFunction
+import com.whl.quickjs.wrapper.JSArray
 import com.whl.quickjs.wrapper.JSObject
 import com.whl.quickjs.wrapper.QuickJSContext
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +14,7 @@ import java.io.InputStream
 import java.util.LinkedHashMap
 import java.util.concurrent.ConcurrentHashMap
 import top.yogiczy.mytv.core.data.R
+import top.yogiczy.mytv.core.data.repositories.FileCacheRepository
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 class JSEngine : Loggable("JSEngine"){
@@ -45,7 +47,20 @@ class JSEngine : Loggable("JSEngine"){
             })
             mytv.setProperty("post", JSCallFunction { args ->
                 val url = args.getOrNull(0)?.toString() ?: throw Exception("URL is required")
-                val headers = args.getOrNull(1) as? Map<String, String> ?: emptyMap()
+                val headersArray = args.getOrNull(1) as? JSArray
+                val headers: Map<String, String> = if (headersArray != null) {
+                    val map = mutableMapOf<String, String>()
+                    for (i in 0 until headersArray.length()) {
+                        val item = headersArray.get(i) as? String
+                        if (item != null && item.contains(":")) {
+                            val (key, value) = item.split(":", limit = 2).map { it.trim() }
+                            map[key] = value
+                        }
+                    }
+                    map
+                } else {
+                    emptyMap()
+                }
                 val body = args.getOrNull(2)?.toString() ?: throw Exception("Body is required")
                 var responseBody = ""
                 try {
@@ -68,7 +83,20 @@ class JSEngine : Loggable("JSEngine"){
             })
             mytv.setProperty("get", JSCallFunction { args ->
                 val url = args.getOrNull(0)?.toString() ?: throw Exception("URL is required")
-                val headers = args.getOrNull(1) as? Map<String, String> ?: emptyMap()
+                val headersArray = args.getOrNull(1) as? JSArray
+                val headers: Map<String, String> = if (headersArray != null) {
+                    val map = mutableMapOf<String, String>()
+                    for (i in 0 until headersArray.length()) {
+                        val item = headersArray.get(i) as? String
+                        if (item != null && item.contains(":")) {
+                            val (key, value) = item.split(":", limit = 2).map { it.trim() }
+                            map[key] = value
+                        }
+                    }
+                    map
+                } else {
+                    emptyMap()
+                }
                 var responseBody = ""
                 try {
                     val client = okhttp3.OkHttpClient()
@@ -84,6 +112,25 @@ class JSEngine : Loggable("JSEngine"){
                     throw Exception("Failed to get data from $url: ${e.message}", e)
                 }
                 return@JSCallFunction responseBody
+            })
+            mytv.setProperty("fileExists", JSCallFunction { args ->
+                val filePath = args.getOrNull(0)?.toString() ?: throw Exception("File path is required")
+                return@JSCallFunction kotlinx.coroutines.runBlocking {
+                    JSEngineCacheRepository(filePath).exists()   
+                }
+            })
+            mytv.setProperty("readFile", JSCallFunction { args ->
+                val filePath = args.getOrNull(0)?.toString() ?: throw Exception("File path is required")
+                return@JSCallFunction kotlinx.coroutines.runBlocking {
+                    JSEngineCacheRepository(filePath).get()
+                }
+            })
+            mytv.setProperty("writeFile", JSCallFunction { args ->
+                val filePath = args.getOrNull(0)?.toString() ?: throw Exception("File path is required")
+                val content = args.getOrNull(1)?.toString() ?: throw Exception("Content is required")
+                return@JSCallFunction kotlinx.coroutines.runBlocking {
+                    JSEngineCacheRepository(filePath).set(content)
+                }
             })
             globalObj.setProperty("mytv", mytv)
             val jsStrCrypto = Globals.resources.openRawResource(R.raw.crypto_js).bufferedReader()
@@ -127,4 +174,22 @@ class JSEngine : Loggable("JSEngine"){
             }
             return@withContext result.getOrNull() ?: ""
         }
+}
+
+class JSEngineCacheRepository(
+    private val fileName: String,
+    private val isFullPath: Boolean = false,
+) : FileCacheRepository(fileName, isFullPath) {
+
+    private val log = Logger.create("JSEngineCacheRepository")
+
+    suspend fun exists(): Boolean = withContext(Dispatchers.IO) {
+        return@withContext cacheExists()
+    }
+    suspend fun get(): String? = withContext(Dispatchers.IO) {
+        return@withContext getCacheData()
+    }
+    suspend fun set(data: String) = withContext(Dispatchers.IO) {
+        return@withContext setCacheData(data)
+    }
 }
