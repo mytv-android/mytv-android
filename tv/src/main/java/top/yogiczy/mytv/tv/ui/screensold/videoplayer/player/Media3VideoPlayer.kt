@@ -539,7 +539,7 @@ class Media3VideoPlayer(
                 }
                 .mapNotNull { it }
                 .mapIndexed { index, metadata ->
-                    metadata.copy(index = index)
+                    metadata.copy(index = index, language = metadata.language ?: "unknown $index")
                 }
 
             metadata = metadata.copy(
