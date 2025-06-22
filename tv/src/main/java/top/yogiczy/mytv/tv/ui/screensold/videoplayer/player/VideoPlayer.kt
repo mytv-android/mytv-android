@@ -39,15 +39,15 @@ abstract class VideoPlayer(
 
     suspend fun getPlayableData(line: ChannelLine): ExtractedPlayData? {
         var uri = line.playableUrl
-        var sdata = ""
-        uri.split("?").let { parts ->
-            if (parts.size > 1) {
-                uri = parts[0]
-                sdata = parts[1]
-            }
-        }
         var headers = emptyMap<String, String>()
         if (line.hybridType == ChannelLine.HybridType.JavaScript) {
+            var sdata = ""
+            uri.split("?").let { parts ->
+                if (parts.size > 1) {
+                    uri = parts[0]
+                    sdata = parts[1]
+                }
+            }
             // 解析JavaScript链接
             val jsCode = try {
                 withContext(Dispatchers.IO) {
