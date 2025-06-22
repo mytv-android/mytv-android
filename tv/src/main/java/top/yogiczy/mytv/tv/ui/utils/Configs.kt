@@ -236,6 +236,9 @@ object Configs {
         /** 播放器 加载超时 */
         VIDEO_PLAYER_LOAD_TIMEOUT,
 
+        /** 播放器 HLS 允许无块准备 */
+        VIDEO_PLAYER_HLS_ALLOW_CHUNKLESS_PREPARATION,
+
         /** 播放器 缓存加载时间 */
         VIDEO_PLAYER_BUFFER_TIME,
 
@@ -692,6 +695,11 @@ object Configs {
         )
         set(value) = SP.putInt(KEY.VIDEO_PLAYER_RENDER_MODE.name, value.value)
 
+    /** 播放器 HLS 允许无块准备 */
+    var videoPlayerHlsAllowChunklessPreparation: Boolean
+        get() = SP.getBoolean(KEY.VIDEO_PLAYER_HLS_ALLOW_CHUNKLESS_PREPARATION.name, false)
+        set(value) = SP.putBoolean(KEY.VIDEO_PLAYER_HLS_ALLOW_CHUNKLESS_PREPARATION.name, value)
+
     /** 播放器 自定义ua */
     var videoPlayerUserAgent: String
         get() = SP.getString(KEY.VIDEO_PLAYER_USER_AGENT.name, "").ifBlank {
@@ -984,6 +992,7 @@ object Configs {
             videoPlayerUserAgent = videoPlayerUserAgent,
             videoPlayerHeaders = videoPlayerHeaders,
             videoPlayerLoadTimeout = videoPlayerLoadTimeout,
+            videoPlayerHlsAllowChunklessPreparation = videoPlayerHlsAllowChunklessPreparation,
             videoPlayerBufferTime = videoPlayerBufferTime,
             videoPlayerDisplayMode = videoPlayerDisplayMode,
             videoPlayerForceSoftDecode = videoPlayerForceSoftDecode,
@@ -1078,6 +1087,7 @@ object Configs {
         configs.videoPlayerUserAgent?.let { videoPlayerUserAgent = it }
         configs.videoPlayerHeaders?.let { videoPlayerHeaders = it }
         configs.videoPlayerLoadTimeout?.let { videoPlayerLoadTimeout = it }
+        configs.videoPlayerHlsAllowChunklessPreparation?.let { videoPlayerHlsAllowChunklessPreparation = it }
         configs.videoPlayerBufferTime?.let { videoPlayerBufferTime = it }
         configs.videoPlayerDisplayMode?.let { videoPlayerDisplayMode = it }
         configs.videoPlayerForceSoftDecode?.let { videoPlayerForceSoftDecode = it }
@@ -1170,6 +1180,7 @@ object Configs {
         val videoPlayerUserAgent: String? = null,
         val videoPlayerHeaders: String? = null,
         val videoPlayerLoadTimeout: Long? = null,
+        val videoPlayerHlsAllowChunklessPreparation: Boolean? = null,
         val videoPlayerBufferTime: Long? = null,
         val videoPlayerDisplayMode: VideoPlayerDisplayMode? = null,
         val videoPlayerForceSoftDecode: Boolean? = null,

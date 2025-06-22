@@ -21,6 +21,8 @@ import top.yogiczy.mytv.tv.ui.utils.focusOnLaunchedSaveable
 import top.yogiczy.mytv.tv.ui.utils.handleKeyEvents
 import top.yogiczy.mytv.tv.ui.utils.ifElse
 import kotlin.math.max
+import top.yogiczy.mytv.tv.R
+import androidx.compose.ui.res.stringResource
 
 @Composable
 fun SubtitleTrackItemList(
@@ -39,7 +41,7 @@ fun SubtitleTrackItemList(
             .distinctUntilChanged()
             .collect { _ -> onUserAction() }
     }
-
+    val closeText = stringResource(R.string.ui_video_player_track_closed)
     LazyColumn(
         modifier = modifier,
         state = listState,
@@ -56,7 +58,7 @@ fun SubtitleTrackItemList(
                     .handleKeyEvents(onSelect = { onSelected(null) }),
                 selected = false,
                 onClick = {},
-                headlineContent = { Text("关闭") },
+                headlineContent = { Text(closeText) },
                 trailingContent = {
                     RadioButton(selected = trackList.all { it.isSelected != true }, onClick = {})
                 },

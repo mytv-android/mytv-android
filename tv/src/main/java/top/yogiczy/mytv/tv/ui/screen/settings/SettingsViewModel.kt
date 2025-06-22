@@ -580,6 +580,15 @@ class SettingsViewModel : ViewModel() {
             afterSetWhenCloudSyncAutoPull()
         }
 
+    private var _videoPlayerHlsAllowChunklessPreparation by mutableStateOf(false)
+    var videoPlayerHlsAllowChunklessPreparation: Boolean
+        get() = _videoPlayerHlsAllowChunklessPreparation
+        set(value) {
+            _videoPlayerHlsAllowChunklessPreparation = value
+            Configs.videoPlayerHlsAllowChunklessPreparation = value
+            afterSetWhenCloudSyncAutoPull()
+        }
+
     private var _videoPlayerStopPreviousMediaItem by mutableStateOf(false)
     var videoPlayerStopPreviousMediaItem: Boolean
         get() = _videoPlayerStopPreviousMediaItem
@@ -907,6 +916,7 @@ class SettingsViewModel : ViewModel() {
         _videoPlayerBufferTime = Configs.videoPlayerBufferTime
         _videoPlayerDisplayMode = Configs.videoPlayerDisplayMode
         _videoPlayerForceSoftDecode = Configs.videoPlayerForceSoftDecode
+        _videoPlayerHlsAllowChunklessPreparation = Configs.videoPlayerHlsAllowChunklessPreparation
         _videoPlayerStopPreviousMediaItem = Configs.videoPlayerStopPreviousMediaItem
         _videoPlayerSkipMultipleFramesOnSameVSync = Configs.videoPlayerSkipMultipleFramesOnSameVSync
         _videoPlayerSupportTSHighProfile = Configs.videoPlayerSupportTSHighProfile

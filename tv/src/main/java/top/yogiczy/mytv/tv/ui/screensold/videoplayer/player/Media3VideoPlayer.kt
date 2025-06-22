@@ -35,6 +35,7 @@ import androidx.media3.exoplayer.drm.LocalMediaDrmCallback
 import androidx.media3.exoplayer.drm.HttpMediaDrmCallback
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.hls.DefaultHlsExtractorFactory
 import androidx.media3.exoplayer.rtsp.RtspMediaSource
 import androidx.media3.exoplayer.smoothstreaming.SsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
@@ -198,6 +199,7 @@ class Media3VideoPlayer(
                 }
             }
             if (mimeType != null) {
+                logger.i("使用默认媒体源工厂: $mimeType")
                 val mediaItem = MediaItem.Builder().setUri(uri)
                                         .setMimeType(mimeType)
                                         .build()
@@ -239,12 +241,14 @@ class Media3VideoPlayer(
                 contentTypeForce = C.CONTENT_TYPE_OTHER
             }
         }
-        
-        return when (contentTypeForce ?: Util.inferContentType(uri)) {
+        val contentType = contentTypeForce ?: Util.inferContentType(uri)
+        logger.i("使用自定义媒体源工厂: $contentType")
+        return when (contentType) {
             C.CONTENT_TYPE_HLS -> {
                 HlsMediaSource.Factory(dataSourceFactory)
                     .apply {
-                        setAllowChunklessPreparation(true)
+                        setAllowChunklessPreparation(Configs.videoPlayerHlsAllowChunklessPreparation)
+                        setExtractorFactory(DefaultHlsExtractorFactory())
                     }
                     .createMediaSource(mediaItem)
             }
@@ -252,88 +256,73 @@ class Media3VideoPlayer(
             C.CONTENT_TYPE_DASH -> {
                 DashMediaSource.Factory(dataSourceFactory)
                     .apply {
-                        if (currentChannelLine.licenseKey == null)
-                            return@apply
-                        
-                        runCatching {
-                            when {
-                                currentChannelLine.licenseType?.contains("clearkey", true) == true -> {
-                                    val (drmKeyId, drmKey) = currentChannelLine.licenseKey!!.split(":")
-                                    val encodedDrmKey = Base64.encodeToString(
-                                        drmKey.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
-                                        Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
-                                    )
-                                    val encodedDrmKeyId = Base64.encodeToString(
-                                        drmKeyId.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
-                                        Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
-                                    )
-                                    val drmBody =
-                                        "{\"keys\":[{\"kty\":\"oct\",\"k\":\"${encodedDrmKey}\",\"kid\":\"${encodedDrmKeyId}\"}],\"type\":\"temporary\"}"
-
-                                    val drmCallback = LocalMediaDrmCallback(drmBody.toByteArray())
-                                    val drmSessionManager = DefaultDrmSessionManager.Builder()
-                                        .setMultiSession(true)
-                                        .setUuidAndExoMediaDrmProvider(
-                                            C.CLEARKEY_UUID,
-                                            FrameworkMediaDrm.DEFAULT_PROVIDER
-                                        )
-                                        .build(drmCallback)
-                                    setDrmSessionManagerProvider { drmSessionManager }
-                                }
-                                currentChannelLine.licenseType?.contains("widevine", true) == true -> {
-                                    val drmCallback = if (currentChannelLine.licenseKey!!.startsWith("http")) {
-                                        HttpMediaDrmCallback(
-                                            currentChannelLine.licenseKey,
-                                            dataSourceFactory
-                                        )
-                                    } else {
-                                        LocalMediaDrmCallback((currentChannelLine.licenseKey ?: "").toByteArray())
-                                    }
-                                    val drmSessionManager = DefaultDrmSessionManager.Builder()
-                                        .setMultiSession(true)
-                                        .setUuidAndExoMediaDrmProvider(
-                                            C.WIDEVINE_UUID,
-                                            FrameworkMediaDrm.DEFAULT_PROVIDER
-                                        )
-                                        .build(drmCallback)
-                                    setDrmSessionManagerProvider { drmSessionManager }
-                                }
-                                currentChannelLine.licenseType?.contains("playready", true) == true -> {
-                                    val drmCallback = if (currentChannelLine.licenseKey!!.startsWith("http")) {
-                                        HttpMediaDrmCallback(
-                                            currentChannelLine.licenseKey,
-                                            dataSourceFactory
-                                        )
-                                    } else {
-                                        LocalMediaDrmCallback((currentChannelLine.licenseKey ?: "").toByteArray())
-                                    }
-                                    val drmSessionManager = DefaultDrmSessionManager.Builder()
-                                        .setMultiSession(true)
-                                        .setUuidAndExoMediaDrmProvider(
-                                            C.PLAYREADY_UUID,
-                                            FrameworkMediaDrm.DEFAULT_PROVIDER
-                                        )
-                                        .build(drmCallback)
-                                    setDrmSessionManagerProvider { drmSessionManager }
-                                }
-                                else -> {
-                                    triggerError(
-                                        PlaybackException(
-                                            "MEDIA3_ERROR_UNSUPPORTED_DRM_TYPE: ${currentChannelLine.licenseType}",
-                                            10086
-                                        )
-                                    )
-                                }
+                        runCatching{
+                            if (currentChannelLine.licenseKey == null)
+                                return@apply
+                            val uuid = when {
+                                currentChannelLine.licenseType?.contains("clearkey", true) == true -> C.CLEARKEY_UUID
+                                currentChannelLine.licenseType?.contains("widevine", true) == true -> C.WIDEVINE_UUID
+                                currentChannelLine.licenseType?.contains("playready", true) == true -> C.PLAYREADY_UUID
+                                else -> C.UUID_NIL
                             }
-                        }
-                            .onFailure {
+                            if (uuid == C.UUID_NIL ||( ! FrameworkMediaDrm.isCryptoSchemeSupported(uuid))) {
                                 triggerError(
                                     PlaybackException(
-                                        "MEDIA3_ERROR_DRM_LICENSE_EXPIRED",
-                                        androidx.media3.common.PlaybackException.ERROR_CODE_DRM_LICENSE_EXPIRED
+                                        "MEDIA3_ERROR_UNSUPPORTED_DRM_TYPE: ${currentChannelLine.licenseType}",
+                                        11086
                                     )
                                 )
+                                return@apply
                             }
+                            var licenseKey = currentChannelLine.licenseKey
+                            if (licenseKey == null || licenseKey.isEmpty()) {
+                                triggerError(
+                                    PlaybackException(
+                                        "MEDIA3_ERROR_DRM_LICENSE_KEY_EMPTY",
+                                        12306
+                                    )
+                                )
+                                return@apply
+                            }
+                            val drmCallback = when {
+                                (uuid == C.CLEARKEY_UUID) && !licenseKey.startsWith("http") -> {
+                                    if(!(licenseKey.startsWith("{") && licenseKey.endsWith("}"))) {
+                                        val (drmKeyId, drmKey) = licenseKey!!.split(":")
+                                        val encodedDrmKey = Base64.encodeToString(
+                                            drmKey.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
+                                            Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
+                                        )
+                                        val encodedDrmKeyId = Base64.encodeToString(
+                                            drmKeyId.chunked(2).map { it.toInt(16).toByte() }.toByteArray(),
+                                            Base64.URL_SAFE or Base64.NO_PADDING or Base64.NO_WRAP
+                                        )
+                                        licenseKey =
+                                            "{\"keys\":[{\"kty\":\"oct\",\"k\":\"${encodedDrmKey}\",\"kid\":\"${encodedDrmKeyId}\"}],\"type\":\"temporary\"}"
+
+                                    }
+                                    LocalMediaDrmCallback(licenseKey.toByteArray())
+                                }
+                                else -> HttpMediaDrmCallback(
+                                    licenseKey,
+                                    dataSourceFactory
+                                )
+                            }
+                            val drmSessionManager = DefaultDrmSessionManager.Builder()
+                                .setUuidAndExoMediaDrmProvider(uuid, FrameworkMediaDrm.DEFAULT_PROVIDER)
+                                .setMultiSession(
+                                    uuid != C.CLEARKEY_UUID
+                                )
+                                .build(drmCallback)
+                            setDrmSessionManagerProvider { drmSessionManager }
+                        }
+                        .onFailure {
+                            triggerError(
+                                PlaybackException(
+                                    "MEDIA3_ERROR_DRM_LICENSE_EXPIRED",
+                                    androidx.media3.common.PlaybackException.ERROR_CODE_DRM_LICENSE_EXPIRED
+                                )
+                            )
+                        }
                     }
                     .createMediaSource(mediaItem)
             }
@@ -539,7 +528,7 @@ class Media3VideoPlayer(
                 }
                 .mapNotNull { it }
                 .mapIndexed { index, metadata ->
-                    metadata.copy(index = index, language = metadata.language ?: "unknown $index")
+                    metadata.copy(index = index, language = metadata.language ?: "Unknown$index")
                 }
 
             metadata = metadata.copy(
@@ -742,17 +731,21 @@ class Media3VideoPlayer(
     }
     
     override fun selectSubtitleTrack(track: Metadata.Subtitle?) {
-        if (track?.language == null) {  
+        if (track?.index == null) {
+            logger.i("关闭字幕")
             videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
                 .buildUpon()
                 .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true)
                 .build()
             return
         }
+        logger.i("选择字幕: ${track.language}")
+        val (group, trackIndex) = track.index.fromIndexFindTrack(C.TRACK_TYPE_TEXT)
         videoPlayer.trackSelectionParameters = videoPlayer.trackSelectionParameters
             .buildUpon()
             .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, false)
-            .setPreferredTextLanguage(track.language)
+            .setOverrideForType(TrackSelectionOverride(group, trackIndex))
+            // .setPreferredTextLanguage(track.language)
             .build()
     }
 

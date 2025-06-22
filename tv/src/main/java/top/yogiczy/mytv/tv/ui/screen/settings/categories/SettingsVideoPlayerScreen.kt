@@ -111,6 +111,20 @@ fun SettingsVideoPlayerScreen(
 
         item {
             SettingsListItem(
+                headlineContent = stringResource(R.string.ui_player_view_hls_allow_chunkless_preparation),
+                supportingContent = stringResource(R.string.ui_player_view_hls_allow_chunkless_preparation_desc),
+                trailingContent = {
+                    Switch(settingsViewModel.videoPlayerHlsAllowChunklessPreparation, null)
+                },
+                onSelect = {
+                    settingsViewModel.videoPlayerHlsAllowChunklessPreparation =
+                        !settingsViewModel.videoPlayerHlsAllowChunklessPreparation
+                },
+            )
+        }
+
+        item {
+            SettingsListItem(
                 headlineContent = stringResource(R.string.ui_player_view_extract_header_from_link),
                 supportingContent = stringResource(R.string.ui_player_view_extract_header_from_link_desc),
                 trailingContent = {

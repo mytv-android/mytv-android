@@ -357,4 +357,7 @@
     <string name="ui_epg_item_tomorrow">明天</string>
     <string name="ui_epg_item_day_after_tomorrow">后天</string>
     <string name="ui_x5_core_preload_not_supported">X5内核不可用，将进行初始化。已切换为系统内核</string>
+    <string name="ui_player_view_hls_allow_chunkless_preparation">HLS 允许无块准备</string>
+    <string name="ui_player_view_hls_allow_chunkless_preparation_desc">允许Media3在播放 HLS 视频时启用无块准备以减少缓冲时间，启用此选项可能导致无法检测到嵌入的字幕</string>   
+    <string name="ui_video_player_track_closed">关闭</string>
 </resources>
