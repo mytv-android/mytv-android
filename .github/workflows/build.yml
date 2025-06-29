@@ -1,0 +1,189 @@
+name: Kotlin CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: '发布类型'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+        - stable
+        - beta
+        - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Set branch by release_type
+      id: set_branch
+      run: |
+        if [ "${{ github.event.inputs.release_type }}" = "stable" ]; then
+          echo "branch=main" >> $GITHUB_ENV
+        elif [ "${{ github.event.inputs.release_type }}" = "beta" ]; then
+          echo "branch=beta" >> $GITHUB_ENV
+        else
+          echo "branch=dev" >> $GITHUB_ENV
+        fi
+
+    - name: Checkout code from mytv-Internal
+      if: github.event_name == 'workflow_dispatch'
+      uses: actions/checkout@v4
+      with:
+        repository: 'mytv-android/mytv-Internal'
+        ref: ${{ env.branch }}
+        fetch-depth: 0
+        submodules: 'true'
+        token: ${{ secrets.INTERNAL_REPO_TOKEN }}
+    
+    - name: Init Empty Changelog
+      run: |
+          {
+            echo "changelog<<EOF"
+            echo "## Changelog"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+    - name: Get changelog
+      id: changelog
+      run: |
+        echo "changelog<<EOF" >> $GITHUB_ENV
+        cat change.log >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+    
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Add signing properties
+      run: |
+          echo ${{ secrets.SIGNING_PROPERTIES }} > encoded_signing_properties
+          base64 -d -i encoded_signing_properties > signing.properties
+
+    - name: Add jks file
+      run: |
+          echo ${{ secrets.SIGN_KEY }} > ./encoded_key
+          base64 -d -i encoded_key > keystore.jks
+      
+    - name: Set build type
+      run: |
+        if [ "${{ github.event.inputs.release_type }}" = "stable" ] || [ "${{ github.event.inputs.release_type }}" = "beta" ]; then
+          echo "build_type=release" >> $GITHUB_ENV
+        else
+          echo "build_type=debug" >> $GITHUB_ENV
+        fi
+
+    - name: Build with Gradle (Release)
+      if: github.event.inputs.release_type == 'stable' || github.event.inputs.release_type == 'beta'
+      env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+            VERSION_CODE: ${{ github.run_number }}
+      run: ./gradlew :tv:assembleRelease
+    
+    - name: Build with Gradle (Debug)
+      if: github.event.inputs.release_type == 'dev'
+      env:
+            SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+            VERSION_CODE: ${{ github.run_number }}
+      run: ./gradlew :tv:assembleDebug --warning-mode=all
+
+    - name: Move Metadata (Dev)
+      if: github.event.inputs.release_type == 'dev'
+      run: |
+        mv tv/build/outputs/apk/original/debug/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+
+    - name: Move Metadata (Release)
+      if: github.event.inputs.release_type == 'stable' || github.event.inputs.release_type == 'beta'
+      run: |
+        mv tv/build/outputs/apk/original/release/output-metadata.json tv/build/outputs/apk/release/output-metadata.json
+
+    - name: Read apk output metadata
+      id: apk-meta-release
+      uses: juliangruber/read-file-action@v1
+      with:
+        path: tv/build/outputs/apk/release/output-metadata.json
+
+    - name: Parse apk infos
+      run: |
+        echo "info_version_code=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionCode }}" >> $GITHUB_ENV
+        echo "info_version_name=${{ fromJson(steps.apk-meta-release.outputs.content).elements[0].versionName }}" >> $GITHUB_ENV
+    
+    - name: Gen Tag(Release)
+      if: github.event.inputs.release_type == 'stable'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvstable" >> $GITHUB_ENV
+    
+    - name: Gen Tag(Beta)
+      if: github.event.inputs.release_type == 'beta'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （测试版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvbeta" >> $GITHUB_ENV
+
+    - name: Gen Tag(Dev)
+      if: github.event.inputs.release_type == 'dev'
+      run: |
+        echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
+        echo "gitee_repo=mytvdev" >> $GITHUB_ENV
+        
+    - name: Publish Release
+      if: github.event.inputs.release_type == 'stable'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+            tv/build/outputs/apk/release/*all*disguised.apk
+            tv/build/outputs/apk/release/*original.apk
+        tag_name: V${{ env.info_version_name }}
+        name: ${{ env.release_title }}
+        body: ${{ env.changelog }}
+        generate_release_notes: true
+        make_latest: true
+
+    - name: Publish Pre-Release
+      if: github.repository == 'mytv-android/mytv-android'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+            tv/build/outputs/apk/release/*all*disguised.apk
+            tv/build/outputs/apk/release/*original.apk
+        tag_name: V${{ env.info_version_name }}
+        name: ${{ env.release_title }}
+        body: ${{ env.changelog }}
+        generate_release_notes: true
+        prerelease: true
+      
+    - name: create gitee release
+      if: github.repository == 'mytv-android/mytv-android'
+      id: create_release 
+      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
+      with:
+        gitee_owner: mytv-android
+        gitee_repo: ${{ env.gitee_repo }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
+        gitee_tag_name: V${{ env.info_version_name }}
+        gitee_release_name: ${{ env.release_title }}
+        gitee_release_body: ${{ env.changelog }}
+        gitee_target_commitish: master
+
+    - name: upload file to gitee release
+      if: github.repository == 'mytv-android/mytv-android'
+      uses: nicennnnnnnlee/action-gitee-release@v1.0.5
+      with:
+        gitee_owner: mytv-android
+        gitee_repo: ${{ env.gitee_repo }}
+        gitee_token: ${{ secrets.GITEE_TOKEN }}
+        gitee_release_id: ${{ steps.create_release.outputs.release-id }}
+        gitee_upload_retry_times:  3
+        gitee_files: |
+            tv/build/outputs/apk/release/*all*original.apk
