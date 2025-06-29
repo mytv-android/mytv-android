@@ -46,6 +46,13 @@ You can download releases from the right sidebar or clone the code and build loc
 - Only supports Android 5.0 and above.
 - Only tested on my own TV, stability on other devices is unknown.
 
+## Participate in the development
+
+Due to the large number of distributions (Star:Fork ratio is 5:1) and these distributors cannot solve the feedback of their channel users by themselves, the project will no longer open the source code.
+
+However, if you are interested, you can still apply to participate in the development. We maintain a branch within the organization, and all developers with access rights can view, edit and submit.
+
+You can contact us through issues.
 
 ## Information (Chinese language only)
 

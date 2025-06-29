@@ -1,4 +1,4 @@
-name: Kotlin CI
+name: Release CI
 
 on:
   workflow_dispatch:
@@ -49,11 +49,11 @@ jobs:
 
     - name: Get changelog
       id: changelog
-      run: |
+      run:  |
         echo "changelog<<EOF" >> $GITHUB_ENV
-        cat change.log >> $GITHUB_ENV
+        cat change.log >> $GITHUB_ENV || true
         echo "EOF" >> $GITHUB_ENV
-    
+
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
@@ -147,11 +147,11 @@ jobs:
         tag_name: V${{ env.info_version_name }}
         name: ${{ env.release_title }}
         body: ${{ env.changelog }}
-        generate_release_notes: true
+        generate_release_notes: false
         make_latest: true
 
     - name: Publish Pre-Release
-      if: github.repository == 'mytv-android/mytv-android'
+      if: github.event.inputs.release_type == 'beta' || github.event.inputs.release_type == 'dev'
       uses: softprops/action-gh-release@v2
       with:
         files: |
@@ -160,7 +160,7 @@ jobs:
         tag_name: V${{ env.info_version_name }}
         name: ${{ env.release_title }}
         body: ${{ env.changelog }}
-        generate_release_notes: true
+        generate_release_notes: false
         prerelease: true
       
     - name: create gitee release
