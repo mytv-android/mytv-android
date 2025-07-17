@@ -144,6 +144,8 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*all*disguised.apk
             tv/build/outputs/apk/release/*original.apk
+            tv/build/outputs/apk/release/*armeabi*x5offline.apk
+            tv/build/outputs/apk/release/*arm64*x5offline.apk
         tag_name: V${{ env.info_version_name }}
         name: ${{ env.release_title }}
         body: ${{ env.changelog }}
@@ -157,6 +159,8 @@ jobs:
         files: |
             tv/build/outputs/apk/release/*all*disguised.apk
             tv/build/outputs/apk/release/*original.apk
+            tv/build/outputs/apk/release/*armeabi*x5offline.apk
+            tv/build/outputs/apk/release/*arm64*x5offline.apk
         tag_name: V${{ env.info_version_name }}
         name: ${{ env.release_title }}
         body: ${{ env.changelog }}
