@@ -190,4 +190,6 @@ jobs:
         gitee_release_id: ${{ steps.create_release.outputs.release-id }}
         gitee_upload_retry_times:  3
         gitee_files: |
-            tv/build/outputs/apk/release/*all*original.apk
+            tv/build/outputs/apk/release/*armeabi-v7a*original.apk
+            tv/build/outputs/apk/release/*arm64-v8a*original.apk
+            tv/build/outputs/apk/release/*x86*original.apk
