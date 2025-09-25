@@ -1,0 +1,39 @@
+name: 功能请求 (Feature Request)
+description: 对于功能的一些建议 (Some suggestions for features)
+title: "功能请求 (Feature Request)："
+type: feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先在issue中搜索（含已关闭的issue），确认所提出的建议未被提出过。(Please search in issues (including closed issues) to confirm that the suggestion has not been raised before.)
+        ⚠️ 警告：未按本模板填写或缺少关键信息的 Issue 将被直接关闭。  
+        ⚠️ Warning: Issues not following this template or missing key information will be closed.
+  - type: textarea
+    attributes:
+      label: 功能描述 (Feature Description)
+      description: 请提供对所请求功能的清晰描述。(Please provide a clear description of the requested feature.)
+      placeholder: 功能描述 (Feature Description)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 目标 (Goal)
+      description: 请描述你希望通过这个功能实现的目标。(Please describe the goal you hope to achieve with this feature.)
+      placeholder: 目标 (Goal)
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 解决方案 (Solution)
+      description: 如果你有任何关于如何实现这个功能的想法或建议，请在这里提供。(If you have any ideas or suggestions on how to implement this feature, please write them down here.)
+      placeholder: 解决方案 (Solution)
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: 其他补充信息 (Other Information)
+      description: 在这里可以提供其他相关信息。(You can provide other relevant information here.)
+      placeholder: 其他补充信息 (Other Information)
+    validations:
+      required: false
