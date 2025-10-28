@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        请使用最新的测试版反馈bug，在反馈前先在issue中搜索，不要重复反馈。 (Please use the latest beta version to report bugs. Search the issues before reporting to avoid duplicates.)
+        请使用最新的预览版反馈bug，在反馈前先在issue中搜索，不要重复反馈。 (Please use the latest beta version to report bugs. Search the issues before reporting to avoid duplicates.)
         ⚠️ 警告：未按本模板填写或缺少关键信息的 Issue 将被直接关闭。  
         ⚠️ Warning: Issues not following this template or missing key information will be closed.
   - type: textarea

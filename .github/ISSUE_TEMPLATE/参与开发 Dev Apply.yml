@@ -1,0 +1,17 @@
+name: 开发权限申请 (Dev Apply)
+description: 申请加入开发团队 (Apply to join the developer program)
+title: "开发权限申请 (Dev Apply)："
+type: task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        由于项目开源后一些分支对代码进行了修改，但不能对修改后版本的用户反馈进行响应，导致这些用户在本项目仓库中反馈，为开发工作带来混乱。此外为了规避一些法律风险（如一些分支会内置非授权的视频源）本项目不再公开发布源代码。
+        如果您有兴趣参与项目工作，您仍然可以填写本表单申请加入团队并获取内部分支权限。
+  - type: textarea
+    attributes:
+      label: 申请简述 (Application Summary)
+      description: 请简单描述您的相关经验，以及对于本项目感兴趣的部分。 (Please briefly describe your relevant experience and the parts of this project that interest you.)
+      placeholder: 申请简述 (Application Summary)
+    validations:
+      required: true

@@ -36,7 +36,7 @@ jobs:
         repository: 'mytv-android/mytv-Internal'
         ref: ${{ env.branch }}
         fetch-depth: 0
-        submodules: 'true'
+        submodules: 'recursive'
         token: ${{ secrets.INTERNAL_REPO_TOKEN }}
     
     - name: Init Empty Changelog
@@ -122,19 +122,19 @@ jobs:
     - name: Gen Tag(Release)
       if: github.event.inputs.release_type == 'stable'
       run: |
-        echo "release_title=V${{ env.info_version_name }} （稳定版）" >> $GITHUB_ENV
+        echo "release_title=V${{ env.info_version_name }} 稳定版本" >> $GITHUB_ENV
         echo "gitee_repo=mytvstable" >> $GITHUB_ENV
     
     - name: Gen Tag(Beta)
       if: github.event.inputs.release_type == 'beta'
       run: |
-        echo "release_title=V${{ env.info_version_name }} （测试版）" >> $GITHUB_ENV
+        echo "release_title=V${{ env.info_version_name }} 预览版本" >> $GITHUB_ENV
         echo "gitee_repo=mytvbeta" >> $GITHUB_ENV
 
     - name: Gen Tag(Dev)
       if: github.event.inputs.release_type == 'dev'
       run: |
-        echo "release_title=V${{ env.info_version_name }} （开发版）" >> $GITHUB_ENV
+        echo "release_title=V${{ env.info_version_name }} 开发版本" >> $GITHUB_ENV
         echo "gitee_repo=mytvdev" >> $GITHUB_ENV
         
     - name: Publish Release
