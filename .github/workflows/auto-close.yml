@@ -1,0 +1,23 @@
+name: Close inactive issues
+on:
+  schedule:
+    - cron: "30 1 * * *"
+
+jobs:
+  close-issues:
+    name: Close inactive issues
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/stale@v5
+        with:
+          days-before-issue-stale: 3
+          days-before-issue-close: 4
+          days-before-pr-stale: -1
+          only-issue-labels: "more info needed"
+          close-issue-label: "won't fix: no enough details"
+          stale-issue-label: "stale : more info needed"
+          stale-issue-message: "该 issue 将关闭，因为作者已有 3 天没有任何回应"
+          close-issue-message: "该 issue 已关闭，因为它在被标记后 4 天依旧没有任何回应"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
