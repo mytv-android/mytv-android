@@ -44,13 +44,15 @@
 
 ## 下载
 
-可以通过右侧release进行下载或拉取代码到本地进行编译
+可以通过右侧release进行下载
 
-## 说明
-
-- 仅支持Android5及以上
-- 只在自家电视上测过，其他电视稳定性未知
-
+## 姊妹项目
+- [北京卫视订阅源] (https://github.com/mytv-android/BRTV-Live-M3U8)
+- [部分地方台订阅源] (https://github.com/mytv-android/China-TV-Live-M3U8)
+- [节目单项目] (https://github.com/mytv-android/myEPG)
+- [频道标志项目] (https://github.com/mytv-android/myTVlogo)
+- [JS订阅源] (https://github.com/mytv-android/mytvJS)
+- [migu订阅源项目] (https://github.com/mytv-android/myMIGU)
 ## 参与开发
 
 由于项目开源引来大量的分发（Star:Fork 比例为 5:1），且这些分发者不能自行解决其渠道用户的反馈，项目目前将不再公开源代码。

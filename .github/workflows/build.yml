@@ -88,7 +88,10 @@ jobs:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
-      run: ./gradlew :tv:assembleRelease  --stacktrace --info
+      run: |
+        ./gradlew :tv:assembleRelease --stacktrace --info
+        ./gradlew tv:copyAndRenameOriginalReleaseApk
+        ./gradlew tv:copyAndRenameDisguisedReleaseApk
     
     - name: Build with Gradle (Debug)
       if: github.event.inputs.release_type == 'dev'
@@ -96,7 +99,10 @@ jobs:
             SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
             SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
             VERSION_CODE: ${{ github.run_number }}
-      run: ./gradlew :tv:assembleDebug --warning-mode=all  --stacktrace --info
+      run: |
+        ./gradlew :tv:assembleDebug --warning-mode=all
+        ./gradlew tv:copyAndRenameOriginalDebugApk
+        ./gradlew tv:copyAndRenameDisguisedDebugApk
 
     - name: Move Metadata (Dev)
       if: github.event.inputs.release_type == 'dev'
