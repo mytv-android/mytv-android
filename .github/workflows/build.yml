@@ -97,7 +97,7 @@ jobs:
         ./gradlew :tv:assembleRelease --stacktrace --info
         ./gradlew tv:copyAndRenameOriginalReleaseApk
         ./gradlew tv:copyAndRenameDisguisedReleaseApk
-        ./gradlew tv:copyAndRenamex5offlineReleaseApk
+        ./gradlew tv:copyAndRenameX5offlineReleaseApk
     
     - name: Build with Gradle (Debug)
       if: github.event.inputs.release_type == 'dev'
@@ -109,7 +109,7 @@ jobs:
         ./gradlew :tv:assembleDebug --warning-mode=all
         ./gradlew tv:copyAndRenameOriginalDebugApk
         ./gradlew tv:copyAndRenameDisguisedDebugApk
-        ./gradlew tv:copyAndRenamex5offlineDebugApk
+        ./gradlew tv:copyAndRenameX5offlineDebugApk
 
     - name: Move Metadata (Dev)
       if: github.event.inputs.release_type == 'dev'
