@@ -64,11 +64,11 @@ For communication (this group is generally not for bug feedback or suggestions, 
 
 ## Star History
 
-<a href="https://www.star-history.com/#mytv-android/mytv-android&Date">
+<a href="https://star-history.dera.page/#mytv-android/mytv-android&Date">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=mytv-android/mytv-android&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=mytv-android/mytv-android&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=mytv-android/mytv-android&type=Date" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=mytv-android/mytv-android&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=mytv-android/mytv-android&type=Date" />
+   <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=mytv-android/mytv-android&type=Date" />
  </picture>
 </a>
 
