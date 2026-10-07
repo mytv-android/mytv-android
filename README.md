@@ -70,6 +70,6 @@
 
 ## 著作权、许可证声明和致谢
 
-- 本软件基于天光云影（https://github.com/yaoxieyoulei/mytv-android/tree/feature/ui ）进行迭代，在此感谢作者 yaoxieyoulei 的无私奉献。天光云影使用的MIT许可证请参见[天光云影许可证](./LICENSE_ORIGIN)。
+- 本软件基于[天光云影](https://github.com/yaoxieyoulei/mytv-android/tree/feature/ui)进行迭代，在此感谢作者 @yaoxieyoulei 的无私奉献。天光云影使用的MIT许可证请参见[天光云影许可证](./LICENSE_ORIGIN)。
 
-- 本软件还使用了BV（https://github.com/aaa1115910/bv ）的部分代码，在此特感谢aaa1115910。[许可证](./LICENSE_PART1)。
+- 本软件还使用了[BV](https://github.com/aaa1115910/bv)的部分代码，在此特感谢@aaa1115910。[许可证](./LICENSE_PART1)。
