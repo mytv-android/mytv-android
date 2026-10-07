@@ -37,7 +37,7 @@
 - [migu订阅源项目](https://github.com/mytv-android/myMIGU)
 
 ## 相关项目
-- [rtphttpd - IPTV转发工具] (https://github.com/stackia/rtp2httpd)
+- [rtphttpd - IPTV转发工具](https://github.com/stackia/rtp2httpd)
 
 ## 参与开发
 
