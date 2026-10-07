@@ -22,47 +22,19 @@
 
 ## 使用
 
-### 操作方式
+[使用文档](https://mytv-android.github.io/mytv-doc)
 
-> 遥控器操作方式与主流电视直播软件类似；
-
-- 频道切换：使用上下方向键，或者数字键切换频道；屏幕上下滑动；
-- 频道选择：OK键；单击屏幕；
-- 线路切换：使用左右方向键；屏幕左右滑动；
-- 设置页面：按下菜单、帮助键，长按OK键；双击、长按屏幕；
-
-### 触摸键位对应
-
-- 方向键：屏幕上下左右滑动
-- OK键：点击屏幕
-- 长按OK键：长按屏幕
-- 菜单、帮助键：双击屏幕
-
-### 自定义设置
-
-- 访问以下网址：`http://<设备IP>:10591`
-
-### 常见问题解答
-#### 我的源在本播放器上播放不了/起播太慢，但我确认源是没有问题的
-
-- 播放不了尝试打开``设置/播放器/更好的视频探测``，起播太慢尝试关闭``设置/播放器/更好的视频探测``
-- 对于使用``rtp2httpd``转发IPTV的用户，对于支持fcc的源，优先使用``Media3``和``VLC``播放器以获得快速的切台体验
-- 对于使用``rtsp``源的用户，请勿使用Media3播放器，你可以通过在远程面板添加``rtsp://.*``规则并指定`IJK`或``VLC``播放器播放
-#### 远程面板扫码二维码识别较差
-目前发现苹果自带二维码工具可能出现此问题，建议使用微信扫码
-#### 我在播放时遇到播放器提示错误，但我希望进一步了解有关信息
-请至``网页面板/调试 导出Logcat``以查看。建议错误发生后立即导出，否则此日志容易被后面的日志输出所覆盖
 ## 下载
 
 可以通过右侧release进行下载
 
 ## 姊妹项目
-- [北京卫视订阅源] (https://github.com/mytv-android/BRTV-Live-M3U8)
-- [部分地方台订阅源] (https://github.com/mytv-android/China-TV-Live-M3U8)
-- [节目单项目] (https://github.com/mytv-android/myEPG)
-- [频道标志项目] (https://github.com/mytv-android/myTVlogo)
-- [JS订阅源] (https://github.com/mytv-android/mytvJS)
-- [migu订阅源项目] (https://github.com/mytv-android/myMIGU)
+- [北京卫视订阅源](https://github.com/mytv-android/BRTV-Live-M3U8)
+- [部分地方台订阅源](https://github.com/mytv-android/China-TV-Live-M3U8)
+- [节目单项目](https://github.com/mytv-android/myEPG)
+- [频道标志项目](https://github.com/mytv-android/myTVlogo)
+- [JS订阅源](https://github.com/mytv-android/mytvJS)
+- [migu订阅源项目](https://github.com/mytv-android/myMIGU)
 
 ## 相关项目
 - [rtphttpd - IPTV转发工具] (https://github.com/stackia/rtp2httpd)
