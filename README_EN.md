@@ -13,6 +13,7 @@
 [![GitHub](https://img.shields.io/github/license/mytv-android/mytv-android)](https://github.com/mytv-android/mytv-android)
 
 </div>
+<img src="./img/banner_en.png" alt="TV Live" width="100%"/>
 <p>A TV live player app developed with native Android library.</p>
 
 <!-- <img src="./screenshots/Screenshot_dashboard.png" width="96%"/> -->
