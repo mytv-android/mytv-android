@@ -25,7 +25,8 @@
 
 [使用文档](https://mytv-android.github.io/mytv-doc)
 
-另外，我们推荐推荐使用[易用TV助手](https://github.com/pangtugg/easytv-partner)来管理和查看有关配置教程，以及导入第三方的订阅源
+另外，我们推荐使用[易用TV助手](https://github.com/pangtugg/easytv-partner)来管理和查看有关配置教程，以及导入第三方的订阅源
+
 ## 下载
 
 可以通过右侧release进行下载
