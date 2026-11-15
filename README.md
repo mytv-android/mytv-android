@@ -14,12 +14,28 @@
 </div>
     <img src="./img/banner.png" alt="电视直播" width="100%"/>
     <p>基于天光云影3.3.9，使用Android原生开发的电视直播软件</p>
-
-<!-- <img src="./screenshots/Screenshot_dashboard.png" width="96%"/> -->
-<br/>
-<!-- <img src="./screenshots/Screenshot_channels.png" width="48%"/>
-<img src="./screenshots/Screenshot_search.png" width="48%"/> -->
 </div>
+
+## 界面
+
+以下截图来自 Android 模拟器实拍，同一版本 `3.0.0.238`，覆盖手机、平板、电视、折叠屏与双面屏五种形态。首页、全部频道、节目单、搜索、多屏同播与设置都在同一套界面里按屏幕尺寸自适应排布。
+
+<table>
+  <tr>
+    <td align="center"><img src="screenshots/phone.png" height="430" alt="电视直播 手机"/><br/><sub>手机 · 1080×2400</sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="screenshots/fold.png" width="430" alt="电视直播 折叠屏"/><br/><sub>折叠屏 · 2208×1840</sub></td>
+    <td align="center" width="50%"><img src="screenshots/dualscreen.png" width="520" alt="电视直播 双面屏"/><br/><sub>双面屏 · 2784×1800</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="screenshots/tablet.png" width="380" alt="电视直播 平板"/><br/><sub>平板 · 2560×1600</sub></td>
+    <td align="center"><img src="screenshots/tv.png" width="430" alt="电视直播 电视"/><br/><sub>电视 · 1920×1080</sub></td>
+  </tr>
+</table>
 
 ## 使用
 
